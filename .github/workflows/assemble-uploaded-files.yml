@@ -22,11 +22,12 @@ jobs:
           decode_gz() {
             src="$1"
             dst="$2"
+            echo "Decoding $dst"
             cat ${src}*.part | base64 -d | gzip -dc > "$dst"
           }
 
           decode_gz '.upload/cuatro-bundle-' 'AA - Cuatro Direcciones -bundle-src-.html'
-          decode_gz '.upload/cuatro-dc-' 'AA - Cuatro Direcciones.dc.html'
+          decode_gz '.upload/cuatro-dc-correct-' 'AA - Cuatro Direcciones.dc.html'
           decode_gz '.upload/nacar-bundle-' 'AA App - Nacar -bundle-src-.html'
           decode_gz '.upload/nacar-dc-' 'AA App - Nacar.dc.html'
           decode_gz '.upload/nacar-dir4-' 'AA Direccion 4 - Nacar.dc.html'
@@ -38,6 +39,7 @@ jobs:
             file="$1"
             expected="$2"
             actual="$(git hash-object "$file")"
+            echo "$file: $actual"
             test "$actual" = "$expected" || { echo "Hash mismatch: $file ($actual != $expected)"; exit 1; }
           }
 
