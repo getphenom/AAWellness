@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Montserrat:wght@400;500;600;700;800&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#F4EFEA;-webkit-font-smoothing:antialiased}
+  a{color:#C81A66;text-decoration:none}
+  a:hover{color:#E52E7B;text-decoration:underline}
+  @keyframes sheen{0%{transform:translateX(-18%)}100%{transform:translateX(18%)}}
+</style>
+</helmet>
+
+<section style="font-family:'Montserrat',system-ui,sans-serif;color:#223C64;padding:34px 26px 70px;display:flex;flex-direction:column;align-items:center;gap:22px">
+
+  <div style="width:100%;max-width:1320px;display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap">
+    <div style="display:flex;align-items:center;gap:18px">
+      <img src="./assets/aa-logo.png" alt="A&amp;A Healthcare Services LLC" style="height:96px;width:auto;display:block">
+      <div>
+        <span style="display:flex;align-items:center;gap:10px;font-size:10.5px;letter-spacing:.15em;text-transform:uppercase;font-weight:700;color:#8A6A10;margin-bottom:7px">
+          Nácar aplicado
+          <i style="display:block;width:38px;height:1px;background:linear-gradient(90deg,#C69A44,rgba(198,154,68,0))"></i>
+          App real
+        </span>
+        <h1 style="font-family:'Playfair Display',Georgia,serif;font-size:38px;font-weight:700;line-height:1;color:#8CBCE4">LA APP EN <span style="color:#E52E7B">NÁCAR</span></h1>
+        <p style="font-size:13.5px;color:#4B6484;margin-top:8px;max-width:600px;line-height:1.6;text-wrap:pretty">Consola de la clínica y app del paciente con la construcción del afiche: mármol, arcos de rosa a azul con filo dorado, medallones y montos en píldora sólida.</p>
+      </div>
+    </div>
+    <span style="display:inline-flex;align-items:center;justify-content:center;min-width:34px;height:34px;padding:0 11px;border-radius:999px;background:#223C64;color:#fff;font-size:12px;font-weight:700;letter-spacing:.06em">3a</span>
+  </div>
+
+  <div id="3a" style="position:relative;overflow:hidden;width:100%;max-width:1320px;border-radius:28px;background:radial-gradient(120% 90% at 18% 0%,#FFFFFF 0%,#FBF7F4 38%,#F3EAE4 100%);box-shadow:0 30px 70px -46px rgba(34,60,100,.55)">
+
+    <span aria-hidden="true" style="position:absolute;top:0;left:32%;width:22%;height:100%;background:linear-gradient(100deg,rgba(255,255,255,0),rgba(255,255,255,.7),rgba(255,255,255,0));transform:skewX(-14deg);pointer-events:none;animation:sheen 9s ease-in-out infinite alternate"></span>
+
+    <div style="position:relative;z-index:1;padding:26px;display:grid;grid-template-columns:repeat(auto-fit,minmax(560px,1fr));gap:24px;align-items:start">
+
+      <div style="min-width:0;display:flex;flex-direction:column;gap:11px">
+        <span style="font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:#8A6A10">Consola de la clínica · escritorio</span>
+
+        <div style="padding:2px;border-radius:24px;background:linear-gradient(140deg,#EBD6A8,#C69A44 45%,#F3E6C4 66%,#B98C33);box-shadow:0 26px 60px -40px rgba(34,60,100,.75)">
+          <div style="border-radius:22px;overflow:hidden;background:#FFFDFA;display:grid;grid-template-columns:186px 1fr;min-height:660px">
+
+            <nav style="background:linear-gradient(180deg,#FFFFFF,#FBF6EF);border-right:1px solid #F0E4CE;padding:18px 12px;display:flex;flex-direction:column;gap:16px">
+              <span style="display:flex;align-items:center;gap:9px;padding:0 8px 13px;border-bottom:1px solid #F0E4CE">
+                <img src="./assets/aa-logo.png" alt="A&amp;A Healthcare Services LLC" style="height:46px;width:46px;object-fit:contain;display:block">
+                <em style="font-style:normal;font-size:9.5px;letter-spacing:.16em;font-weight:800;color:#8A6A10;line-height:1.5">A&amp;A<br>WELLNESS</em>
+              </span>
+
+              <ul style="list-style:none;display:flex;flex-direction:column;gap:3px">
+                <li><button onClick="{{ goHoy }}" style="width:100%;cursor:pointer;font:inherit;display:flex;align-items:center;gap:9px;padding:10px 11px;border-radius:12px;border:1px solid {{ navHoy.edge }};background:{{ navHoy.bg }};color:{{ navHoy.ink }};font-size:13px;font-weight:{{ navHoy.wt }};text-align:left" style-hover="border-color:#EAD9B5">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="3.5" y="5" width="17" height="16" rx="3"></rect><path d="M8 3v4M16 3v4M3.5 10h17"></path></svg>Hoy</button></li>
+                <li><button onClick="{{ goAgenda }}" style="width:100%;cursor:pointer;font:inherit;display:flex;align-items:center;gap:9px;padding:10px 11px;border-radius:12px;border:1px solid {{ navAgenda.edge }};background:{{ navAgenda.bg }};color:{{ navAgenda.ink }};font-size:13px;font-weight:{{ navAgenda.wt }};text-align:left" style-hover="border-color:#EAD9B5">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="12" cy="12" r="8.5"></circle><path d="M12 7.5V12l3 2"></path></svg>Agenda</button></li>
+                <li><button onClick="{{ goPts }}" style="width:100%;cursor:pointer;font:inherit;display:flex;align-items:center;gap:9px;padding:10px 11px;border-radius:12px;border:1px solid {{ navPts.edge }};background:{{ navPts.bg }};color:{{ navPts.ink }};font-size:13px;font-weight:{{ navPts.wt }};text-align:left" style-hover="border-color:#EAD9B5">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="9" cy="8" r="3.2"></circle><path d="M3.4 19c.5-3.2 2.8-5 5.6-5s5.1 1.8 5.6 5"></path><path d="M16.5 11h4M18.5 9v4"></path></svg>Pacientes</button></li>
+                <li><button onClick="{{ goSvc }}" style="width:100%;cursor:pointer;font:inherit;display:flex;align-items:center;gap:9px;padding:10px 11px;border-radius:12px;border:1px solid {{ navSvc.edge }};background:{{ navSvc.bg }};color:{{ navSvc.ink }};font-size:13px;font-weight:{{ navSvc.wt }};text-align:left" style-hover="border-color:#EAD9B5">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M12 3.5l2.3 4.7 5.2.8-3.8 3.7.9 5.2-4.6-2.5-4.6 2.5.9-5.2L4.5 9l5.2-.8L12 3.5z"></path></svg>Servicios</button></li>
+                <li><button onClick="{{ goInbox }}" style="width:100%;cursor:pointer;font:inherit;display:flex;align-items:center;gap:9px;padding:10px 11px;border-radius:12px;border:1px solid {{ navInbox.edge }};background:{{ navInbox.bg }};color:{{ navInbox.ink }};font-size:13px;font-weight:{{ navInbox.wt }};text-align:left" style-hover="border-color:#EAD9B5">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M4 6h16v12H4z"></path><path d="M4 7l8 6 8-6"></path></svg>
+                  <span style="flex:1">Mensajes</span>
+                  <b style="font-size:10px;font-weight:800;color:#fff;background:#E52E7B;border-radius:999px;padding:2px 6px">4</b></button></li>
+                <li><button onClick="{{ goPanel }}" style="width:100%;cursor:pointer;font:inherit;display:flex;align-items:center;gap:9px;padding:10px 11px;border-radius:12px;border:1px solid {{ navPanel.edge }};background:{{ navPanel.bg }};color:{{ navPanel.ink }};font-size:13px;font-weight:{{ navPanel.wt }};text-align:left" style-hover="border-color:#EAD9B5">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M4 19h16"></path><path d="M7 19v-5M11.5 19v-9M16 19v-4"></path></svg>Panel</button></li>
+              </ul>
+
+              <div style="margin-top:auto;border:1px solid #EDDFC1;border-radius:14px;background:#fff;padding:12px">
+                <span style="display:block;font-size:10px;letter-spacing:.12em;text-transform:uppercase;font-weight:800;color:#8A6A10;margin-bottom:6px">Enlace de reservas</span>
+                <span style="display:block;font-size:11.5px;color:#4B6484;line-height:1.5">aawellness.pr/<b style="color:#C81A66">reservar</b></span>
+              </div>
+            </nav>
+
+            <div style="min-width:0;position:relative;overflow:hidden;background:radial-gradient(120% 70% at 85% 0%,#FFFFFF,#FDFAF7 60%,#F7F1EA);padding:24px 24px 64px">
+
+              <sc-if value="{{ arcsOn }}" hint-placeholder-val="{{ true }}">
+                <span aria-hidden="true" style="position:absolute;top:-92px;right:-96px;width:46%;height:236px;border-radius:0 0 0 100%;background:linear-gradient(260deg,#EBD6A8,#C69A44 40%,#F3E6C4 62%,#B98C33);pointer-events:none">
+                  <i style="position:absolute;top:0;left:5px;right:0;bottom:5px;border-radius:0 0 0 100%;background:linear-gradient(210deg,#E52E7B,#F072A2 55%,#F9C8DC);display:block"></i>
+                </span>
+                <span aria-hidden="true" style="position:absolute;bottom:0;left:-10%;right:-10%;height:104px;border-radius:64% 20% 0 0 / 100% 46% 0 0;background:linear-gradient(100deg,#EBD6A8,#C69A44 40%,#F3E6C4 62%,#B98C33);pointer-events:none">
+                  <i style="position:absolute;top:5px;left:0;right:0;bottom:0;border-radius:64% 20% 0 0 / 100% 46% 0 0;background:linear-gradient(96deg,#E52E7B 0%,#F28FB5 34%,#DCC8DE 58%,#8CBCE4 100%);display:block"></i>
+                </span>
+              </sc-if>
+
+              <div style="position:relative;z-index:1">
+              <sc-if value="{{ isHoy }}" hint-placeholder-val="{{ true }}">
+                <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:18px">
+                  <div>
+                    <span style="display:block;font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;font-weight:800;color:#8A6A10;margin-bottom:6px">viernes, 14 de agosto</span>
+                    <h2 style="font-family:'Playfair Display',Georgia,serif;font-size:30px;font-weight:700;color:#223C64;line-height:1">Hoy</h2>
+                  </div>
+                  <div style="padding:2px;border-radius:999px;background:linear-gradient(100deg,#EBD6A8,#C69A44 45%,#F3E6C4)">
+                    <button style="border:none;cursor:pointer;font:inherit;padding:10px 18px;border-radius:999px;background:linear-gradient(100deg,#E52E7B,#D62170);color:#fff;font-size:12.5px;font-weight:700" style-hover="filter:brightness(1.07)">+ Nueva cita</button>
+                  </div>
+                </div>
+
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:14px">
+                  <div style="position:relative;overflow:hidden;background:#fff;border:1px solid #EBDCBB;border-radius:16px;padding:14px 15px">
+                    <span style="position:absolute;left:0;top:0;bottom:0;width:4px;background:#E52E7B"></span>
+                    <span style="display:block;font-size:11px;color:#5A7091;margin-bottom:4px">Citas de hoy</span>
+                    <b style="font-family:'Playfair Display',Georgia,serif;font-size:27px;font-weight:700;color:#C81A66">7</b>
+                    <em style="display:block;font-style:normal;font-size:10.5px;color:#8A6A10;margin-top:3px">3 espacios disponibles</em>
+                  </div>
+                  <div style="position:relative;overflow:hidden;background:#fff;border:1px solid #EBDCBB;border-radius:16px;padding:14px 15px">
+                    <span style="position:absolute;left:0;top:0;bottom:0;width:4px;background:#2F6DA8"></span>
+                    <span style="display:block;font-size:11px;color:#5A7091;margin-bottom:4px">Ingreso esperado</span>
+                    <b style="font-family:'Playfair Display',Georgia,serif;font-size:27px;font-weight:700;color:#2F6DA8">$1,485</b>
+                    <em style="display:block;font-style:normal;font-size:10.5px;color:#8A6A10;margin-top:3px">$620 cobrado</em>
+                  </div>
+                  <div style="position:relative;overflow:hidden;background:#fff;border:1px solid #EBDCBB;border-radius:16px;padding:14px 15px">
+                    <span style="position:absolute;left:0;top:0;bottom:0;width:4px;background:#C69A44"></span>
+                    <span style="display:block;font-size:11px;color:#5A7091;margin-bottom:4px">Esperan respuesta</span>
+                    <b style="font-family:'Playfair Display',Georgia,serif;font-size:27px;font-weight:700;color:#8A6A10">4</b>
+                    <em style="display:block;font-style:normal;font-size:10.5px;color:#8A6A10;margin-top:3px">mensajes sin contestar</em>
+                  </div>
+                  <div style="position:relative;overflow:hidden;background:#fff;border:1px solid #EBDCBB;border-radius:16px;padding:14px 15px">
+                    <span style="position:absolute;left:0;top:0;bottom:0;width:4px;background:#8CBCE4"></span>
+                    <span style="display:block;font-size:11px;color:#5A7091;margin-bottom:4px">Promos activas</span>
+                    <b style="font-family:'Playfair Display',Georgia,serif;font-size:27px;font-weight:700;color:#223C64">2 de 3</b>
+                    <em style="display:block;font-style:normal;font-size:10.5px;color:#8A6A10;margin-top:3px">referidos, B12</em>
+                  </div>
+                </div>
+
+                <div style="background:#fff;border:1px solid #EBDCBB;border-radius:18px;padding:16px 18px">
+                  <span style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+                    <b style="font-family:'Playfair Display',Georgia,serif;font-size:17px;font-weight:700;color:#223C64">El día</b>
+                    <i style="display:block;height:1.5px;flex:1;background:linear-gradient(90deg,#C69A44,rgba(198,154,68,0))"></i>
+                    <em style="font-style:normal;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:800;color:#8A6A10">9:00 — 4:45</em>
+                  </span>
+                  <div style="display:flex;flex-direction:column">
+                    <div style="display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid #F2E7D3">
+                      <span style="width:46px;font-size:12px;font-weight:600;color:#5A7091">9:00</span>
+                      <span style="width:4px;height:30px;border-radius:3px;background:#8CBCE4;flex:none"></span>
+                      <span style="flex:1;min-width:0"><b style="display:block;font-size:13px;font-weight:600;color:#223C64">Marisol Rivera</b><em style="font-style:normal;font-size:11.5px;color:#5A7091">Hidratación Revive · 45 min</em></span>
+                      <b style="font-size:13.5px;font-weight:700;color:#2F6DA8">$165</b>
+                      <span style="flex:none;font-size:10px;font-weight:800;letter-spacing:.06em;color:#1F4E7C;background:#DCEAF7;border-radius:999px;padding:4px 9px">COBRADO</span>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid #F2E7D3">
+                      <span style="width:46px;font-size:12px;font-weight:600;color:#5A7091">10:30</span>
+                      <span style="width:4px;height:30px;border-radius:3px;background:#E52E7B;flex:none"></span>
+                      <span style="flex:1;min-width:0"><b style="display:block;font-size:13px;font-weight:600;color:#223C64">Danielle Porter</b><em style="font-style:normal;font-size:11.5px;color:#5A7091">Control de Peso · seguimiento semana 5</em></span>
+                      <b style="font-size:13.5px;font-weight:700;color:#2F6DA8">$325</b>
+                      <span style="flex:none;font-size:10px;font-weight:800;letter-spacing:.06em;color:#fff;background:#E52E7B;border-radius:999px;padding:4px 9px">EN SALA</span>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid #F2E7D3">
+                      <span style="width:46px;font-size:12px;font-weight:600;color:#5A7091">12:00</span>
+                      <span style="width:4px;height:30px;border-radius:3px;background:#F1A7C4;flex:none"></span>
+                      <span style="flex:1;min-width:0"><b style="display:block;font-size:13px;font-weight:600;color:#223C64">Keila Beltrán</b><em style="font-style:normal;font-size:11.5px;color:#5A7091">Infusión NAD+ · 90 min</em></span>
+                      <b style="font-size:13.5px;font-weight:700;color:#2F6DA8">$395</b>
+                      <span style="flex:none;font-size:10px;font-weight:800;letter-spacing:.06em;color:#8A6A10;background:#FBF2DC;border-radius:999px;padding:4px 9px">POR COBRAR</span>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid #F2E7D3">
+                      <span style="width:46px;font-size:12px;font-weight:600;color:#5A7091">1:45</span>
+                      <span style="width:4px;height:30px;border-radius:3px;background:#C69A44;flex:none"></span>
+                      <span style="flex:1;min-width:0"><b style="display:block;font-size:13px;font-weight:600;color:#223C64">Zoraida Pérez</b><em style="font-style:normal;font-size:11.5px;color:#5A7091">Terapia PRP · 60 min</em></span>
+                      <b style="font-size:13.5px;font-weight:700;color:#2F6DA8">$450</b>
+                      <span style="flex:none;font-size:10px;font-weight:800;letter-spacing:.06em;color:#8A6A10;background:#FBF2DC;border-radius:999px;padding:4px 9px">POR COBRAR</span>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:12px;padding:11px 0">
+                      <span style="width:46px;font-size:12px;font-weight:600;color:#5A7091">3:15</span>
+                      <span style="width:4px;height:30px;border-radius:3px;background:#8CBCE4;flex:none"></span>
+                      <span style="flex:1;min-width:0"><b style="display:block;font-size:13px;font-weight:600;color:#223C64">Yamil Ortiz</b><em style="font-style:normal;font-size:11.5px;color:#5A7091">Refuerzo de Energía B12 · 15 min</em></span>
+                      <b style="font-size:13.5px;font-weight:700;color:#2F6DA8">$45</b>
+                      <span style="flex:none;font-size:10px;font-weight:800;letter-spacing:.06em;color:#8A6A10;background:#FBF2DC;border-radius:999px;padding:4px 9px">POR COBRAR</span>
+                    </div>
+                  </div>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ isAgenda }}" hint-placeholder-val="{{ false }}">
+                <div style="margin-bottom:18px">
+                  <span style="display:block;font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;font-weight:800;color:#8A6A10;margin-bottom:6px">Próximos 7 días</span>
+                  <h2 style="font-family:'Playfair Display',Georgia,serif;font-size:30px;font-weight:700;color:#223C64;line-height:1">Agenda</h2>
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(112px,1fr));gap:10px">
+                  <div style="background:#fff;border:1px solid #EBDCBB;border-radius:16px;padding:12px 11px;display:flex;flex-direction:column;gap:7px">
+                    <span style="font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:800;color:#8A6A10">vie 15</span>
+                    <b style="font-size:11.5px;font-weight:700;color:#fff;background:#E52E7B;border-radius:8px;padding:6px 0;text-align:center">9:00</b>
+                    <b style="font-size:11.5px;font-weight:700;color:#1F4E7C;background:#DCEAF7;border-radius:8px;padding:6px 0;text-align:center">10:30</b>
+                    <span style="font-size:11.5px;font-weight:600;color:#8A6A10;border:1px dashed #E6D4AE;border-radius:8px;padding:6px 0;text-align:center">12:00</span>
+                    <span style="font-size:11.5px;font-weight:600;color:#8A6A10;border:1px dashed #E6D4AE;border-radius:8px;padding:6px 0;text-align:center">1:45</span>
+                  </div>
+                  <div style="background:#fff;border:1px solid #EBDCBB;border-radius:16px;padding:12px 11px;display:flex;flex-direction:column;gap:7px">
+                    <span style="font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:800;color:#8A6A10">sáb 16</span>
+                    <b style="font-size:11.5px;font-weight:700;color:#1F4E7C;background:#DCEAF7;border-radius:8px;padding:6px 0;text-align:center">9:45</b>
+                    <span style="font-size:11.5px;font-weight:600;color:#8A6A10;border:1px dashed #E6D4AE;border-radius:8px;padding:6px 0;text-align:center">11:15</span>
+                    <span style="font-size:11.5px;font-weight:600;color:#8A6A10;border:1px dashed #E6D4AE;border-radius:8px;padding:6px 0;text-align:center">12:00</span>
+                  </div>
+                  <div style="background:#FBF7F1;border:1px solid #EFE3CC;border-radius:16px;padding:12px 11px;display:flex;flex-direction:column;gap:7px">
+                    <span style="font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:800;color:#B39A63">dom 17</span>
+                    <span style="font-size:11.5px;color:#8A6A10;text-align:center;padding:6px 0">Cerrado</span>
+                  </div>
+                  <div style="background:#fff;border:1px solid #EBDCBB;border-radius:16px;padding:12px 11px;display:flex;flex-direction:column;gap:7px">
+                    <span style="font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:800;color:#8A6A10">lun 18</span>
+                    <b style="font-size:11.5px;font-weight:700;color:#fff;background:#E52E7B;border-radius:8px;padding:6px 0;text-align:center">9:00</b>
+                    <b style="font-size:11.5px;font-weight:700;color:#fff;background:#E52E7B;border-radius:8px;padding:6px 0;text-align:center">10:30</b>
+                    <b style="font-size:11.5px;font-weight:700;color:#1F4E7C;background:#DCEAF7;border-radius:8px;padding:6px 0;text-align:center">2:30</b>
+                    <span style="font-size:11.5px;font-weight:600;color:#8A6A10;border:1px dashed #E6D4AE;border-radius:8px;padding:6px 0;text-align:center">4:00</span>
+                  </div>
+                  <div style="background:#fff;border:1px solid #EBDCBB;border-radius:16px;padding:12px 11px;display:flex;flex-direction:column;gap:7px">
+                    <span style="font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:800;color:#8A6A10">mar 19</span>
+                    <b style="font-size:11.5px;font-weight:700;color:#1F4E7C;background:#DCEAF7;border-radius:8px;padding:6px 0;text-align:center">11:15</b>
+                    <span style="font-size:11.5px;font-weight:600;color:#8A6A10;border:1px dashed #E6D4AE;border-radius:8px;padding:6px 0;text-align:center">1:00</span>
+                    <span style="font-size:11.5px;font-weight:600;color:#8A6A10;border:1px dashed #E6D4AE;border-radius:8px;padding:6px 0;text-align:center">3:15</span>
+                  </div>
+                  <div style="background:#fff;border:1px solid #EBDCBB;border-radius:16px;padding:12px 11px;display:flex;flex-direction:column;gap:7px">
+                    <span style="font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:800;color:#8A6A10">mié 20</span>
+                    <b style="font-size:11.5px;font-weight:700;color:#fff;background:#E52E7B;border-radius:8px;padding:6px 0;text-align:center">9:45</b>
+                    <span style="font-size:11.5px;font-weight:600;color:#8A6A10;border:1px dashed #E6D4AE;border-radius:8px;padding:6px 0;text-align:center">12:00</span>
+                  </div>
+                  <div style="background:#fff;border:1px solid #EBDCBB;border-radius:16px;padding:12px 11px;display:flex;flex-direction:column;gap:7px">
+                    <span style="font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:800;color:#8A6A10">jue 21</span>
+                    <b style="font-size:11.5px;font-weight:700;color:#1F4E7C;background:#DCEAF7;border-radius:8px;padding:6px 0;text-align:center">10:30</b>
+                    <span style="font-size:11.5px;font-weight:600;color:#8A6A10;border:1px dashed #E6D4AE;border-radius:8px;padding:6px 0;text-align:center">1:45</span>
+                    <span style="font-size:11.5px;font-weight:600;color:#8A6A10;border:1px dashed #E6D4AE;border-radius:8px;padding:6px 0;text-align:center">4:45</span>
+                  </div>
+                </div>
+                <p style="font-size:12px;color:#4B6484;margin-top:14px;line-height:1.6">Píldora sólida magenta = cita confirmada · azul = reservada en línea · filo dorado punteado = espacio libre.</p>
+              </sc-if>
+
+              <sc-if value="{{ isPts }}" hint-placeholder-val="{{ false }}">
+                <div style="margin-bottom:18px">
+                  <span style="display:block;font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;font-weight:800;color:#8A6A10;margin-bottom:6px">N=124 pacientes</span>
+                  <h2 style="font-family:'Playfair Display',Georgia,serif;font-size:30px;font-weight:700;color:#223C64;line-height:1">Pacientes</h2>
+                </div>
+                <div style="background:#fff;border:1px solid #EBDCBB;border-radius:18px;overflow:hidden">
+                  <div style="display:grid;grid-template-columns:1.6fr 1fr .9fr .8fr;gap:12px;padding:11px 16px;background:#FBF6EF;border-bottom:1px solid #F0E4CE;font-size:10px;letter-spacing:.11em;text-transform:uppercase;font-weight:800;color:#8A6A10">
+                    <span>Paciente</span><span>Plan</span><span>Última visita</span><span>Crédito</span>
+                  </div>
+                  <div style="display:grid;grid-template-columns:1.6fr 1fr .9fr .8fr;gap:12px;padding:13px 16px;border-bottom:1px solid #F5EDE0;align-items:center">
+                    <span style="display:flex;align-items:center;gap:10px;min-width:0">
+                      <span style="flex:none;width:34px;height:34px;border-radius:50%;padding:1.5px;background:linear-gradient(120deg,#F3E6C4,#C69A44);display:grid;place-items:center">
+                        <span style="width:100%;height:100%;border-radius:50%;background:#8CBCE4;display:grid;place-items:center;color:#fff;font-size:11px;font-weight:800">DP</span></span>
+                      <span style="min-width:0"><b style="display:block;font-size:13px;font-weight:600;color:#223C64">Danielle Porter</b><em style="font-style:normal;font-size:11px;color:#5A7091">(787) 555-0111</em></span>
+                    </span>
+                    <span style="font-size:11px;font-weight:800;letter-spacing:.05em;color:#C81A66;background:#FDEAF3;border:1px solid #F6D2E3;border-radius:999px;padding:4px 10px;justify-self:start">GLP-1</span>
+                    <span style="font-size:12px;color:#4B6484">07 ago</span>
+                    <b style="font-size:13.5px;font-weight:700;color:#2F6DA8">$50</b>
+                  </div>
+                  <div style="display:grid;grid-template-columns:1.6fr 1fr .9fr .8fr;gap:12px;padding:13px 16px;border-bottom:1px solid #F5EDE0;align-items:center">
+                    <span style="display:flex;align-items:center;gap:10px;min-width:0">
+                      <span style="flex:none;width:34px;height:34px;border-radius:50%;padding:1.5px;background:linear-gradient(120deg,#F3E6C4,#C69A44);display:grid;place-items:center">
+                        <span style="width:100%;height:100%;border-radius:50%;background:#E52E7B;display:grid;place-items:center;color:#fff;font-size:11px;font-weight:800">MR</span></span>
+                      <span style="min-width:0"><b style="display:block;font-size:13px;font-weight:600;color:#223C64">Marisol Rivera</b><em style="font-style:normal;font-size:11px;color:#5A7091">(787) 555-0143</em></span>
+                    </span>
+                    <span style="font-size:11px;font-weight:800;letter-spacing:.05em;color:#1F4E7C;background:#EAF3FB;border:1px solid #CFE2F3;border-radius:999px;padding:4px 10px;justify-self:start">IV Terapia</span>
+                    <span style="font-size:12px;color:#4B6484">hoy</span>
+                    <b style="font-size:13.5px;font-weight:700;color:#2F6DA8">$25</b>
+                  </div>
+                  <div style="display:grid;grid-template-columns:1.6fr 1fr .9fr .8fr;gap:12px;padding:13px 16px;border-bottom:1px solid #F5EDE0;align-items:center">
+                    <span style="display:flex;align-items:center;gap:10px;min-width:0">
+                      <span style="flex:none;width:34px;height:34px;border-radius:50%;padding:1.5px;background:linear-gradient(120deg,#F3E6C4,#C69A44);display:grid;place-items:center">
+                        <span style="width:100%;height:100%;border-radius:50%;background:#223C64;display:grid;place-items:center;color:#fff;font-size:11px;font-weight:800">KB</span></span>
+                      <span style="min-width:0"><b style="display:block;font-size:13px;font-weight:600;color:#223C64">Keila Beltrán</b><em style="font-style:normal;font-size:11px;color:#5A7091">(787) 555-0188</em></span>
+                    </span>
+                    <span style="font-size:11px;font-weight:800;letter-spacing:.05em;color:#1F4E7C;background:#EAF3FB;border:1px solid #CFE2F3;border-radius:999px;padding:4px 10px;justify-self:start">NAD+</span>
+                    <span style="font-size:12px;color:#4B6484">31 jul</span>
+                    <b style="font-size:13.5px;font-weight:700;color:#8A6A10">—</b>
+                  </div>
+                  <div style="display:grid;grid-template-columns:1.6fr 1fr .9fr .8fr;gap:12px;padding:13px 16px;align-items:center">
+                    <span style="display:flex;align-items:center;gap:10px;min-width:0">
+                      <span style="flex:none;width:34px;height:34px;border-radius:50%;padding:1.5px;background:linear-gradient(120deg,#F3E6C4,#C69A44);display:grid;place-items:center">
+                        <span style="width:100%;height:100%;border-radius:50%;background:#F1A7C4;display:grid;place-items:center;color:#fff;font-size:11px;font-weight:800">ZP</span></span>
+                      <span style="min-width:0"><b style="display:block;font-size:13px;font-weight:600;color:#223C64">Zoraida Pérez</b><em style="font-style:normal;font-size:11px;color:#5A7091">(787) 555-0126</em></span>
+                    </span>
+                    <span style="font-size:11px;font-weight:800;letter-spacing:.05em;color:#C81A66;background:#FDEAF3;border:1px solid #F6D2E3;border-radius:999px;padding:4px 10px;justify-self:start">PRP</span>
+                    <span style="font-size:12px;color:#4B6484">24 jul</span>
+                    <b style="font-size:13.5px;font-weight:700;color:#2F6DA8">$50</b>
+                  </div>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ isSvc }}" hint-placeholder-val="{{ false }}">
+                <div style="margin-bottom:18px">
+                  <span style="display:block;font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;font-weight:800;color:#8A6A10;margin-bottom:6px">Menú de la clínica · 6 activos</span>
+                  <h2 style="font-family:'Playfair Display',Georgia,serif;font-size:30px;font-weight:700;color:#223C64;line-height:1">Servicios</h2>
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(232px,1fr));gap:12px">
+                  <div style="background:#fff;border:1px solid #EBDCBB;border-radius:16px;padding:15px;display:flex;flex-direction:column;gap:9px">
+                    <span style="width:38px;height:4px;border-radius:3px;background:#8CBCE4"></span>
+                    <b style="font-size:14px;font-weight:600;color:#223C64">Hidratación Revive</b>
+                    <em style="font-style:normal;font-size:11.5px;color:#5A7091;line-height:1.5">Hidratación IV y apoyo vitamínico · 45 min</em>
+                    <b style="align-self:flex-start;font-size:18px;font-weight:700;color:#1F4E7C;background:#DCEAF7;border-radius:9px;padding:4px 14px;margin-top:2px">$165</b>
+                  </div>
+                  <div style="background:#fff;border:1px solid #EBDCBB;border-radius:16px;padding:15px;display:flex;flex-direction:column;gap:9px">
+                    <span style="width:38px;height:4px;border-radius:3px;background:#E52E7B"></span>
+                    <b style="font-size:14px;font-weight:600;color:#223C64">Programa de Control de Peso</b>
+                    <em style="font-style:normal;font-size:11.5px;color:#5A7091;line-height:1.5">GLP-1 con seguimiento semanal</em>
+                    <b style="align-self:flex-start;font-size:18px;font-weight:700;color:#fff;background:#E52E7B;border-radius:9px;padding:4px 14px;margin-top:2px">$325</b>
+                  </div>
+                  <div style="background:#fff;border:1px solid #EBDCBB;border-radius:16px;padding:15px;display:flex;flex-direction:column;gap:9px">
+                    <span style="width:38px;height:4px;border-radius:3px;background:#C69A44"></span>
+                    <b style="font-size:14px;font-weight:600;color:#223C64">Terapia PRP</b>
+                    <em style="font-style:normal;font-size:11.5px;color:#5A7091;line-height:1.5">Plasma rico en plaquetas · requiere evaluación</em>
+                    <b style="align-self:flex-start;font-size:18px;font-weight:700;color:#1F4E7C;background:#DCEAF7;border-radius:9px;padding:4px 14px;margin-top:2px">$450</b>
+                  </div>
+                  <div style="background:#fff;border:1px solid #EBDCBB;border-radius:16px;padding:15px;display:flex;flex-direction:column;gap:9px">
+                    <span style="width:38px;height:4px;border-radius:3px;background:#F1A7C4"></span>
+                    <b style="font-size:14px;font-weight:600;color:#223C64">Infusión NAD+</b>
+                    <em style="font-style:normal;font-size:11.5px;color:#5A7091;line-height:1.5">250 mL IV · 90 min</em>
+                    <b style="align-self:flex-start;font-size:18px;font-weight:700;color:#1F4E7C;background:#DCEAF7;border-radius:9px;padding:4px 14px;margin-top:2px">$395</b>
+                  </div>
+                  <div style="background:#fff;border:1px solid #EBDCBB;border-radius:16px;padding:15px;display:flex;flex-direction:column;gap:9px">
+                    <span style="width:38px;height:4px;border-radius:3px;background:#8CBCE4"></span>
+                    <b style="font-size:14px;font-weight:600;color:#223C64">Inmunidad Myers</b>
+                    <em style="font-style:normal;font-size:11.5px;color:#5A7091;line-height:1.5">Vitamina C, magnesio, calcio y complejo B · 45 min</em>
+                    <b style="align-self:flex-start;font-size:18px;font-weight:700;color:#1F4E7C;background:#DCEAF7;border-radius:9px;padding:4px 14px;margin-top:2px">$185</b>
+                  </div>
+                  <div style="background:#fff;border:1px solid #EBDCBB;border-radius:16px;padding:15px;display:flex;flex-direction:column;gap:9px">
+                    <span style="width:38px;height:4px;border-radius:3px;background:#E52E7B"></span>
+                    <b style="font-size:14px;font-weight:600;color:#223C64">Refuerzo de Energía B12</b>
+                    <em style="font-style:normal;font-size:11.5px;color:#5A7091;line-height:1.5">1 mL IM · 15 min</em>
+                    <b style="align-self:flex-start;font-size:18px;font-weight:700;color:#fff;background:#E52E7B;border-radius:9px;padding:4px 14px;margin-top:2px">$45</b>
+                  </div>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ isInbox }}" hint-placeholder-val="{{ false }}">
+                <div style="margin-bottom:18px">
+                  <span style="display:block;font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;font-weight:800;color:#8A6A10;margin-bottom:6px">Instagram · WhatsApp · correo</span>
+                  <h2 style="font-family:'Playfair Display',Georgia,serif;font-size:30px;font-weight:700;color:#223C64;line-height:1">Mensajes</h2>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:10px">
+                  <div style="display:flex;align-items:center;gap:13px;background:#fff;border:1px solid #EBDCBB;border-radius:16px;padding:14px 15px">
+                    <span style="flex:none;width:40px;height:40px;border-radius:50%;padding:1.5px;background:linear-gradient(120deg,#F3E6C4,#C69A44);display:grid;place-items:center">
+                      <span style="width:100%;height:100%;border-radius:50%;background:#E52E7B;display:grid;place-items:center;color:#fff;font-size:12px;font-weight:800">MR</span></span>
+                    <span style="flex:1;min-width:0"><b style="display:block;font-size:13px;font-weight:600;color:#223C64">Marisol Rivera · Instagram</b><em style="font-style:normal;font-size:11.5px;color:#5A7091">¿Tienen espacio el sábado para la hidratación?</em></span>
+                    <span style="flex:none;font-size:10px;font-weight:800;letter-spacing:.06em;color:#fff;background:#E52E7B;border-radius:999px;padding:4px 9px">NUEVO</span>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:13px;background:#fff;border:1px solid #EBDCBB;border-radius:16px;padding:14px 15px">
+                    <span style="flex:none;width:40px;height:40px;border-radius:50%;padding:1.5px;background:linear-gradient(120deg,#F3E6C4,#C69A44);display:grid;place-items:center">
+                      <span style="width:100%;height:100%;border-radius:50%;background:#8CBCE4;display:grid;place-items:center;color:#fff;font-size:12px;font-weight:800">YO</span></span>
+                    <span style="flex:1;min-width:0"><b style="display:block;font-size:13px;font-weight:600;color:#223C64">Yamil Ortiz · WhatsApp</b><em style="font-style:normal;font-size:11.5px;color:#5A7091">Confirmo mi cita de las 3:15, gracias.</em></span>
+                    <span style="flex:none;font-size:10px;font-weight:800;letter-spacing:.06em;color:#fff;background:#E52E7B;border-radius:999px;padding:4px 9px">NUEVO</span>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:13px;background:#FFFDFA;border:1px solid #F0E4CE;border-radius:16px;padding:14px 15px">
+                    <span style="flex:none;width:40px;height:40px;border-radius:50%;padding:1.5px;background:linear-gradient(120deg,#F3E6C4,#C69A44);display:grid;place-items:center">
+                      <span style="width:100%;height:100%;border-radius:50%;background:#223C64;display:grid;place-items:center;color:#fff;font-size:12px;font-weight:800">KB</span></span>
+                    <span style="flex:1;min-width:0"><b style="display:block;font-size:13px;font-weight:600;color:#223C64">Keila Beltrán · Correo</b><em style="font-style:normal;font-size:11.5px;color:#5A7091">Adjunto el consentimiento firmado.</em></span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2F6DA8" stroke-width="2.6"><path d="M5 13l4.5 4.5L19 7"></path></svg>
+                  </div>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ isPanel }}" hint-placeholder-val="{{ false }}">
+                <div style="margin-bottom:18px">
+                  <span style="display:block;font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;font-weight:800;color:#8A6A10;margin-bottom:6px">Desde el 1 de agosto</span>
+                  <h2 style="font-family:'Playfair Display',Georgia,serif;font-size:30px;font-weight:700;color:#223C64;line-height:1">Panel</h2>
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:14px">
+                  <div style="position:relative;overflow:hidden;background:#fff;border:1px solid #EBDCBB;border-radius:16px;padding:14px 15px">
+                    <span style="position:absolute;left:0;top:0;bottom:0;width:4px;background:#E52E7B"></span>
+                    <span style="display:block;font-size:11px;color:#5A7091;margin-bottom:4px">Ingreso</span>
+                    <b style="font-family:'Playfair Display',Georgia,serif;font-size:27px;font-weight:700;color:#C81A66">$18,420</b>
+                    <em style="display:block;font-style:normal;font-size:10.5px;color:#8A6A10;margin-top:3px">86 tratamientos</em>
+                  </div>
+                  <div style="position:relative;overflow:hidden;background:#fff;border:1px solid #EBDCBB;border-radius:16px;padding:14px 15px">
+                    <span style="position:absolute;left:0;top:0;bottom:0;width:4px;background:#2F6DA8"></span>
+                    <span style="display:block;font-size:11px;color:#5A7091;margin-bottom:4px">Ticket promedio</span>
+                    <b style="font-family:'Playfair Display',Georgia,serif;font-size:27px;font-weight:700;color:#2F6DA8">$214</b>
+                    <em style="display:block;font-style:normal;font-size:10.5px;color:#8A6A10;margin-top:3px">por visita</em>
+                  </div>
+                  <div style="position:relative;overflow:hidden;background:#fff;border:1px solid #EBDCBB;border-radius:16px;padding:14px 15px">
+                    <span style="position:absolute;left:0;top:0;bottom:0;width:4px;background:#C69A44"></span>
+                    <span style="display:block;font-size:11px;color:#5A7091;margin-bottom:4px">Pacientes vistos</span>
+                    <b style="font-family:'Playfair Display',Georgia,serif;font-size:27px;font-weight:700;color:#8A6A10">62</b>
+                    <em style="display:block;font-style:normal;font-size:10.5px;color:#8A6A10;margin-top:3px">únicos este mes</em>
+                  </div>
+                  <div style="position:relative;overflow:hidden;background:#fff;border:1px solid #EBDCBB;border-radius:16px;padding:14px 15px">
+                    <span style="position:absolute;left:0;top:0;bottom:0;width:4px;background:#8CBCE4"></span>
+                    <span style="display:block;font-size:11px;color:#5A7091;margin-bottom:4px">Más vendido</span>
+                    <b style="font-family:'Playfair Display',Georgia,serif;font-size:27px;font-weight:700;color:#223C64">Peso</b>
+                    <em style="display:block;font-style:normal;font-size:10.5px;color:#8A6A10;margin-top:3px">$5,850</em>
+                  </div>
+                </div>
+                <div style="background:#fff;border:1px solid #EBDCBB;border-radius:18px;padding:18px">
+                  <span style="display:flex;align-items:center;gap:8px;margin-bottom:16px">
+                    <b style="font-family:'Playfair Display',Georgia,serif;font-size:17px;font-weight:700;color:#223C64">Ingreso por semana</b>
+                    <i style="display:block;height:1.5px;flex:1;background:linear-gradient(90deg,#C69A44,rgba(198,154,68,0))"></i>
+                  </span>
+                  <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:14px;align-items:end;height:170px">
+                    <span style="display:flex;flex-direction:column;justify-content:flex-end;height:100%;gap:7px"><i style="display:block;height:46%;border-radius:8px 8px 3px 3px;background:linear-gradient(180deg,#F28FB5,#E52E7B)"></i><em style="font-style:normal;text-align:center;font-size:10.5px;font-weight:700;color:#8A6A10">S 27</em></span>
+                    <span style="display:flex;flex-direction:column;justify-content:flex-end;height:100%;gap:7px"><i style="display:block;height:58%;border-radius:8px 8px 3px 3px;background:linear-gradient(180deg,#F28FB5,#E52E7B)"></i><em style="font-style:normal;text-align:center;font-size:10.5px;font-weight:700;color:#8A6A10">S 28</em></span>
+                    <span style="display:flex;flex-direction:column;justify-content:flex-end;height:100%;gap:7px"><i style="display:block;height:52%;border-radius:8px 8px 3px 3px;background:linear-gradient(180deg,#AFD0EC,#8CBCE4)"></i><em style="font-style:normal;text-align:center;font-size:10.5px;font-weight:700;color:#8A6A10">S 29</em></span>
+                    <span style="display:flex;flex-direction:column;justify-content:flex-end;height:100%;gap:7px"><i style="display:block;height:71%;border-radius:8px 8px 3px 3px;background:linear-gradient(180deg,#AFD0EC,#8CBCE4)"></i><em style="font-style:normal;text-align:center;font-size:10.5px;font-weight:700;color:#8A6A10">S 30</em></span>
+                    <span style="display:flex;flex-direction:column;justify-content:flex-end;height:100%;gap:7px"><i style="display:block;height:84%;border-radius:8px 8px 3px 3px;background:linear-gradient(180deg,#F28FB5,#E52E7B)"></i><em style="font-style:normal;text-align:center;font-size:10.5px;font-weight:700;color:#8A6A10">S 31</em></span>
+                    <span style="display:flex;flex-direction:column;justify-content:flex-end;height:100%;gap:7px"><i style="display:block;height:96%;border-radius:8px 8px 3px 3px;background:linear-gradient(180deg,#F3E6C4,#C69A44)"></i><em style="font-style:normal;text-align:center;font-size:10.5px;font-weight:700;color:#8A6A10">S 32</em></span>
+                  </div>
+                </div>
+              </sc-if>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <sc-if value="{{ phoneOn }}" hint-placeholder-val="{{ true }}">
+        <div style="min-width:0;display:flex;flex-direction:column;gap:11px;align-items:flex-start">
+          <span style="font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:#8A6A10">App del paciente · celular</span>
+
+          <div style="width:100%;max-width:392px;padding:3px;border-radius:42px;background:linear-gradient(140deg,#EBD6A8,#C69A44 45%,#F3E6C4 66%,#B98C33);box-shadow:0 26px 60px -38px rgba(34,60,100,.8)">
+            <div style="position:relative;overflow:hidden;border-radius:39px;background:radial-gradient(120% 80% at 20% 0%,#FFFFFF,#FAF6F3 60%,#F2E9E3);padding-bottom:18px">
+              <span aria-hidden="true" style="position:absolute;top:-60px;left:-70px;width:74%;height:180px;border-radius:0 0 100% 0;background:linear-gradient(110deg,#EBD6A8,#C69A44 50%,#F3E6C4)">
+                <i style="position:absolute;top:0;left:0;right:4px;bottom:4px;border-radius:0 0 100% 0;background:linear-gradient(150deg,#E52E7B,#F28FB5 60%,#F9C8DC);display:block"></i>
+              </span>
+              <span aria-hidden="true" style="position:absolute;bottom:0;left:-12%;right:-12%;height:92px;border-radius:64% 20% 0 0 / 100% 46% 0 0;background:linear-gradient(110deg,#EBD6A8,#C69A44 50%,#F3E6C4)">
+                <i style="position:absolute;top:4px;left:0;right:0;bottom:0;border-radius:64% 20% 0 0 / 100% 46% 0 0;background:linear-gradient(96deg,#E52E7B,#F28FB5 40%,#8CBCE4);display:block"></i>
+              </span>
+
+              <div style="position:relative;z-index:1;padding:22px 16px 0;display:flex;align-items:center;justify-content:space-between;gap:10px">
+                <span style="display:flex;align-items:center;gap:8px">
+                  <img src="./assets/aa-logo.png" alt="A&amp;A Healthcare Services LLC" style="height:44px;width:44px;object-fit:contain;border-radius:12px;background:#fff;padding:3px;display:block;box-shadow:0 2px 8px -3px rgba(34,60,100,.35)">
+                  <span style="display:block">
+                    <b style="display:block;font-size:11px;letter-spacing:.14em;font-weight:800;color:#fff">WELLNESS</b>
+                    <em style="display:block;font-style:normal;font-size:9.5px;color:rgba(255,255,255,.85)">Loíza, PR</em>
+                  </span>
+                </span>
+                <span style="width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.9);display:grid;place-items:center;font-size:11px;font-weight:800;color:#C81A66">DP</span>
+              </div>
+
+              <div style="position:relative;z-index:1;margin:20px 14px 0;background:#FFFFFF;border:1px solid #EAD9B5;border-radius:26px;padding:16px;box-shadow:0 8px 26px -14px rgba(34,60,100,.3)">
+                <div style="display:flex;gap:4px;background:#FBF6EF;border:1px solid #F0E4CE;border-radius:999px;padding:4px;margin-bottom:15px">
+                  <button onClick="{{ tabHome }}" style="flex:1;border:none;cursor:pointer;font:inherit;padding:9px 4px;border-radius:999px;font-size:11px;font-weight:700;background:{{ tHome.bg }};color:{{ tHome.ink }}">Inicio</button>
+                  <button onClick="{{ tabProg }}" style="flex:1;border:none;cursor:pointer;font:inherit;padding:9px 4px;border-radius:999px;font-size:11px;font-weight:700;background:{{ tProg.bg }};color:{{ tProg.ink }}">Progreso</button>
+                  <button onClick="{{ tabVisits }}" style="flex:1;border:none;cursor:pointer;font:inherit;padding:9px 4px;border-radius:999px;font-size:11px;font-weight:700;background:{{ tVisits.bg }};color:{{ tVisits.ink }}">Visitas</button>
+                  <button onClick="{{ tabDocs }}" style="flex:1;border:none;cursor:pointer;font:inherit;padding:9px 4px;border-radius:999px;font-size:11px;font-weight:700;background:{{ tDocs.bg }};color:{{ tDocs.ink }}">Docs</button>
+                </div>
+
+                <sc-if value="{{ pHome }}" hint-placeholder-val="{{ true }}">
+                  <span style="display:block;font-family:'Dancing Script',cursive;font-weight:700;font-size:34px;line-height:1;color:#E52E7B">Siéntete</span>
+                  <h2 style="font-family:'Playfair Display',Georgia,serif;font-size:28px;line-height:1;font-weight:700;margin-top:5px;color:#8CBCE4">MEJOR <span style="color:#E52E7B">HOY</span></h2>
+                  <span style="display:flex;align-items:center;gap:7px;margin:13px 0 12px">
+                    <i style="display:block;height:1.5px;flex:1;background:linear-gradient(90deg,rgba(198,154,68,0),#C69A44 40%,rgba(198,154,68,0))"></i>
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="#C69A44"><path d="M12 21s-8-5.4-8-11a4.8 4.8 0 018-3.2A4.8 4.8 0 0120 10c0 5.6-8 11-8 11z"></path></svg>
+                    <i style="display:block;height:1.5px;flex:1;background:linear-gradient(90deg,rgba(198,154,68,0),#C69A44 60%,rgba(198,154,68,0))"></i>
+                  </span>
+                  <div style="display:flex;flex-direction:column;gap:9px">
+                    <div style="border:1px solid #EDDFC1;border-radius:16px;background:#FFFDFA;padding:13px 14px">
+                      <span style="display:block;font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;font-weight:800;color:#8A6A10;margin-bottom:5px">Próxima visita</span>
+                      <b style="display:block;font-family:'Playfair Display',Georgia,serif;font-size:20px;font-weight:700;color:#223C64">Viernes, 10:30 AM</b>
+                      <em style="display:block;font-style:normal;font-size:11.5px;color:#5A7091;margin-top:3px">Seguimiento de control de peso · 20 min</em>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:12px;border:1px solid #EDDFC1;border-radius:16px;background:#FFFDFA;padding:13px 14px">
+                      <span style="flex:none;width:52px;height:52px;border-radius:50%;padding:2px;background:linear-gradient(120deg,#F3E6C4,#C69A44);display:grid;place-items:center">
+                        <span style="width:100%;height:100%;border-radius:50%;background:#8CBCE4;display:grid;place-items:center;color:#fff;font-size:11px;font-weight:800;letter-spacing:.02em">−8.6</span>
+                      </span>
+                      <span style="min-width:0">
+                        <span style="display:block;font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;font-weight:800;color:#8A6A10;margin-bottom:3px">Tu progreso</span>
+                        <b style="display:block;font-family:'Playfair Display',Georgia,serif;font-size:20px;font-weight:700;color:#C81A66">179.8 lb</b>
+                        <em style="display:block;font-style:normal;font-size:11px;color:#5A7091">−8.6 lb desde el inicio · meta 165 lb</em>
+                      </span>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:11px;border:1px solid #F6D2E3;border-radius:16px;background:#FFF9FC;padding:12px 14px">
+                      <span style="flex:none;width:26px;height:26px;border-radius:50%;background:#E52E7B;display:grid;place-items:center;color:#fff;font-size:13px;font-weight:800">✓</span>
+                      <span style="min-width:0"><b style="display:block;font-size:12.5px;font-weight:700;color:#223C64">Vas muy bien</b><em style="font-style:normal;font-size:11px;color:#5A7091;line-height:1.5">Cuatro semanas de progreso constante. Sigue a tu ritmo.</em></span>
+                    </div>
+                  </div>
+                  <span style="display:block;font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;font-weight:800;color:#8A6A10;margin:16px 0 8px">Servicios</span>
+                  <div style="display:flex;flex-direction:column;gap:8px">
+                    <div style="display:flex;align-items:center;gap:11px;border:1px solid #EDDFC1;border-radius:14px;padding:11px 12px;background:#FFFDFA">
+                      <span style="width:5px;align-self:stretch;border-radius:3px;background:#E52E7B;flex:none"></span>
+                      <span style="flex:1;min-width:0"><b style="display:block;font-size:13px;font-weight:600;color:#223C64">Programa de Control de Peso</b><em style="display:block;font-style:normal;font-size:11px;color:#5A7091;margin-top:2px">seguimiento semanal</em></span>
+                      <b style="font-size:15px;font-weight:700;color:#2F6DA8">$325</b>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:11px;border:1px solid #EDDFC1;border-radius:14px;padding:11px 12px;background:#FFFDFA">
+                      <span style="width:5px;align-self:stretch;border-radius:3px;background:#8CBCE4;flex:none"></span>
+                      <span style="flex:1;min-width:0"><b style="display:block;font-size:13px;font-weight:600;color:#223C64">Hidratación Revive</b><em style="display:block;font-style:normal;font-size:11px;color:#5A7091;margin-top:2px">1000 mL IV · 45 min</em></span>
+                      <b style="font-size:15px;font-weight:700;color:#2F6DA8">$165</b>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:11px;border:1px solid #EDDFC1;border-radius:14px;padding:11px 12px;background:#FFFDFA">
+                      <span style="width:5px;align-self:stretch;border-radius:3px;background:#C69A44;flex:none"></span>
+                      <span style="flex:1;min-width:0"><b style="display:block;font-size:13px;font-weight:600;color:#223C64">Refuerzo de Energía B12</b><em style="display:block;font-style:normal;font-size:11px;color:#5A7091;margin-top:2px">1 mL IM · 15 min</em></span>
+                      <b style="font-size:15px;font-weight:700;color:#2F6DA8">$45</b>
+                    </div>
+                  </div>
+                </sc-if>
+
+                <sc-if value="{{ pProg }}" hint-placeholder-val="{{ false }}">
+                  <span style="display:block;font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;font-weight:800;color:#8A6A10">Camino hacia la meta</span>
+                  <div style="display:grid;place-items:center;margin:16px 0 6px">
+                    <span style="position:relative;width:186px;height:186px;border-radius:50%;background:conic-gradient(#E52E7B 0 37%,#8CBCE4 37% 52%,#F0E4CE 52% 100%);display:grid;place-items:center">
+                      <span style="width:146px;height:146px;border-radius:50%;background:#fff;border:1px solid #EAD9B5;display:grid;place-items:center;text-align:center">
+                        <span>
+                          <b style="display:block;font-family:'Playfair Display',Georgia,serif;font-size:31px;font-weight:700;color:#C81A66;line-height:1">37%</b>
+                          <em style="display:block;font-style:normal;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:800;color:#8A6A10;margin-top:5px">de la meta</em>
+                        </span>
+                      </span>
+                    </span>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:11px;border:1px solid #F6D2E3;border-radius:14px;background:#FFF9FC;padding:11px 13px;margin:10px 0 14px">
+                    <span style="flex:none;width:24px;height:24px;border-radius:50%;background:#E52E7B;display:grid;place-items:center;color:#fff;font-size:12px;font-weight:800">✓</span>
+                    <b style="font-size:12px;font-weight:700;color:#223C64">Progreso constante. Sigue así.</b>
+                  </div>
+                  <div style="border:1px solid #EDDFC1;border-radius:16px;background:#FFFDFA;padding:14px">
+                    <span style="display:block;font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;font-weight:800;color:#8A6A10;margin-bottom:4px">Peso actual</span>
+                    <b style="display:block;font-family:'Playfair Display',Georgia,serif;font-size:30px;font-weight:700;color:#8CBCE4;line-height:1">179.8 lb</b>
+                    <em style="display:block;font-style:normal;font-size:11.5px;color:#5A7091;margin-top:4px">Comenzaste en 188.4 lb · meta 165 lb</em>
+                    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:13px">
+                      <span style="text-align:center;border:1px solid #EDDFC1;border-radius:12px;background:#fff;padding:9px 4px"><em style="display:block;font-style:normal;font-size:10px;color:#5A7091">Cambio</em><b style="display:block;font-size:14px;font-weight:700;color:#C81A66;margin-top:2px">−8.6 lb</b></span>
+                      <span style="text-align:center;border:1px solid #EDDFC1;border-radius:12px;background:#fff;padding:9px 4px"><em style="display:block;font-style:normal;font-size:10px;color:#5A7091">Racha</em><b style="display:block;font-size:14px;font-weight:700;color:#2F6DA8;margin-top:2px">4 sem</b></span>
+                      <span style="text-align:center;border:1px solid #EDDFC1;border-radius:12px;background:#fff;padding:9px 4px"><em style="display:block;font-style:normal;font-size:10px;color:#5A7091">Visitas</em><b style="display:block;font-size:14px;font-weight:700;color:#8A6A10;margin-top:2px">5</b></span>
+                      <span style="text-align:center;border:1px solid #EDDFC1;border-radius:12px;background:#fff;padding:9px 4px"><em style="display:block;font-style:normal;font-size:10px;color:#5A7091">Hidratación</em><b style="display:block;font-size:14px;font-weight:700;color:#2F6DA8;margin-top:2px">82%</b></span>
+                      <span style="text-align:center;border:1px solid #EDDFC1;border-radius:12px;background:#fff;padding:9px 4px"><em style="display:block;font-style:normal;font-size:10px;color:#5A7091">Sueño</em><b style="display:block;font-size:14px;font-weight:700;color:#2F6DA8;margin-top:2px">7.2 h</b></span>
+                      <span style="text-align:center;border:1px solid #EDDFC1;border-radius:12px;background:#fff;padding:9px 4px"><em style="display:block;font-style:normal;font-size:10px;color:#5A7091">Actitud</em><b style="display:block;font-size:14px;font-weight:700;color:#C81A66;margin-top:2px">Positiva</b></span>
+                    </div>
+                  </div>
+                </sc-if>
+
+                <sc-if value="{{ pVisits }}" hint-placeholder-val="{{ false }}">
+                  <span style="display:block;font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;font-weight:800;color:#8A6A10">Historial</span>
+                  <h2 style="font-family:'Playfair Display',Georgia,serif;font-size:24px;font-weight:700;color:#223C64;margin:4px 0 14px">Tus visitas</h2>
+                  <div style="display:flex;flex-direction:column;gap:9px">
+                    <div style="display:flex;gap:12px;border:1px solid #EDDFC1;border-radius:16px;background:#FFFDFA;padding:13px 14px">
+                      <span style="flex:none;text-align:center;width:38px"><b style="display:block;font-family:'Playfair Display',Georgia,serif;font-size:19px;font-weight:700;color:#E52E7B;line-height:1">14</b><em style="display:block;font-style:normal;font-size:9.5px;letter-spacing:.1em;font-weight:800;color:#8A6A10;margin-top:2px">AGO</em></span>
+                      <span style="width:1px;background:#F0E4CE"></span>
+                      <span style="flex:1;min-width:0"><b style="display:block;font-size:12.5px;font-weight:700;color:#223C64">Seguimiento semana 4</b><em style="display:block;font-style:normal;font-size:11px;color:#5A7091;line-height:1.5;margin-top:2px">Progreso constante. Se revisaron próximos pasos.</em></span>
+                      <b style="flex:none;align-self:center;font-size:12px;font-weight:700;color:#1F4E7C;background:#DCEAF7;border-radius:8px;padding:4px 9px">179.8</b>
+                    </div>
+                    <div style="display:flex;gap:12px;border:1px solid #EDDFC1;border-radius:16px;background:#FFFDFA;padding:13px 14px">
+                      <span style="flex:none;text-align:center;width:38px"><b style="display:block;font-family:'Playfair Display',Georgia,serif;font-size:19px;font-weight:700;color:#8CBCE4;line-height:1">07</b><em style="display:block;font-style:normal;font-size:9.5px;letter-spacing:.1em;font-weight:800;color:#8A6A10;margin-top:2px">AGO</em></span>
+                      <span style="width:1px;background:#F0E4CE"></span>
+                      <span style="flex:1;min-width:0"><b style="display:block;font-size:12.5px;font-weight:700;color:#223C64">Seguimiento semana 3</b><em style="display:block;font-style:normal;font-size:11px;color:#5A7091;line-height:1.5;margin-top:2px">Buena continuidad del plan.</em></span>
+                      <b style="flex:none;align-self:center;font-size:12px;font-weight:700;color:#1F4E7C;background:#DCEAF7;border-radius:8px;padding:4px 9px">181.7</b>
+                    </div>
+                    <div style="display:flex;gap:12px;border:1px solid #EDDFC1;border-radius:16px;background:#FFFDFA;padding:13px 14px">
+                      <span style="flex:none;text-align:center;width:38px"><b style="display:block;font-family:'Playfair Display',Georgia,serif;font-size:19px;font-weight:700;color:#8CBCE4;line-height:1">31</b><em style="display:block;font-style:normal;font-size:9.5px;letter-spacing:.1em;font-weight:800;color:#8A6A10;margin-top:2px">JUL</em></span>
+                      <span style="width:1px;background:#F0E4CE"></span>
+                      <span style="flex:1;min-width:0"><b style="display:block;font-size:12.5px;font-weight:700;color:#223C64">Seguimiento semana 2</b><em style="display:block;font-style:normal;font-size:11px;color:#5A7091;line-height:1.5;margin-top:2px">Se revisó hidratación y alimentación.</em></span>
+                      <b style="flex:none;align-self:center;font-size:12px;font-weight:700;color:#1F4E7C;background:#DCEAF7;border-radius:8px;padding:4px 9px">183.6</b>
+                    </div>
+                    <div style="display:flex;gap:12px;border:1px solid #EDDFC1;border-radius:16px;background:#FFFDFA;padding:13px 14px">
+                      <span style="flex:none;text-align:center;width:38px"><b style="display:block;font-family:'Playfair Display',Georgia,serif;font-size:19px;font-weight:700;color:#8CBCE4;line-height:1">24</b><em style="display:block;font-style:normal;font-size:9.5px;letter-spacing:.1em;font-weight:800;color:#8A6A10;margin-top:2px">JUL</em></span>
+                      <span style="width:1px;background:#F0E4CE"></span>
+                      <span style="flex:1;min-width:0"><b style="display:block;font-size:12.5px;font-weight:700;color:#223C64">Seguimiento semana 1</b><em style="display:block;font-style:normal;font-size:11px;color:#5A7091;line-height:1.5;margin-top:2px">Adaptación inicial adecuada.</em></span>
+                      <b style="flex:none;align-self:center;font-size:12px;font-weight:700;color:#1F4E7C;background:#DCEAF7;border-radius:8px;padding:4px 9px">185.9</b>
+                    </div>
+                  </div>
+                </sc-if>
+
+                <sc-if value="{{ pDocs }}" hint-placeholder-val="{{ false }}">
+                  <span style="display:block;font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;font-weight:800;color:#8A6A10">Documentos</span>
+                  <h2 style="font-family:'Playfair Display',Georgia,serif;font-size:24px;font-weight:700;color:#223C64;margin:4px 0 14px">Formularios y archivos</h2>
+                  <div style="display:flex;flex-direction:column;gap:9px">
+                    <div style="display:flex;align-items:center;gap:12px;border:1px solid #EDDFC1;border-radius:16px;background:#FFFDFA;padding:12px 13px">
+                      <span style="flex:none;width:38px;height:38px;border-radius:11px;background:#DCEAF7;display:grid;place-items:center">
+                        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#2F6DA8" stroke-width="1.9"><path d="M7 3h7l4 4v14H7z"></path><path d="M10 12h6M10 16h6"></path></svg></span>
+                      <span style="flex:1;min-width:0"><b style="display:block;font-size:12.5px;font-weight:700;color:#223C64">Formulario de admisión</b><em style="font-style:normal;font-size:11px;color:#5A7091">Documento del paciente</em></span>
+                      <span style="flex:none;font-size:9.5px;font-weight:800;letter-spacing:.06em;color:#1F4E7C;background:#DCEAF7;border-radius:999px;padding:4px 9px">COMPLETADO</span>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:12px;border:1px solid #F6D2E3;border-radius:16px;background:#FFF9FC;padding:12px 13px">
+                      <span style="flex:none;width:38px;height:38px;border-radius:11px;background:#FDEAF3;display:grid;place-items:center">
+                        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#C81A66" stroke-width="1.9"><path d="M7 3h7l4 4v14H7z"></path><path d="M10 12h6M10 16h4"></path></svg></span>
+                      <span style="flex:1;min-width:0"><b style="display:block;font-size:12.5px;font-weight:700;color:#223C64">Consentimiento de control de peso</b><em style="font-style:normal;font-size:11px;color:#5A7091">Documento del paciente</em></span>
+                      <span style="flex:none;font-size:9.5px;font-weight:800;letter-spacing:.06em;color:#fff;background:#E52E7B;border-radius:999px;padding:4px 9px">POR FIRMAR</span>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:12px;border:1px solid #EDDFC1;border-radius:16px;background:#FFFDFA;padding:12px 13px">
+                      <span style="flex:none;width:38px;height:38px;border-radius:11px;background:#DCEAF7;display:grid;place-items:center">
+                        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#2F6DA8" stroke-width="1.9"><path d="M7 3h7l4 4v14H7z"></path><path d="M10 12h6M10 16h6"></path></svg></span>
+                      <span style="flex:1;min-width:0"><b style="display:block;font-size:12.5px;font-weight:700;color:#223C64">Historial médico</b><em style="font-style:normal;font-size:11px;color:#5A7091">Documento del paciente</em></span>
+                      <span style="flex:none;font-size:9.5px;font-weight:800;letter-spacing:.06em;color:#1F4E7C;background:#DCEAF7;border-radius:999px;padding:4px 9px">COMPLETADO</span>
+                    </div>
+                  </div>
+                </sc-if>
+
+                <div style="margin-top:16px;padding:2px;border-radius:999px;background:linear-gradient(100deg,#EBD6A8,#C69A44 45%,#F3E6C4 65%,#B98C33)">
+                  <button style="width:100%;border:none;cursor:pointer;font:inherit;display:flex;align-items:center;justify-content:center;gap:8px;padding:13px;border-radius:999px;background:linear-gradient(100deg,#E52E7B,#D62170);color:#fff;font-size:13.5px;font-weight:700;letter-spacing:.03em" style-hover="filter:brightness(1.07)">
+                    Reservar cita
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M5 12h13M13 6l6 6-6 6"></path></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="width:100%;max-width:392px;background:#fff;border:1px solid #EBDCBB;border-radius:18px;padding:16px">
+            <h3 style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#8A6A10;font-weight:800;margin-bottom:10px">Cómo se traduce a la app</h3>
+            <ul style="list-style:none;display:flex;flex-direction:column;gap:9px">
+              <li style="display:flex;gap:9px;font-size:12.5px;color:#3F5876;line-height:1.5"><span style="width:16px;height:16px;border-radius:5px;flex:none;background:#E52E7B;margin-top:2px"></span>Los arcos viven solo en cabeceras y pie; el contenido siempre en tarjeta blanca.</li>
+              <li style="display:flex;gap:9px;font-size:12.5px;color:#3F5876;line-height:1.5"><span style="width:16px;height:16px;border-radius:5px;flex:none;background:#C69A44;margin-top:2px"></span>El oro se queda en filo de 1–2 px y en el anillo de los medallones.</li>
+              <li style="display:flex;gap:9px;font-size:12.5px;color:#3F5876;line-height:1.5"><span style="width:16px;height:16px;border-radius:5px;flex:none;background:#8CBCE4;margin-top:2px"></span>Playfair para titulares y cifras; Montserrat para todo lo funcional.</li>
+              <li style="display:flex;gap:9px;font-size:12.5px;color:#3F5876;line-height:1.5"><span style="width:16px;height:16px;border-radius:5px;flex:none;background:#223C64;margin-top:2px"></span>Magenta solo en lo que se toca o se gana; azul bebé en cifras grandes.</li>
+            </ul>
+          </div>
+        </div>
+      </sc-if>
+    </div>
+  </div>
+</section>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;showArcs&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Ornamento&quot;},&quot;showPhone&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Pantallas&quot;}}">
+class Component extends DCLogic {
+  state = { view: "hoy", ptab: "home" };
+
+  nav(k) {
+    const on = this.state.view === k;
+    return {
+      bg: on ? "linear-gradient(100deg,#FFF6FA,#F6FAFF)" : "transparent",
+      ink: on ? "#C81A66" : "#4B6484",
+      edge: on ? "#EAD9B5" : "transparent",
+      wt: on ? "700" : "500",
+    };
+  }
+  tab(k) {
+    const on = this.state.ptab === k;
+    return { bg: on ? "#E52E7B" : "transparent", ink: on ? "#FFFFFF" : "#5A7091" };
+  }
+  go(v) { return () => this.setState({ view: v }); }
+  pt(v) { return () => this.setState({ ptab: v }); }
+
+  renderVals() {
+    const v = this.state.view, p = this.state.ptab;
+    return {
+      arcsOn: this.props.showArcs ?? true,
+      phoneOn: this.props.showPhone ?? true,
+      navHoy: this.nav("hoy"), navAgenda: this.nav("agenda"), navPts: this.nav("pts"),
+      navSvc: this.nav("svc"), navInbox: this.nav("inbox"), navPanel: this.nav("panel"),
+      goHoy: this.go("hoy"), goAgenda: this.go("agenda"), goPts: this.go("pts"),
+      goSvc: this.go("svc"), goInbox: this.go("inbox"), goPanel: this.go("panel"),
+      isHoy: v === "hoy", isAgenda: v === "agenda", isPts: v === "pts",
+      isSvc: v === "svc", isInbox: v === "inbox", isPanel: v === "panel",
+      tHome: this.tab("home"), tProg: this.tab("prog"), tVisits: this.tab("visits"), tDocs: this.tab("docs"),
+      tabHome: this.pt("home"), tabProg: this.pt("prog"), tabVisits: this.pt("visits"), tabDocs: this.pt("docs"),
+      pHome: p === "home", pProg: p === "prog", pVisits: p === "visits", pDocs: p === "docs",
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700;800&family=Montserrat:wght@400;500;600;700;800&family=Dancing+Script:wght@600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#F2EEEA;-webkit-font-smoothing:antialiased}
+  a{color:#C81A66;text-decoration:none}
+  a:hover{color:#E52E7B;text-decoration:underline}
+  @keyframes sheen{0%{transform:translateX(-18%)}100%{transform:translateX(18%)}}
+</style>
+</helmet>
+
+<section style="font-family:'Montserrat',system-ui,sans-serif;color:#223C64;padding:36px 26px 80px;display:flex;flex-direction:column;align-items:center;gap:26px">
+
+  <div style="width:100%;max-width:1220px;display:flex;align-items:flex-start;gap:22px;flex-wrap:wrap">
+    <img src="assets/aa-logo.png" alt="AA Wellness · A&amp;A Healthcare Services LLC" style="height:96px;width:auto;flex:none">
+    <div style="min-width:0;flex:1">
+    <span style="display:flex;align-items:center;gap:10px;font-size:10.5px;letter-spacing:.15em;text-transform:uppercase;font-weight:700;color:#8A6A10;margin-bottom:8px">
+      AA Wellness
+      <i style="display:block;width:40px;height:1px;background:linear-gradient(90deg,#C69A44,rgba(198,154,68,0))"></i>
+      Cuatro direcciones
+    </span>
+    <h1 style="font-family:'Playfair Display',Georgia,serif;font-size:42px;font-weight:700;line-height:1.02;color:#223C64">La misma app, cuatro voces</h1>
+    <p style="font-size:14px;color:#4B6484;margin-top:10px;max-width:760px;line-height:1.65;text-wrap:pretty">Cada bloque muestra las mismas dos pantallas — la app del paciente y la promoción de referidos — cambiando solo el estilo. Los colores base salen de los afiches de clientes nuevos y referidos: magenta <b>#E52E7B</b>, azul bebé <b>#8CBCE4</b>, azul marino <b>#223C64</b>, dorado <b>#C69A44</b>. Referencia por número: <a href="#3a">3a</a>, <a href="#3b">3b</a>, <a href="#3c">3c</a>, <a href="#3d">3d</a>.</p>
+    </div>
+  </div>
+
+  <!-- ============ 3a · NÁCAR ============ -->
+  <div id="3a" style="width:100%;max-width:1220px;display:flex;flex-direction:column;gap:12px">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap">
+      <div>
+        <span style="display:inline-flex;align-items:center;gap:9px">
+          <b style="display:inline-flex;align-items:center;justify-content:center;min-width:30px;height:30px;padding:0 10px;border-radius:999px;background:#223C64;color:#fff;font-size:11.5px;font-weight:700">3a</b>
+          <b style="font-family:'Playfair Display',Georgia,serif;font-size:26px;font-weight:700;color:#8CBCE4">NÁCAR</b>
+        </span>
+        <p style="font-size:13px;color:#4B6484;margin-top:6px;max-width:640px;line-height:1.6">El afiche hecho app: mármol con luz, arcos rosa→azul con filo dorado, medallones y píldoras de monto.</p>
+      </div>
+      <span style="font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:#8A6A10">Playfair · Dancing Script · Montserrat</span>
+    </div>
+
+    <div style="position:relative;overflow:hidden;border-radius:26px;background:radial-gradient(120% 90% at 18% 0%,#FFFFFF 0%,#FBF7F4 38%,#F3EAE4 100%);box-shadow:0 26px 60px -44px rgba(34,60,100,.55)">
+      <span aria-hidden="true" style="position:absolute;top:-118px;left:-140px;width:44%;height:320px;border-radius:0 0 100% 0;background:linear-gradient(100deg,#EBD6A8,#C69A44 40%,#F3E6C4 62%,#B98C33);pointer-events:none">
+        <i style="position:absolute;top:0;left:0;right:5px;bottom:5px;border-radius:0 0 100% 0;background:linear-gradient(150deg,#E52E7B,#F072A2 55%,#F9C8DC);display:block"></i>
+      </span>
+      <span aria-hidden="true" style="position:absolute;bottom:0;left:-9%;right:-9%;height:170px;border-radius:64% 20% 0 0 / 100% 46% 0 0;background:linear-gradient(100deg,#EBD6A8,#C69A44 40%,#F3E6C4 62%,#B98C33);pointer-events:none">
+        <i style="position:absolute;top:5px;left:0;right:0;bottom:0;border-radius:64% 20% 0 0 / 100% 46% 0 0;background:linear-gradient(96deg,#E52E7B 0%,#F28FB5 34%,#DCC8DE 58%,#8CBCE4 100%);display:block"></i>
+      </span>
+      <span aria-hidden="true" style="position:absolute;top:0;left:32%;width:24%;height:100%;background:linear-gradient(100deg,rgba(255,255,255,0),rgba(255,255,255,.8),rgba(255,255,255,0));transform:skewX(-14deg);pointer-events:none;animation:sheen 9s ease-in-out infinite alternate"></span>
+
+      <div style="position:relative;z-index:1;display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:24px;align-items:start;padding:66px 28px 110px">
+
+        <div style="min-width:0;display:flex;flex-direction:column;gap:10px">
+          <span style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:#8A6A10">App del paciente</span>
+          <div style="padding:3px;border-radius:36px;background:linear-gradient(140deg,#EBD6A8,#C69A44 45%,#F3E6C4 66%,#B98C33);box-shadow:0 24px 54px -38px rgba(34,60,100,.8)">
+            <div style="position:relative;overflow:hidden;border-radius:33px;background:radial-gradient(120% 80% at 20% 0%,#FFFFFF,#FAF6F3 60%,#F2E9E3)">
+              <span aria-hidden="true" style="position:absolute;top:-64px;left:-72px;width:76%;height:190px;border-radius:0 0 100% 0;background:linear-gradient(110deg,#EBD6A8,#C69A44 50%,#F3E6C4)">
+                <i style="position:absolute;top:0;left:0;right:4px;bottom:4px;border-radius:0 0 100% 0;background:linear-gradient(150deg,#E52E7B,#F28FB5 60%,#F9C8DC);display:block"></i>
+              </span>
+              <span aria-hidden="true" style="position:absolute;bottom:0;left:-12%;right:-12%;height:98px;border-radius:64% 20% 0 0 / 100% 46% 0 0;background:linear-gradient(110deg,#EBD6A8,#C69A44 50%,#F3E6C4)">
+                <i style="position:absolute;top:4px;left:0;right:0;bottom:0;border-radius:64% 20% 0 0 / 100% 46% 0 0;background:linear-gradient(96deg,#E52E7B,#F28FB5 40%,#8CBCE4);display:block"></i>
+              </span>
+              <div style="position:relative;z-index:1;margin:34px 15px 44px;background:#fff;border:1px solid #EAD9B5;border-radius:22px;padding:17px;box-shadow:0 8px 24px -14px rgba(34,60,100,.3)">
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding-bottom:12px;border-bottom:1px solid #F0E4CE">
+                  <img src="assets/aa-mark.png" alt="AA Wellness" style="height:40px;width:auto;display:block">
+                  <span style="font-size:10px;font-weight:700;letter-spacing:.05em;color:#8A6A10">LOÍZA, PR</span>
+                </div>
+                <div style="padding:15px 0 2px">
+                  <span style="display:block;font-family:'Dancing Script',cursive;font-weight:700;font-size:36px;line-height:1;color:#E52E7B">Siéntete</span>
+                  <h2 style="font-family:'Playfair Display',serif;font-size:29px;line-height:1;font-weight:700;margin-top:5px;color:#8CBCE4">MEJOR <span style="color:#E52E7B">HOY</span></h2>
+                  <span style="display:flex;align-items:center;gap:7px;margin:13px 0 9px">
+                    <i style="display:block;height:1.5px;flex:1;background:linear-gradient(90deg,rgba(198,154,68,0),#C69A44 40%,rgba(198,154,68,0))"></i>
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="#C69A44"><path d="M12 21s-8-5.4-8-11a4.8 4.8 0 018-3.2A4.8 4.8 0 0120 10c0 5.6-8 11-8 11z"></path></svg>
+                    <i style="display:block;height:1.5px;flex:1;background:linear-gradient(90deg,rgba(198,154,68,0),#C69A44 60%,rgba(198,154,68,0))"></i>
+                  </span>
+                  <span style="display:block;font-size:10px;letter-spacing:.09em;text-transform:uppercase;font-weight:700;color:#5A7091">Astrid Rivera, RN · Fundadora</span>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:7px;margin-top:15px">
+                  <div style="display:flex;align-items:center;gap:11px;border:1px solid #EDDFC1;border-radius:13px;padding:10px 12px;background:#FFFDFA">
+                    <span style="width:5px;align-self:stretch;border-radius:3px;background:#8CBCE4;flex:none"></span>
+                    <span style="flex:1;min-width:0"><b style="display:block;font-size:13px;font-weight:600;color:#223C64">Hidratación Revive</b><em style="display:block;font-style:normal;font-size:11px;color:#5A7091;margin-top:2px">1000 mL IV · 45 min</em></span>
+                    <b style="font-size:15px;font-weight:700;color:#2F6DA8">$165</b>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:11px;border:1px solid #EDDFC1;border-radius:13px;padding:10px 12px;background:#FFFDFA">
+                    <span style="width:5px;align-self:stretch;border-radius:3px;background:#C69A44;flex:none"></span>
+                    <span style="flex:1;min-width:0"><b style="display:block;font-size:13px;font-weight:600;color:#223C64">Control de Peso</b><em style="display:block;font-style:normal;font-size:11px;color:#5A7091;margin-top:2px">plan mensual · consulta 30 min</em></span>
+                    <b style="font-size:15px;font-weight:700;color:#2F6DA8">$210</b>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:11px;border:1px solid #EDDFC1;border-radius:13px;padding:10px 12px;background:#FFFDFA">
+                    <span style="width:5px;align-self:stretch;border-radius:3px;background:#E52E7B;flex:none"></span>
+                    <span style="flex:1;min-width:0"><b style="display:block;font-size:13px;font-weight:600;color:#223C64">Refuerzo de Energía B12</b><em style="display:block;font-style:normal;font-size:11px;color:#5A7091;margin-top:2px">1 mL IM · 15 min</em></span>
+                    <b style="font-size:15px;font-weight:700;color:#2F6DA8">$45</b>
+                  </div>
+                </div>
+                <div style="margin-top:16px;padding:2px;border-radius:999px;background:linear-gradient(100deg,#EBD6A8,#C69A44 45%,#F3E6C4 65%,#B98C33)">
+                  <button style="width:100%;border:none;cursor:pointer;font:inherit;display:flex;align-items:center;justify-content:center;gap:8px;padding:13px;border-radius:999px;background:linear-gradient(100deg,#E52E7B,#D62170);color:#fff;font-size:13px;font-weight:700;letter-spacing:.03em" style-hover="filter:brightness(1.07)">
+                    Reservar cita
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M5 12h13M13 6l6 6-6 6"></path></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="min-width:0;display:flex;flex-direction:column;gap:10px">
+          <span style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:#8A6A10">Promoción · referidos</span>
+          <div style="position:relative;overflow:hidden;border:2px solid transparent;border-radius:20px;background:radial-gradient(130% 90% at 15% 0%,#FFFFFF,#FBF7F3 55%,#F4ECE5) padding-box,linear-gradient(120deg,#EBD6A8,#C69A44 42%,#F3E6C4 62%,#B98C33) border-box;box-shadow:0 18px 42px -34px rgba(34,60,100,.6)">
+            <div style="padding:22px 22px 18px">
+              <span style="display:flex;justify-content:flex-end;margin:-4px 0 -14px"><img src="assets/aa-mark.png" alt="AA Wellness" style="height:46px;width:auto;display:block"></span>
+              <span style="display:block;font-family:'Dancing Script',cursive;font-weight:700;font-size:34px;line-height:1;color:#E52E7B">Tu</span>
+              <h3 style="font-family:'Playfair Display',serif;font-size:36px;line-height:.98;font-weight:700;color:#8CBCE4;margin:2px 0 -6px">REFERIDO</h3>
+              <span style="display:block;font-family:'Dancing Script',cursive;font-weight:700;font-size:46px;line-height:1;color:#E52E7B;margin-left:28px">Vale</span>
+              <p style="font-size:12.5px;line-height:1.65;color:#3F5876;margin-top:14px;text-wrap:pretty">Cada vez que una persona referida por ti complete su primera compra, <b style="color:#C81A66">recibirás un crédito</b> para tu próximo servicio.</p>
+
+              <div style="display:flex;flex-direction:column;gap:10px;margin-top:14px">
+                <div style="display:flex;border:1px solid #E6D4AE;border-radius:15px;background:#fff;overflow:hidden">
+                  <span style="flex:none;width:74px;background:#8CBCE4;display:grid;place-items:center;padding:15px 0;clip-path:polygon(0 0,100% 0,100% 84%,50% 100%,0 84%)">
+                    <span style="width:48px;height:48px;border-radius:50%;padding:2px;background:linear-gradient(120deg,#F3E6C4,#C69A44);display:grid;place-items:center">
+                      <span style="width:100%;height:100%;border-radius:50%;background:#fff;display:grid;place-items:center">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2F6DA8" stroke-width="1.7"><path d="M5 8h14l-1.2 11.2a1.6 1.6 0 01-1.6 1.4H7.8a1.6 1.6 0 01-1.6-1.4L5 8z"></path><path d="M9 8V6.4a3 3 0 016 0V8"></path><path d="M12 17.4s-3-2-3-3.9a1.7 1.7 0 013-1 1.7 1.7 0 013 1c0 1.9-3 3.9-3 3.9z" fill="#E52E7B" stroke="none"></path></svg>
+                      </span>
+                    </span>
+                  </span>
+                  <span style="flex:1;min-width:0;padding:13px 14px;text-align:center">
+                    <span style="display:block;font-size:10px;font-weight:800;letter-spacing:.05em;color:#223C64;line-height:1.4">SI TU REFERIDO REALIZA UNA COMPRA DE</span>
+                    <span style="display:flex;flex-wrap:wrap;align-items:baseline;justify-content:center;gap:0 7px;margin:2px 0 6px">
+                      <b style="font-size:32px;font-weight:700;color:#8CBCE4">$250</b>
+                      <em style="font-style:normal;font-family:'Dancing Script',cursive;font-weight:700;font-size:18px;color:#223C64">o más,</em>
+                    </span>
+                    <i style="display:block;height:1px;background:linear-gradient(90deg,rgba(198,154,68,0),#D8BE85,rgba(198,154,68,0))"></i>
+                    <span style="display:block;font-size:10px;font-weight:800;letter-spacing:.12em;color:#2F6DA8;margin:7px 0 5px">RECIBIRÁS</span>
+                    <b style="display:inline-block;padding:5px 20px;border-radius:9px;background:#8CBCE4;color:#1F4E7C;font-size:20px;font-weight:700">$50</b>
+                    <span style="display:block;font-size:10px;font-weight:800;letter-spacing:.1em;color:#2F6DA8;margin-top:6px">EN CRÉDITO</span>
+                  </span>
+                </div>
+                <div style="display:flex;border:1px solid #E6D4AE;border-radius:15px;background:#fff;overflow:hidden">
+                  <span style="flex:none;width:74px;background:#E52E7B;display:grid;place-items:center;padding:15px 0;clip-path:polygon(0 0,100% 0,100% 84%,50% 100%,0 84%)">
+                    <span style="width:48px;height:48px;border-radius:50%;padding:2px;background:linear-gradient(120deg,#F3E6C4,#C69A44);display:grid;place-items:center">
+                      <span style="width:100%;height:100%;border-radius:50%;background:#fff;display:grid;place-items:center">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2F6DA8" stroke-width="1.7"><path d="M5 8h14l-1.2 11.2a1.6 1.6 0 01-1.6 1.4H7.8a1.6 1.6 0 01-1.6-1.4L5 8z"></path><path d="M9 8V6.4a3 3 0 016 0V8"></path><path d="M12 17.4s-3-2-3-3.9a1.7 1.7 0 013-1 1.7 1.7 0 013 1c0 1.9-3 3.9-3 3.9z" fill="#E52E7B" stroke="none"></path></svg>
+                      </span>
+                    </span>
+                  </span>
+                  <span style="flex:1;min-width:0;padding:13px 14px;text-align:center">
+                    <span style="display:block;font-size:10px;font-weight:800;letter-spacing:.05em;color:#223C64;line-height:1.4">SI TU REFERIDO REALIZA UNA COMPRA MENOR DE</span>
+                    <b style="display:block;font-size:32px;font-weight:700;color:#E52E7B;margin:2px 0 6px">$250,</b>
+                    <i style="display:block;height:1px;background:linear-gradient(90deg,rgba(198,154,68,0),#D8BE85,rgba(198,154,68,0))"></i>
+                    <span style="display:block;font-size:10px;font-weight:800;letter-spacing:.12em;color:#C81A66;margin:7px 0 5px">RECIBIRÁS</span>
+                    <b style="display:inline-block;padding:5px 20px;border-radius:9px;background:#E52E7B;color:#fff;font-size:20px;font-weight:700">$25</b>
+                    <span style="display:block;font-size:10px;font-weight:800;letter-spacing:.1em;color:#C81A66;margin-top:6px">EN CRÉDITO</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div style="background:linear-gradient(100deg,#EBD6A8,#C69A44 45%,#F3E6C4 65%,#B98C33);padding-top:2px">
+              <div style="background:linear-gradient(96deg,#E52E7B 0%,#F28FB5 36%,#CFD9E8 62%,#8CBCE4 100%);padding:13px 20px;color:#fff">
+                <b style="display:block;font-size:10.5px;letter-spacing:.13em;font-weight:800">IMPORTANTE:</b>
+                <span style="display:block;font-size:11px;line-height:1.5;margin-top:2px">El crédito no es transferible, no puede canjearse por efectivo y no es acumulable con otras promociones u ofertas vigentes.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 3b · CLÍNICA ============ -->
+  <div id="3b" style="width:100%;max-width:1220px;display:flex;flex-direction:column;gap:12px">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap">
+      <div>
+        <span style="display:inline-flex;align-items:center;gap:9px">
+          <b style="display:inline-flex;align-items:center;justify-content:center;min-width:30px;height:30px;padding:0 10px;border-radius:999px;background:#223C64;color:#fff;font-size:11.5px;font-weight:700">3b</b>
+          <b style="font-size:24px;font-weight:800;letter-spacing:.04em;color:#2F6DA8">CLÍNICA</b>
+        </span>
+        <p style="font-size:13px;color:#4B6484;margin-top:6px;max-width:640px;line-height:1.6">Sin ornamento y sin dorado: azul clínico, mucho aire, tipografía de una sola familia. La versión que se lee de un vistazo y aguanta veinte pantallas más.</p>
+      </div>
+      <span style="font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:#5A7091">Montserrat · solo pesos</span>
+    </div>
+
+    <div style="border-radius:26px;background:#F2F7FC;border:1px solid #E1EAF4;display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:24px;align-items:start;padding:28px">
+
+      <div style="min-width:0;display:flex;flex-direction:column;gap:10px">
+        <span style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:#6B86A6">App del paciente</span>
+        <div style="background:#fff;border:1px solid #DCE7F3;border-radius:22px;padding:20px;box-shadow:0 16px 40px -34px rgba(34,60,100,.6)">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding-bottom:14px;border-bottom:1px solid #E7EFF7">
+            <img src="assets/aa-mark.png" alt="AA Wellness" style="height:38px;width:auto;display:block">
+            <span style="font-size:10.5px;font-weight:600;color:#6B86A6">Loíza, PR</span>
+          </div>
+          <div style="padding:20px 0 4px">
+            <span style="display:block;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;color:#C81A66">Bienvenida</span>
+            <h2 style="font-size:26px;line-height:1.15;font-weight:700;color:#16294A;margin-top:8px">Siéntete mejor hoy</h2>
+            <p style="font-size:12.5px;line-height:1.6;color:#55708F;margin-top:8px">Astrid Rivera, RN · Fundadora</p>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:9px;margin-top:20px">
+            <div style="display:flex;align-items:center;gap:12px;background:#F7FAFD;border:1px solid #E4EDF6;border-radius:14px;padding:13px 14px">
+              <span style="flex:none;width:34px;height:34px;border-radius:10px;background:#E3EFFA;display:grid;place-items:center">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#2F6DA8" stroke-width="2"><path d="M12 3.5s5.5 6 5.5 9.8a5.5 5.5 0 11-11 0C6.5 9.5 12 3.5 12 3.5z"></path></svg>
+              </span>
+              <span style="flex:1;min-width:0"><b style="display:block;font-size:13.5px;font-weight:600;color:#16294A">Hidratación Revive</b><em style="display:block;font-style:normal;font-size:11.5px;color:#55708F;margin-top:2px">1000 mL IV · 45 min</em></span>
+              <b style="font-size:15px;font-weight:700;color:#16294A">$165</b>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;background:#F7FAFD;border:1px solid #E4EDF6;border-radius:14px;padding:13px 14px">
+              <span style="flex:none;width:34px;height:34px;border-radius:10px;background:#E3EFFA;display:grid;place-items:center">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#2F6DA8" stroke-width="2"><path d="M4 19h16"></path><path d="M7 19v-4M12 19v-9M17 19v-6"></path></svg>
+              </span>
+              <span style="flex:1;min-width:0"><b style="display:block;font-size:13.5px;font-weight:600;color:#16294A">Control de Peso</b><em style="display:block;font-style:normal;font-size:11.5px;color:#55708F;margin-top:2px">plan mensual · consulta 30 min</em></span>
+              <b style="font-size:15px;font-weight:700;color:#16294A">$210</b>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;background:#F7FAFD;border:1px solid #E4EDF6;border-radius:14px;padding:13px 14px">
+              <span style="flex:none;width:34px;height:34px;border-radius:10px;background:#FCE7F0;display:grid;place-items:center">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#C81A66" stroke-width="2"><path d="M13 3l-2 7h6l-8 11 2-8H5l8-10z"></path></svg>
+              </span>
+              <span style="flex:1;min-width:0"><b style="display:block;font-size:13.5px;font-weight:600;color:#16294A">Refuerzo de Energía B12</b><em style="display:block;font-style:normal;font-size:11.5px;color:#55708F;margin-top:2px">1 mL IM · 15 min</em></span>
+              <b style="font-size:15px;font-weight:700;color:#16294A">$45</b>
+            </div>
+          </div>
+          <button style="width:100%;border:none;cursor:pointer;font:inherit;margin-top:20px;display:flex;align-items:center;justify-content:center;gap:8px;padding:14px;border-radius:14px;background:#E52E7B;color:#fff;font-size:13.5px;font-weight:700" style-hover="background:#C81A66">
+            Reservar cita
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M5 12h13M13 6l6 6-6 6"></path></svg>
+          </button>
+          <p style="font-size:11px;color:#7B93AE;margin-top:12px;text-align:center">Confirmación por texto · cancelación libre 24 h antes</p>
+        </div>
+      </div>
+
+      <div style="min-width:0;display:flex;flex-direction:column;gap:10px">
+        <span style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:#6B86A6">Promoción · referidos</span>
+        <div style="background:#fff;border:1px solid #DCE7F3;border-radius:22px;padding:24px">
+          <span style="display:flex;align-items:flex-start;justify-content:space-between;gap:14px">
+            <span style="font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;color:#C81A66;padding-top:5px">Programa de referidos</span>
+            <img src="assets/aa-mark.png" alt="AA Wellness" style="height:42px;width:auto;display:block">
+          </span>
+          <h3 style="font-size:28px;line-height:1.12;font-weight:700;color:#16294A;margin-top:9px">Tu referido vale crédito</h3>
+          <p style="font-size:13px;line-height:1.65;color:#55708F;margin-top:10px;max-width:520px;text-wrap:pretty">Cada vez que una persona referida por ti complete su primera compra, recibes un crédito aplicable a tu próximo servicio.</p>
+
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin-top:20px">
+            <div style="border:1px solid #E4EDF6;border-radius:16px;padding:17px;background:#F7FAFD">
+              <span style="display:block;font-size:11px;font-weight:700;letter-spacing:.05em;color:#55708F;line-height:1.5">COMPRA DE $250 O MÁS</span>
+              <b style="display:block;font-size:38px;font-weight:700;color:#2F6DA8;margin-top:8px;line-height:1">$50</b>
+              <span style="display:block;font-size:11.5px;font-weight:700;letter-spacing:.06em;color:#2F6DA8;margin-top:2px">EN CRÉDITO</span>
+            </div>
+            <div style="border:1px solid #F6D7E5;border-radius:16px;padding:17px;background:#FFF8FB">
+              <span style="display:block;font-size:11px;font-weight:700;letter-spacing:.05em;color:#55708F;line-height:1.5">COMPRA MENOR DE $250</span>
+              <b style="display:block;font-size:38px;font-weight:700;color:#C81A66;margin-top:8px;line-height:1">$25</b>
+              <span style="display:block;font-size:11.5px;font-weight:700;letter-spacing:.06em;color:#C81A66;margin-top:2px">EN CRÉDITO</span>
+            </div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:11px;margin-top:20px">
+            <div style="display:flex;align-items:center;gap:11px">
+              <span style="flex:none;width:24px;height:24px;border-radius:50%;background:#E3EFFA;display:grid;place-items:center;font-size:11px;font-weight:700;color:#2F6DA8">1</span>
+              <span style="font-size:12.5px;color:#3F5876">Comparte tu enlace desde la app.</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:11px">
+              <span style="flex:none;width:24px;height:24px;border-radius:50%;background:#E3EFFA;display:grid;place-items:center;font-size:11px;font-weight:700;color:#2F6DA8">2</span>
+              <span style="font-size:12.5px;color:#3F5876">Tu referido reserva y completa su primera visita.</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:11px">
+              <span style="flex:none;width:24px;height:24px;border-radius:50%;background:#FCE7F0;display:grid;place-items:center;font-size:11px;font-weight:700;color:#C81A66">3</span>
+              <span style="font-size:12.5px;color:#3F5876">El crédito aparece en tu cuenta el mismo día.</span>
+            </div>
+          </div>
+
+          <p style="font-size:11px;line-height:1.55;color:#7B93AE;margin-top:20px;padding-top:14px;border-top:1px solid #E7EFF7"><b style="color:#55708F;letter-spacing:.06em">IMPORTANTE:</b> El crédito no es transferible, no puede canjearse por efectivo y no es acumulable con otras promociones u ofertas vigentes.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 3c · VIVO ============ -->
+  <div id="3c" style="width:100%;max-width:1220px;display:flex;flex-direction:column;gap:12px">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap">
+      <div>
+        <span style="display:inline-flex;align-items:center;gap:9px">
+          <b style="display:inline-flex;align-items:center;justify-content:center;min-width:30px;height:30px;padding:0 10px;border-radius:999px;background:#E52E7B;color:#fff;font-size:11.5px;font-weight:700">3c</b>
+          <b style="font-size:24px;font-weight:800;letter-spacing:.04em;color:#C81A66">VIVO</b>
+        </span>
+        <p style="font-size:13px;color:#4B6484;margin-top:6px;max-width:640px;line-height:1.6">Su color en grande: bloques magenta y azul de borde a borde, texto blanco, montos enormes. Es la dirección que se ve desde el otro lado del feed.</p>
+      </div>
+      <span style="font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:#C81A66">Montserrat 800 · Dancing Script</span>
+    </div>
+
+    <div style="border-radius:26px;background:linear-gradient(120deg,#FDE7F0 0%,#FFF6FA 44%,#E7F1FB 100%);display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:24px;align-items:start;padding:28px">
+
+      <div style="min-width:0;display:flex;flex-direction:column;gap:10px">
+        <span style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:#C81A66">App del paciente</span>
+        <div style="overflow:hidden;background:#fff;border-radius:26px;box-shadow:0 22px 50px -34px rgba(200,26,102,.6)">
+          <div style="background:linear-gradient(140deg,#E52E7B 0%,#F0559A 52%,#8CBCE4 100%);padding:22px;color:#fff">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+              <span style="background:#fff;border-radius:12px;padding:5px 10px;display:flex"><img src="assets/aa-mark.png" alt="AA Wellness" style="height:34px;width:auto;display:block"></span>
+              <span style="font-size:10.5px;font-weight:700;letter-spacing:.08em;background:rgba(255,255,255,.22);padding:4px 10px;border-radius:999px">LOÍZA, PR</span>
+            </div>
+            <span style="display:block;font-family:'Dancing Script',cursive;font-weight:700;font-size:40px;line-height:1;margin-top:20px">Siéntete</span>
+            <h2 style="font-size:34px;line-height:.98;font-weight:800;letter-spacing:-.01em;margin-top:2px">MEJOR HOY</h2>
+            <p style="font-size:11.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-top:12px;opacity:.92">Astrid Rivera, RN · Fundadora</p>
+          </div>
+          <div style="padding:18px;display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;align-items:center;gap:12px;border-radius:16px;padding:14px;background:#E9F3FC">
+              <span style="flex:1;min-width:0"><b style="display:block;font-size:14px;font-weight:800;color:#1F4E7C">Hidratación Revive</b><em style="display:block;font-style:normal;font-size:11.5px;color:#3E7AAF;margin-top:2px">1000 mL IV · 45 min</em></span>
+              <b style="font-size:20px;font-weight:800;color:#1F4E7C">$165</b>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;border-radius:16px;padding:14px;background:#FDE7F0">
+              <span style="flex:1;min-width:0"><b style="display:block;font-size:14px;font-weight:800;color:#A81456">Control de Peso</b><em style="display:block;font-style:normal;font-size:11.5px;color:#C2497F;margin-top:2px">plan mensual · consulta 30 min</em></span>
+              <b style="font-size:20px;font-weight:800;color:#A81456">$210</b>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;border-radius:16px;padding:14px;background:#FFF1E2">
+              <span style="flex:1;min-width:0"><b style="display:block;font-size:14px;font-weight:800;color:#8A5A12">Refuerzo B12</b><em style="display:block;font-style:normal;font-size:11.5px;color:#A87A34;margin-top:2px">1 mL IM · 15 min</em></span>
+              <b style="font-size:20px;font-weight:800;color:#8A5A12">$45</b>
+            </div>
+            <button style="width:100%;border:none;cursor:pointer;font:inherit;margin-top:6px;display:flex;align-items:center;justify-content:center;gap:8px;padding:16px;border-radius:999px;background:#E52E7B;color:#fff;font-size:14px;font-weight:800;letter-spacing:.04em" style-hover="background:#C81A66">
+              RESERVAR CITA
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6"><path d="M5 12h13M13 6l6 6-6 6"></path></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div style="min-width:0;display:flex;flex-direction:column;gap:10px">
+        <span style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:#C81A66">Promoción · referidos</span>
+        <div style="overflow:hidden;border-radius:26px;background:#fff;box-shadow:0 22px 50px -36px rgba(34,60,100,.6)">
+          <div style="background:#E52E7B;color:#fff;padding:24px">
+            <span style="display:flex;justify-content:flex-end;margin-bottom:6px"><span style="background:#fff;border-radius:12px;padding:6px 11px;display:flex"><img src="assets/aa-mark.png" alt="AA Wellness" style="height:38px;width:auto;display:block"></span></span>
+            <span style="display:block;font-family:'Dancing Script',cursive;font-weight:700;font-size:38px;line-height:1">Tu referido</span>
+            <h3 style="font-size:52px;line-height:.92;font-weight:800;letter-spacing:-.02em;margin-top:2px">VALE</h3>
+            <p style="font-size:13px;line-height:1.6;margin-top:12px;max-width:460px;opacity:.95">Comparte tu experiencia y comienza a ganar. Cada primera compra de un referido se convierte en crédito para ti.</p>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:0">
+            <div style="background:#8CBCE4;color:#123E68;padding:22px">
+              <span style="display:block;font-size:11px;font-weight:800;letter-spacing:.06em;line-height:1.5">SI SU COMPRA ES DE $250 O MÁS</span>
+              <b style="display:block;font-size:56px;line-height:.95;font-weight:800;letter-spacing:-.03em;margin-top:10px">$50</b>
+              <span style="display:inline-block;margin-top:10px;background:#fff;color:#1F4E7C;font-size:11px;font-weight:800;letter-spacing:.08em;padding:5px 12px;border-radius:999px">EN CRÉDITO</span>
+            </div>
+            <div style="background:#F7CEDF;color:#8E0F49;padding:22px">
+              <span style="display:block;font-size:11px;font-weight:800;letter-spacing:.06em;line-height:1.5">SI SU COMPRA ES MENOR DE $250</span>
+              <b style="display:block;font-size:56px;line-height:.95;font-weight:800;letter-spacing:-.03em;margin-top:10px">$25</b>
+              <span style="display:inline-block;margin-top:10px;background:#fff;color:#C81A66;font-size:11px;font-weight:800;letter-spacing:.08em;padding:5px 12px;border-radius:999px">EN CRÉDITO</span>
+            </div>
+          </div>
+          <div style="padding:20px 24px">
+            <div style="display:flex;align-items:center;gap:12px;background:#F3F8FD;border-radius:16px;padding:14px 16px">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#E52E7B" stroke-width="2.2" style="flex:none"><path d="M4 19h16"></path><path d="M7 19v-5M11.5 19v-8M16 19v-3"></path><path d="M19.5 6l-4.6 3.8"></path></svg>
+              <span style="font-size:12px;font-weight:800;letter-spacing:.03em;line-height:1.5;color:#223C64">MIENTRAS MÁS REFIERAS, <span style="color:#C81A66">MÁS CRÉDITOS</span> ACUMULAS.</span>
+            </div>
+            <p style="font-size:11px;line-height:1.55;color:#7B93AE;margin-top:14px"><b style="color:#C81A66;letter-spacing:.06em">IMPORTANTE:</b> El crédito no es transferible, no puede canjearse por efectivo y no es acumulable con otras promociones u ofertas vigentes.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 3d · SERENA ============ -->
+  <div id="3d" style="width:100%;max-width:1220px;display:flex;flex-direction:column;gap:12px">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap">
+      <div>
+        <span style="display:inline-flex;align-items:center;gap:9px">
+          <b style="display:inline-flex;align-items:center;justify-content:center;min-width:30px;height:30px;padding:0 10px;border-radius:999px;background:#6BA5D6;color:#fff;font-size:11.5px;font-weight:700">3d</b>
+          <b style="font-family:'Cormorant Garamond',Georgia,serif;font-size:28px;font-weight:600;letter-spacing:.02em;color:#2F6DA8">Serena</b>
+        </span>
+        <p style="font-size:13px;color:#4B6484;margin-top:6px;max-width:640px;line-height:1.6">Para la paciente de control de peso y bienestar: arena y azul bebé, formas suaves, un anillo de progreso en vez de un catálogo. El magenta se guarda para celebrar. Se apoya en su azul bebé con un arena neutral de fondo.</p>
+      </div>
+      <span style="font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:#6B86A6">Cormorant Garamond · Montserrat</span>
+    </div>
+
+    <div style="border-radius:26px;background:linear-gradient(150deg,#F6F1E8 0%,#EDF3F8 52%,#E9F1F8 100%);display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:24px;align-items:start;padding:28px">
+
+      <div style="min-width:0;display:flex;flex-direction:column;gap:10px">
+        <span style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:#6B86A6">App del paciente</span>
+        <div style="background:#FDFCF9;border:1px solid #E7E2D6;border-radius:30px;padding:22px;box-shadow:0 18px 44px -36px rgba(34,60,100,.7)">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+            <img src="assets/aa-mark.png" alt="AA Wellness" style="height:38px;width:auto;display:block">
+            <span style="font-size:10.5px;font-weight:600;color:#7B93AE">martes, 14</span>
+          </div>
+
+          <div style="display:flex;align-items:center;gap:18px;margin-top:22px">
+            <span style="flex:none;width:104px;height:104px;border-radius:50%;background:conic-gradient(#6BA5D6 0turn .62turn,#DEE8F1 .62turn 1turn);display:grid;place-items:center">
+              <span style="width:78px;height:78px;border-radius:50%;background:#FDFCF9;display:grid;place-items:center;text-align:center">
+                <span>
+                  <b style="display:block;font-family:'Cormorant Garamond',serif;font-size:27px;font-weight:600;color:#2F6DA8;line-height:1">62%</b>
+                  <em style="display:block;font-style:normal;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:#7B93AE;margin-top:1px">de tu meta</em>
+                </span>
+              </span>
+            </span>
+            <span style="min-width:0">
+              <span style="display:block;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:#7B93AE">Tu progreso</span>
+              <b style="display:block;font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:600;color:#1F4E7C;line-height:1.1;margin-top:5px">−8.2 lb</b>
+              <span style="display:block;font-size:12px;color:#55708F;margin-top:4px">en 9 semanas · faltan 5 lb</span>
+              <span style="display:inline-block;margin-top:9px;background:#FCE7F0;color:#C81A66;font-size:10.5px;font-weight:700;letter-spacing:.06em;padding:4px 11px;border-radius:999px">3 semanas seguidas</span>
+            </span>
+          </div>
+
+          <div style="display:flex;gap:8px;margin-top:20px">
+            <span style="flex:1;text-align:center;background:#EAF3FA;border-radius:14px;padding:11px 6px">
+              <b style="display:block;font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:600;color:#2F6DA8">2.1 L</b>
+              <em style="display:block;font-style:normal;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:#7B93AE;margin-top:2px">Agua</em>
+            </span>
+            <span style="flex:1;text-align:center;background:#EAF3FA;border-radius:14px;padding:11px 6px">
+              <b style="display:block;font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:600;color:#2F6DA8">7 h 40</b>
+              <em style="display:block;font-style:normal;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:#7B93AE;margin-top:2px">Sueño</em>
+            </span>
+            <span style="flex:1;text-align:center;background:#EAF3FA;border-radius:14px;padding:11px 6px">
+              <b style="display:block;font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:600;color:#2F6DA8">B12</b>
+              <em style="display:block;font-style:normal;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:#7B93AE;margin-top:2px">Hoy</em>
+            </span>
+          </div>
+
+          <span style="display:block;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:#7B93AE;margin:22px 0 10px">Tu próximo paso</span>
+          <div style="display:flex;flex-direction:column;gap:9px">
+            <div style="display:flex;align-items:center;gap:12px;background:#fff;border:1px solid #E7E2D6;border-radius:18px;padding:13px 14px">
+              <span style="flex:none;width:36px;height:36px;border-radius:50%;background:#E3EFFA;display:grid;place-items:center">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#6BA5D6" stroke-width="1.9"><rect x="3.5" y="5" width="17" height="16" rx="4"></rect><path d="M8 3v4M16 3v4M8.5 13.5l2.5 2.5 4.5-5"></path></svg>
+              </span>
+              <span style="flex:1;min-width:0"><b style="display:block;font-size:13.5px;font-weight:600;color:#1F4E7C">Consulta de control de peso</b><em style="display:block;font-style:normal;font-size:11.5px;color:#6B86A6;margin-top:2px">jue 16 · 10:30 a.m. · 30 min</em></span>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;background:#fff;border:1px solid #E7E2D6;border-radius:18px;padding:13px 14px">
+              <span style="flex:none;width:36px;height:36px;border-radius:50%;background:#E3EFFA;display:grid;place-items:center">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#6BA5D6" stroke-width="1.9"><path d="M12 3.5s5.5 6 5.5 9.8a5.5 5.5 0 11-11 0C6.5 9.5 12 3.5 12 3.5z"></path></svg>
+              </span>
+              <span style="flex:1;min-width:0"><b style="display:block;font-size:13.5px;font-weight:600;color:#1F4E7C">Hidratación Revive</b><em style="display:block;font-style:normal;font-size:11.5px;color:#6B86A6;margin-top:2px">recomendada esta semana · $165</em></span>
+            </div>
+          </div>
+
+          <button style="width:100%;border:none;cursor:pointer;font:inherit;margin-top:18px;padding:15px;border-radius:999px;background:#2F6DA8;color:#F6F1E8;font-size:13px;font-weight:700;letter-spacing:.05em" style-hover="background:#1F4E7C">Reservar mi próxima visita</button>
+        </div>
+      </div>
+
+      <div style="min-width:0;display:flex;flex-direction:column;gap:10px">
+        <span style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:#6B86A6">Promoción · referidos</span>
+        <div style="background:#FDFCF9;border:1px solid #E7E2D6;border-radius:30px;padding:26px">
+          <span style="display:flex;align-items:flex-start;justify-content:space-between;gap:14px">
+            <span style="font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;color:#7B93AE;padding-top:5px">Invita a una amiga</span>
+            <img src="assets/aa-mark.png" alt="AA Wellness" style="height:42px;width:auto;display:block">
+          </span>
+          <h3 style="font-family:'Cormorant Garamond',Georgia,serif;font-size:40px;line-height:1.05;font-weight:600;color:#1F4E7C;margin-top:10px">El camino se hace<br>mejor acompañada</h3>
+          <p style="font-size:13px;line-height:1.7;color:#55708F;margin-top:12px;max-width:480px;text-wrap:pretty">Cuando alguien que invitaste completa su primera visita, las dos avanzan: ella empieza y tú recibes crédito para tu siguiente servicio.</p>
+
+          <div style="display:flex;flex-direction:column;gap:10px;margin-top:22px">
+            <div style="display:flex;align-items:center;gap:16px;background:#EAF3FA;border-radius:20px;padding:18px">
+              <span style="flex:none;width:56px;height:56px;border-radius:50%;background:#fff;display:grid;place-items:center;font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:#2F6DA8">$50</span>
+              <span style="min-width:0">
+                <b style="display:block;font-size:13px;font-weight:700;color:#1F4E7C">Su primera compra es de $250 o más</b>
+                <em style="display:block;font-style:normal;font-size:12px;color:#6B86A6;margin-top:3px">$50 de crédito para tu próxima visita</em>
+              </span>
+            </div>
+            <div style="display:flex;align-items:center;gap:16px;background:#FCF0F5;border-radius:20px;padding:18px">
+              <span style="flex:none;width:56px;height:56px;border-radius:50%;background:#fff;display:grid;place-items:center;font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:#C81A66">$25</span>
+              <span style="min-width:0">
+                <b style="display:block;font-size:13px;font-weight:700;color:#8E0F49">Su primera compra es menor de $250</b>
+                <em style="display:block;font-style:normal;font-size:12px;color:#A8698A;margin-top:3px">$25 de crédito para tu próxima visita</em>
+              </span>
+            </div>
+          </div>
+
+          <div style="display:flex;align-items:center;gap:14px;margin-top:20px;padding-top:18px;border-top:1px solid #E7E2D6">
+            <span style="flex:none;width:40px;height:40px;border-radius:50%;background:#E3EFFA;display:grid;place-items:center">
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#6BA5D6" stroke-width="1.9"><circle cx="9" cy="8" r="3.2"></circle><path d="M3.4 19c.5-3.2 2.8-5 5.6-5s5.1 1.8 5.6 5"></path><path d="M16.5 7.5h4M18.5 5.5v4"></path></svg>
+            </span>
+            <span style="font-size:12.5px;line-height:1.6;color:#55708F">Mientras más personas invites, más crédito acumulas — sin límite de invitaciones.</span>
+          </div>
+
+          <p style="font-size:11px;line-height:1.55;color:#9BB0C6;margin-top:16px"><b style="color:#6B86A6;letter-spacing:.06em">IMPORTANTE:</b> El crédito no es transferible, no puede canjearse por efectivo y no es acumulable con otras promociones u ofertas vigentes.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ recommendation ============ -->
+  <div style="width:100%;max-width:1220px;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px">
+    <section style="background:#fff;border:1px solid #E7E2D6;border-radius:18px;padding:18px">
+      <h3 style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#8A6A10;font-weight:800;margin-bottom:11px">Para qué sirve cada una</h3>
+      <p style="font-size:13px;line-height:1.7;color:#3F5876;text-wrap:pretty"><b><a href="#3a">3a</a> Nácar</b> — continuidad total con Instagram. <b><a href="#3b">3b</a> Clínica</b> — la más barata de escalar y la más legible. <b><a href="#3c">3c</a> Vivo</b> — la que más convierte en promociones. <b><a href="#3d">3d</a> Serena</b> — la que retiene a la paciente de control de peso.</p>
+    </section>
+    <section style="background:#fff;border:1px solid #E7E2D6;border-radius:18px;padding:18px">
+      <h3 style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#8A6A10;font-weight:800;margin-bottom:11px">Mi recomendación</h3>
+      <p style="font-size:13px;line-height:1.7;color:#3F5876;text-wrap:pretty">Nácar (<a href="#3a">3a</a>) para todo lo promocional y de marca, con la estructura tranquila de Serena (<a href="#3d">3d</a>) en las pantallas de progreso y seguimiento. Vivo (<a href="#3c">3c</a>) queda como plantilla de campañas en redes.</p>
+    </section>
+    <section style="background:#FFF9FC;border:1px solid #F6D2E3;border-radius:18px;padding:18px">
+      <h3 style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#C81A66;font-weight:800;margin-bottom:11px">Qué vigilar</h3>
+      <p style="font-size:13px;line-height:1.7;color:#3F5876;text-wrap:pretty">El azul bebé y el dorado solo funcionan en tamaños grandes: en texto pequeño desaparecen. Serena introduce un arena neutral de fondo — hay que aprobarlo antes de extenderlo.</p>
+    </section>
+  </div>
+</section>
+</x-dc>
+</body>
+</html>
