@@ -19,11 +19,10 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          decode_gz() {
-            src="$1"
-            dst="$2"
-            echo "Decoding $dst"
-            cat ${src}*.part | base64 -d | gzip -dc > "$dst"
+          decode_list() {
+            dst="$1"
+            shift
+            cat "$@" | base64 -d | gzip -dc > "$dst"
           }
           check_hash() {
             file="$1"
@@ -33,14 +32,30 @@ jobs:
             test "$actual" = "$expected" || { echo "Hash mismatch: $file ($actual != $expected)"; exit 1; }
           }
 
-          decode_gz '.safe/f0-' 'AA - Cuatro Direcciones -bundle-src-.html'
-          decode_gz '.safe/f1-' 'AA - Cuatro Direcciones.dc.html'
-          decode_gz '.safe/f2-' 'AA App - Nacar -bundle-src-.html'
-          decode_gz '.safe/f3-' 'AA App - Nacar.dc.html'
-          decode_gz '.safe/f4-' 'AA Direccion 4 - Nacar.dc.html'
-          decode_gz '.safe/f5-' 'github.md'
-          decode_gz '.safe/f6-' 'support.js'
-          decode_gz '.upload/thumbnail-' '.thumbnail'
+          decode_list 'AA - Cuatro Direcciones -bundle-src-.html' \
+            .safe/f0-00.part \
+            .safe/f0-01-x00-y00.part .safe/f0-01-x00-y01.part .safe/f0-01-x00-y02.part \
+            .safe/f0-01-x00-y03-z00.part .safe/f0-01-x00-y03-z01.part \
+            .safe/f0-01-x01.part .safe/f0-01-x02.part
+
+          decode_list 'AA - Cuatro Direcciones.dc.html' \
+            .safe/f1-00.part .safe/f1-01.part
+
+          decode_list 'AA App - Nacar -bundle-src-.html' \
+            .safe/f2-00.part .safe/f2-01-x00.part .safe/f2-01-x01.part \
+            .safe/f2-01-x02-y00.part .safe/f2-01-x02-y01.part .safe/f2-01-x02-y02.part .safe/f2-01-x02-y03.part \
+            .safe/f2-02.part
+
+          decode_list 'AA App - Nacar.dc.html' \
+            .safe/f3-00.part .safe/f3-01-x00.part .safe/f3-01-x01.part .safe/f3-01-x02.part .safe/f3-02.part
+
+          decode_list 'AA Direccion 4 - Nacar.dc.html' \
+            .safe/f4-00.part .safe/f4-01.part
+
+          decode_list 'github.md' .safe/f5-00.part
+
+          decode_list 'support.js' \
+            .safe/f6-00.part .safe/f6-01.part .safe/f6-02.part .safe/f6-03.part .safe/f6-04.part
 
           check_hash 'AA - Cuatro Direcciones -bundle-src-.html' '50a92e11afaa5baa285333cd12db9e0ab1ae3121'
           check_hash 'AA - Cuatro Direcciones.dc.html' '560b69e3992003bd8e5b1e81e3ec3ef545053eb8'
@@ -51,7 +66,6 @@ jobs:
           check_hash 'AA Wellness App - Nacar.html' '3fac622f3059e8baceb88d4f3f0f69ed6e5d13cb'
           check_hash 'github.md' 'd6f80af4c438f3dd71261074b0d31dbc82e1f5e8'
           check_hash 'support.js' 'cb009b69ec6b5e00f48c6287a587fe7e0c6c421b'
-          check_hash '.thumbnail' '97f050464197b58436d976fcb0d497cc5333a9e0'
 
           rm -rf .safe .upload
           git add -A
