@@ -5,10 +5,82 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>AA Wellness App</title>
   <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.26.4/babel.min.js"></script>
-  <style>html,body,#root{margin:0;min-height:100%;}body{min-height:100vh;background:#F8F3ED;font-family:system-ui,sans-serif}.loading{min-height:100vh;display:grid;place-items:center;color:#55747F}</style>
+  <style>
+    html,body,#root{margin:0;min-height:100%;}
+    body{min-height:100vh;background:#F8F3ED;font-family:system-ui,sans-serif}
+    .loading{min-height:100vh;display:grid;place-items:center;color:#55747F}
+
+    /* Demo-only service manager */
+    #svc-demo-open{position:fixed;right:18px;bottom:18px;z-index:80;border:0;border-radius:999px;background:#22485B;color:#fff;padding:11px 16px;font:600 13px/1 system-ui,sans-serif;box-shadow:0 10px 30px rgba(34,72,91,.24);cursor:pointer}
+    #svc-demo-open:hover{background:#183B4C}
+    #svc-demo-backdrop{display:none;position:fixed;inset:0;z-index:90;background:rgba(34,72,91,.38)}
+    #svc-demo-panel{position:absolute;right:0;top:0;height:100%;width:min(480px,94vw);background:#F8F3ED;box-shadow:-18px 0 50px rgba(34,72,91,.18);overflow:auto}
+    .svc-demo-head{position:sticky;top:0;z-index:2;background:#fff;border-bottom:1px solid #E6DFD4;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .svc-demo-head h2{margin:0;color:#22485B;font:600 25px Georgia,serif}
+    .svc-demo-head p{margin:4px 0 0;color:#55747F;font-size:12px}
+    .svc-demo-close{border:0;background:#F8F3ED;color:#55747F;border-radius:9px;width:34px;height:34px;font-size:20px;cursor:pointer}
+    .svc-demo-body{padding:16px 18px 34px}
+    .svc-demo-add{width:100%;border:0;border-radius:999px;background:#EE4B9E;color:white;padding:11px 15px;font-weight:700;cursor:pointer;margin-bottom:14px}
+    .svc-demo-form{display:none;background:#fff;border:1px solid #E6DFD4;border-radius:16px;padding:14px;margin-bottom:14px}
+    .svc-demo-form h3{margin:0 0 10px;color:#22485B;font-size:15px}
+    .svc-demo-form label{display:block;color:#8A6A10;font-size:10px;text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin:10px 0 5px}
+    .svc-demo-form input,.svc-demo-form textarea{width:100%;box-sizing:border-box;border:1px solid #E6DFD4;border-radius:10px;padding:10px;font:13px system-ui,sans-serif;color:#22485B;background:#fff}
+    .svc-demo-form textarea{min-height:62px;resize:vertical}
+    .svc-demo-cols{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+    .svc-demo-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:12px}
+    .svc-demo-btn{border:1px solid #E6DFD4;background:#fff;color:#22485B;border-radius:999px;padding:8px 12px;font-size:12px;font-weight:650;cursor:pointer}
+    .svc-demo-btn.primary{background:#EE4B9E;color:#fff;border-color:#EE4B9E}
+    .svc-demo-list{display:flex;flex-direction:column;gap:9px}
+    .svc-demo-card{background:#fff;border:1px solid #E6DFD4;border-radius:15px;padding:13px;box-shadow:0 2px 10px rgba(34,72,91,.04)}
+    .svc-demo-card.paused{opacity:.5}
+    .svc-demo-row{display:flex;justify-content:space-between;gap:14px;align-items:flex-start}
+    .svc-demo-name{font-weight:750;color:#22485B;font-size:14px}
+    .svc-demo-desc{color:#55747F;font-size:12px;margin-top:3px;line-height:1.35}
+    .svc-demo-price{white-space:nowrap;color:#2E90D9;font:600 13px ui-monospace,monospace}
+    .svc-demo-meta{display:flex;align-items:center;justify-content:space-between;margin-top:9px;padding-top:9px;border-top:1px solid #F8F3ED;color:#55747F;font-size:11px}
+    .svc-demo-status{border:1px solid #E6DFD4;border-radius:999px;padding:2px 7px}
+    .svc-demo-status.on{color:#3E9AA7;border-color:rgba(62,154,167,.35);background:rgba(62,154,167,.08)}
+    .svc-demo-card-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}
+    .svc-demo-card-actions button{border:1px solid #E6DFD4;background:#fff;color:#55747F;border-radius:8px;padding:6px 9px;font-size:11px;cursor:pointer}
+    .svc-demo-card-actions button:hover{border-color:#EE4B9E;color:#EE4B9E}
+    .svc-demo-card-actions .danger{color:#B44444}
+    .svc-demo-note{margin:14px 2px 0;color:#55747F;font-size:10.5px;line-height:1.45;text-align:center}
+    @media(max-width:900px){#svc-demo-open{bottom:78px;right:12px}}
+  </style>
 </head>
 <body>
   <div id="root"><div class="loading">Opening AA Wellness…</div></div>
+
+  <button id="svc-demo-open" type="button">⚙ Servicios</button>
+  <div id="svc-demo-backdrop">
+    <aside id="svc-demo-panel" role="dialog" aria-modal="true" aria-label="Gestionar servicios">
+      <div class="svc-demo-head">
+        <div><h2>Servicios</h2><p>Administra lo que aparece en el menú del paciente</p></div>
+        <button class="svc-demo-close" id="svc-demo-close" type="button" aria-label="Cerrar">×</button>
+      </div>
+      <div class="svc-demo-body">
+        <button class="svc-demo-add" id="svc-demo-add" type="button">+ Añadir servicio</button>
+        <div class="svc-demo-form" id="svc-demo-form">
+          <h3 id="svc-demo-form-title">Añadir servicio</h3>
+          <label>Nombre del servicio</label>
+          <input id="svc-name" placeholder="Ej. Vitamin C Boost">
+          <div class="svc-demo-cols">
+            <div><label>Precio ($)</label><input id="svc-price" type="number" min="0" step="1" value="0"></div>
+            <div><label>Duración (min)</label><input id="svc-mins" type="number" min="0" step="5" value="30"></div>
+          </div>
+          <label>Descripción corta</label>
+          <textarea id="svc-desc" placeholder="Descripción que verá el cliente"></textarea>
+          <div class="svc-demo-actions">
+            <button class="svc-demo-btn" id="svc-cancel" type="button">Cancelar</button>
+            <button class="svc-demo-btn primary" id="svc-save" type="button">Guardar</button>
+          </div>
+        </div>
+        <div class="svc-demo-list" id="svc-demo-list"></div>
+        <div class="svc-demo-note">Vista de demostración. En la app final estos cambios se guardarían en la cuenta de la clínica y actualizarían el menú del paciente.</div>
+      </div>
+    </aside>
+  </div>
+
   <script type="module">
     try {
       let src = await (await fetch('./aa-healthcare-app.jsx')).text();
@@ -23,6 +95,59 @@
       console.error(e);
       document.getElementById('root').innerHTML = '<div class="loading">The app could not load. Please refresh.</div>';
     }
+  </script>
+
+  <script>
+    (function(){
+      const KEY='aa-wellness-services-demo-v1';
+      const seed=[
+        {id:'hydra',name:'Hidratación Revive',price:165,mins:45,desc:'1000 mL IV · hidratación y apoyo vitamínico',active:true},
+        {id:'myers',name:'Inmunidad Myers',price:185,mins:45,desc:'500 mL IV · vitamina C, magnesio, calcio y complejo B',active:true},
+        {id:'prp',name:'Terapia PRP',price:450,mins:60,desc:'Plasma rico en plaquetas · requiere evaluación',active:true},
+        {id:'glow',name:'Glutatión Glow',price:210,mins:30,desc:'50 mL IV · aplicación lenta de glutatión',active:true},
+        {id:'nad',name:'Infusión NAD+',price:395,mins:90,desc:'250 mL IV · sesión de goteo lento',active:true},
+        {id:'b12',name:'Refuerzo de Energía B12',price:45,mins:15,desc:'1 mL IM · visita rápida',active:true},
+        {id:'glp',name:'Programa de Control de Peso',price:325,mins:20,desc:'Programa supervisado · requiere consulta',active:true}
+      ];
+      const $=id=>document.getElementById(id);
+      let items; try{items=JSON.parse(localStorage.getItem(KEY))||seed}catch(e){items=seed}
+      let editing=null;
+      const saveStore=()=>{try{localStorage.setItem(KEY,JSON.stringify(items))}catch(e){}};
+      const money=n=>'$'+Math.round(Number(n)||0).toLocaleString();
+      function render(){
+        $('svc-demo-list').innerHTML=items.map(x=>`<div class="svc-demo-card ${x.active?'':'paused'}">
+          <div class="svc-demo-row"><div><div class="svc-demo-name">${escapeHtml(x.name)}</div><div class="svc-demo-desc">${escapeHtml(x.desc||'')}</div></div><div class="svc-demo-price">${money(x.price)}</div></div>
+          <div class="svc-demo-meta"><span>${Number(x.mins)||0} min</span><span class="svc-demo-status ${x.active?'on':''}">${x.active?'Visible':'Pausado'}</span></div>
+          <div class="svc-demo-card-actions"><button data-act="edit" data-id="${x.id}">Editar</button><button data-act="toggle" data-id="${x.id}">${x.active?'Pausar':'Activar'}</button><button class="danger" data-act="remove" data-id="${x.id}">Eliminar</button></div>
+        </div>`).join('');
+      }
+      function escapeHtml(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));}
+      function showForm(x){
+        editing=x?x.id:'new'; $('svc-demo-form').style.display='block';
+        $('svc-demo-form-title').textContent=x?'Editar servicio':'Añadir servicio';
+        $('svc-name').value=x?.name||''; $('svc-price').value=x?.price??0; $('svc-mins').value=x?.mins??30; $('svc-desc').value=x?.desc||'';
+        $('svc-name').focus();
+      }
+      function hideForm(){editing=null;$('svc-demo-form').style.display='none'}
+      $('svc-demo-open').onclick=()=>{$('svc-demo-backdrop').style.display='block';render()};
+      $('svc-demo-close').onclick=()=>{$('svc-demo-backdrop').style.display='none';hideForm()};
+      $('svc-demo-backdrop').onclick=e=>{if(e.target===$('svc-demo-backdrop')){$('svc-demo-backdrop').style.display='none';hideForm()}};
+      $('svc-demo-add').onclick=()=>showForm(null);
+      $('svc-cancel').onclick=hideForm;
+      $('svc-save').onclick=()=>{
+        const name=$('svc-name').value.trim(); if(!name)return;
+        const obj={id:editing==='new'?'svc-'+Date.now():editing,name,price:Number($('svc-price').value)||0,mins:Number($('svc-mins').value)||0,desc:$('svc-desc').value.trim(),active:true};
+        if(editing==='new')items.push(obj);else{const old=items.find(x=>x.id===editing);obj.active=old?old.active:true;items=items.map(x=>x.id===editing?obj:x)}
+        saveStore();hideForm();render();
+      };
+      $('svc-demo-list').onclick=e=>{
+        const b=e.target.closest('button[data-act]');if(!b)return;const id=b.dataset.id;const act=b.dataset.act;const x=items.find(v=>v.id===id);if(!x)return;
+        if(act==='edit')showForm(x);
+        if(act==='toggle'){x.active=!x.active;saveStore();render()}
+        if(act==='remove'){items=items.filter(v=>v.id!==id);saveStore();render()}
+      };
+      render();
+    })();
   </script>
 </body>
 </html>
