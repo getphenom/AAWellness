@@ -1,24 +1,51 @@
-<!doctype html>
-<html lang="es">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>AA Wellness · Nácar</title>
-  <meta http-equiv="refresh" content="0; url=./AA%20Wellness%20App%20-%20Nacar.html">
-  <script>window.location.replace('./AA%20Wellness%20App%20-%20Nacar.html');</script>
-  <style>
-    html,body{margin:0;min-height:100%;background:#FBF7F4;color:#223C64;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-    body{min-height:100vh;display:grid;place-items:center;padding:24px}
-    .card{text-align:center;background:#fff;border:1px solid #EAD9B5;border-radius:24px;padding:28px 32px;box-shadow:0 12px 34px rgba(34,60,100,.10)}
-    .brand{font-family:Georgia,serif;font-size:42px;font-weight:700;color:#223C64}.brand i{font-style:normal;color:#E52E7B}
-    p{color:#5A7091;margin:10px 0 0}a{color:#C81A66;font-weight:700}
-  </style>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>AA Wellness App · Nácar</title>
+<script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.26.4/babel.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<link href="./demo.css" rel="stylesheet"/>
 </head>
 <body>
-  <main class="card">
-    <div class="brand">A<i>&amp;</i>A Wellness</div>
-    <p>Abriendo la experiencia Nácar…</p>
-    <p><a href="./AA%20Wellness%20App%20-%20Nacar.html">Continuar</a></p>
-  </main>
+<div id="root"><div class="loading">Opening AA Wellness…</div></div>
+<div class="demo-modal-bg" id="demo-modal-bg"><div class="demo-modal" id="demo-modal"></div></div>
+<div id="patient-demo-clean">
+<div class="patient-demo-top"><div class="patient-demo-brand"><span class="patient-demo-mark">A<i>&amp;</i>A</span><div><b>WELLNESS</b><span>A&amp;A Healthcare · Loíza, PR</span></div></div><button class="patient-exit" id="patient-exit">← Clínica</button></div>
+<div class="patient-demo-wrap">
+<div class="patient-demo-tabs"><button class="on" data-pview="home">Inicio</button><button data-pview="progress">Progreso</button><button data-pview="visits">Visitas</button><button data-pview="docs">Documentos</button></div>
+<div class="patient-view-clean on" id="pview-home">
+<section class="nacar-clean-hero"><span class="scriptish">Siéntete</span><h1>MEJOR HOY</h1><p>Tu bienestar, tu progreso y tus próximas visitas, organizados de una forma simple y positiva.</p></section>
+<div class="patient-home-clean">
+<section class="patient-clean-card"><span class="label">Próxima visita</span><h3>Viernes, 10:30 AM</h3><p>Seguimiento de control de peso · 20 min</p></section>
+<section class="patient-clean-card"><span class="label">Tu progreso</span><h3>179.8 lb</h3><p>−8.6 lb desde el inicio · Meta 165 lb</p></section>
+<section class="patient-cheer-clean"><span class="cheer-dot">✓</span><div><b>Vas muy bien</b><span>El progreso ha sido constante durante cuatro semanas. Sigue a tu ritmo.</span></div></section>
+</div>
+<section class="patient-section-clean"><h3>Servicios</h3><div class="patient-services-clean"><div class="patient-service-clean"><b>Programa de Control de Peso</b><span>$325 · seguimiento semanal</span></div><div class="patient-service-clean"><b>Hidratación Revive</b><span>$165 · 45 min</span></div><div class="patient-service-clean"><b>Inmunidad Myers</b><span>$185 · 45 min</span></div><div class="patient-service-clean"><b>Refuerzo B12</b><span>$45 · 15 min</span></div></div></section>
+</div>
+<div class="patient-view-clean" id="pview-progress"><div class="progress-clean"><section class="progress-main-clean"><span class="label">Camino hacia la meta</span><div class="progress-ring-clean"></div><div class="positive-box">✓ Progreso constante. Sigue así.</div></section><section class="progress-side-clean"><span class="label">Peso actual</span><h2>179.8 lb</h2><p>Comenzaste en 188.4 lb · Meta 165 lb</p><div class="progress-metrics-clean"><div><span>Cambio</span><b>−8.6 lb</b></div><div><span>Racha</span><b>4 sem</b></div><div><span>Visitas</span><b>5</b></div><div><span>Hidratación</span><b>82%</b></div><div><span>Sueño</span><b>7.2 h</b></div><div><span>Actitud</span><b>Positiva</b></div></div></section></div></div>
+<div class="patient-view-clean" id="pview-visits"><div class="section-bar-native"><div><span>Historial</span><h3>Tus visitas</h3></div></div><div class="patient-visits-clean" id="patient-clean-visits"></div></div>
+<div class="patient-view-clean" id="pview-docs"><div class="section-bar-native"><div><span>Documentos</span><h3>Formularios y archivos</h3></div></div><div class="patient-docs-clean" id="patient-clean-docs"></div></div>
+</div>
+</div>
+<script type="module">
+try {
+let src = await (await fetch('./aa-healthcare-app.jsx')).text();
+src = src.replace('from "react";', 'from "https://esm.sh/react@19.1.1";');
+src = src.replace('from "lucide-react";', 'from "https://esm.sh/lucide-react@0.468.0?deps=react@19.1.1";');
+src = 'import ReactDOM from "https://esm.sh/react-dom@19.1.1/client";\n' + src;
+src += '\nReactDOM.createRoot(document.getElementById("root")).render(React.createElement(App));';
+const js = Babel.transform(src, {presets:['react'], sourceType:'module'}).code;
+const url = URL.createObjectURL(new Blob([js], {type:'text/javascript'}));
+await import(url);
+} catch (e) {
+console.error(e);
+document.getElementById('root').innerHTML = '<div class="loading">The app could not load. Please refresh.</div>';
+}
+</script>
+<script src="./demo.js"></script>
 </body>
 </html>
