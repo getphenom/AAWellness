@@ -5,14 +5,19 @@ import {
   Clock, X, Droplet, AlertTriangle, Tag, Send, RefreshCw, Gift, MapPin
 } from "lucide-react";
 
-/* ============ brand, read off the clinic's own posts ============ */
+/* ============ brand — Nácar: marble, pink→blue ombré, gold edge ============ */
 const T = {
-  cream: "#F8F3ED", surface: "#FFFFFF", ink: "#22485B", muted: "#55747F", line: "#E6DFD4",
-  pink: "#EE4B9E", blue: "#7FAEDC", blueDeep: "#2E90D9", aqua: "#6FD3EC",
-  gold: "#C9A227", goldSoft: "#E3CB86", goldInk: "#8A6A10", deep: "#1F4E63", rose: "#F79FC8", teal: "#3E9AA7",
+  cream: "#FBF7F4", surface: "#FFFFFF", ink: "#223C64", muted: "#5A7091", line: "#EAD9B5",
+  pink: "#E52E7B", blue: "#8CBCE4", blueDeep: "#2F6DA8", aqua: "#AFD0EC",
+  gold: "#C69A44", goldSoft: "#EAD9B5", goldInk: "#8A6A10", deep: "#1F4E7C", rose: "#F1A7C4", teal: "#2F6DA8",
+  magenta: "#C81A66", hair: "#EDDFC1", hairSoft: "#F0E4CE", pinkWash: "#FDEAF3", blueWash: "#DCEAF7",
 };
 const GOLDRULE = `linear-gradient(90deg,${T.goldSoft},${T.gold},${T.goldSoft})`;
-const BAND = `linear-gradient(100deg,${T.pink} 0%,#F090BE 46%,${T.blue} 100%)`;
+/* the ombré band off the posters: magenta → rose → baby blue */
+const BAND = `linear-gradient(96deg,${T.pink} 0%,#F28FB5 34%,#DCC8DE 58%,${T.blue} 100%)`;
+/* the gold that rides every edge — a metal, so it needs the full four stops */
+const GOLDEDGE = `linear-gradient(140deg,#EBD6A8,${T.gold} 45%,#F3E6C4 66%,#B98C33)`;
+const MARBLE = `radial-gradient(120% 80% at 20% 0%,#FFFFFF,#FDFAF7 60%,#F4EDE7)`;
 
 /* ============ i18n — [English, Español] ============ */
 const LangCtx = createContext(0);
@@ -22,6 +27,7 @@ const S = {
   today: ["Today", "Hoy"], sched: ["Schedule", "Agenda"], pts: ["Patients", "Pacientes"],
   inbox: ["Inbox", "Mensajes"], studio: ["Studio", "Estudio"], dash: ["Dashboard", "Panel"],
   opening: ["Opening the clinic…", "Abriendo la clínica…"],
+  bookingLink: ["Booking link", "Enlace de reservas"],
   onBooks: ["On the books", "Citas de hoy"], slotsOpen: ["slots still open", "espacios disponibles"],
   expected: ["Expected today", "Ingreso esperado"], collected: ["collected", "cobrado"],
   waiting: ["Waiting on you", "Esperan respuesta"], msgsUn: ["messages unanswered", "mensajes sin contestar"],
@@ -355,9 +361,10 @@ export default function App() {
       <style>{CSS}</style>
       <div className="app">
         <div className="topline" />
+        <span className="sheen" aria-hidden="true" />
         <header className="top">
           <div className="brand">
-            <span className="mark">AA</span>
+            <img className="mark" src="./assets/aa-logo.png" alt="A&amp;A Healthcare Services LLC" />
             <div><div className="bname">Wellness</div>
               <div className="bsub"><MapPin size={9} /> A&amp;A Healthcare · Loíza, PR</div></div>
           </div>
@@ -376,24 +383,37 @@ export default function App() {
 
         {side === "owner" ? (
           <div className="shell">
-            <nav className="rail">
-              <ul>
-                {[["today", LayoutGrid], ["sched", CalendarDays], ["pts", Users], ["inbox", MessageSquare], ["studio", Sparkles], ["dash", TrendingUp]]
-                  .map(([k, I]) => (
-                    <li key={k}><button className={tab === k ? "nav on" : "nav"} onClick={() => setTab(k)}>
-                      <I size={17} strokeWidth={1.7} /><span>{t(k)}</span>
-                      {k === "inbox" && <em className="dot">{db.threads.filter((x) => x.msgs[x.msgs.length - 1].from === "them").length}</em>}
-                    </button></li>))}
-              </ul>
-            </nav>
-            <main className="main">
-              {tab === "today" && <Today db={db} update={update} go={setTab} />}
-              {tab === "sched" && <Schedule db={db} update={update} />}
-              {tab === "pts" && <Patients db={db} />}
-              {tab === "inbox" && <Inbox db={db} update={update} />}
-              {tab === "studio" && <Studio db={db} update={update} />}
-              {tab === "dash" && <Dashboard db={db} />}
-            </main>
+            <div className="shellInner">
+              <nav className="rail">
+                <span className="raillogo">
+                  <img src="./assets/aa-logo.png" alt="A&amp;A Healthcare Services LLC" />
+                  <em>A&amp;A<br />WELLNESS</em>
+                </span>
+                <ul>
+                  {[["today", LayoutGrid], ["sched", CalendarDays], ["pts", Users], ["inbox", MessageSquare], ["studio", Sparkles], ["dash", TrendingUp]]
+                    .map(([k, I]) => (
+                      <li key={k}><button className={tab === k ? "nav on" : "nav"} onClick={() => setTab(k)}>
+                        <I size={17} strokeWidth={1.7} /><span>{t(k)}</span>
+                        {k === "inbox" && <em className="dot">{db.threads.filter((x) => x.msgs[x.msgs.length - 1].from === "them").length}</em>}
+                      </button></li>))}
+                </ul>
+                <div className="booklink">
+                  <span>{t("bookingLink")}</span>
+                  <em>aawellness.pr/<b>reservar</b></em>
+                </div>
+              </nav>
+              <main className="main">
+                <Arcs />
+                <div className="mainInner">
+                  {tab === "today" && <Today db={db} update={update} go={setTab} />}
+                  {tab === "sched" && <Schedule db={db} update={update} />}
+                  {tab === "pts" && <Patients db={db} />}
+                  {tab === "inbox" && <Inbox db={db} update={update} />}
+                  {tab === "studio" && <Studio db={db} update={update} />}
+                  {tab === "dash" && <Dashboard db={db} />}
+                </div>
+              </main>
+            </div>
           </div>
         ) : <PatientApp db={db} update={update} />}
       </div>
@@ -866,7 +886,17 @@ function PatientApp({ db, update }) {
 
   return (
     <div className="pwrap">
-      <div className="phone">
+      <div className="phoneFrame"><div className="phone">
+        <span className="parcTop" aria-hidden="true"><i /></span>
+        <span className="parcBot" aria-hidden="true"><i /></span>
+        <div className="phoneTop">
+          <span className="phoneBrand">
+            <img src="./assets/aa-logo.png" alt="A&amp;A Healthcare Services LLC" />
+            <span><b>WELLNESS</b><em>Loíza, PR</em></span>
+          </span>
+          <span className="phoneAv">DP</span>
+        </div>
+        <div className="pcard">
         {view.s === "menu" && (<>
           <div className="phero">
             <span className="script">{t("heroScript")}</span>
@@ -905,7 +935,8 @@ function PatientApp({ db, update }) {
             <div className="dbox">{t("doneBox")}</div>
             <button className="btn ghost" onClick={() => setView({ s: "menu" })}>{t("backMenu")}</button>
           </div>)}
-      </div>
+        </div>
+      </div></div>
       <p className="pnote">{t("pNote")}</p>
     </div>);
 }
@@ -968,6 +999,12 @@ function Book({ db, update, s, back, done }) {
   </>);
 }
 
+/* the poster's two arcs, living inside the window: gold-edged pink entering
+   top-right, the pink→blue band riding along the bottom */
+const Arcs = () => (<>
+  <span className="arcTop" aria-hidden="true"><i /></span>
+  <span className="arcBot" aria-hidden="true"><i /></span>
+</>);
 const Head = ({ eyebrow, title }) => (<div className="phead"><span className="eyebrow">{eyebrow}</span><h2>{title}</h2></div>);
 const Kpi = ({ k, v, d, c }) => (
   <div className="kpi"><span className="kbar" style={{ background: c }} />
@@ -975,15 +1012,17 @@ const Kpi = ({ k, v, d, c }) => (
 
 /* ============ styles ============ */
 const CSS = `
-@import url('https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,500;6..96,600;6..96,700&family=Parisienne&family=Inter+Tight:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
-.app *{box-sizing:border-box;margin:0;padding:0}
-.app{font-family:'Inter Tight',system-ui,sans-serif;background:${T.cream};color:${T.ink};min-height:100vh;-webkit-font-smoothing:antialiased}
-.app button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Montserrat:wght@400;500;600;700;800&family=Dancing+Script:wght@600;700&display=swap');
+:where(.app) *{box-sizing:border-box;margin:0;padding:0}
+.app{font-family:'Montserrat',system-ui,sans-serif;background:radial-gradient(120% 90% at 18% 0%,#FFFFFF 0%,#FBF7F4 38%,#F3EAE4 100%);color:${T.ink};min-height:100vh;-webkit-font-smoothing:antialiased}
+.sheen{position:fixed;top:0;left:32%;width:22%;height:100%;background:linear-gradient(100deg,rgba(255,255,255,0),rgba(255,255,255,.7),rgba(255,255,255,0));pointer-events:none;z-index:0;animation:sheen 9s ease-in-out infinite alternate}
+@keyframes sheen{0%{transform:translateX(-18%) skewX(-14deg)}100%{transform:translateX(18%) skewX(-14deg)}}
+:where(.app button){font:inherit;cursor:pointer;border:none;background:none;color:inherit}
 .app button:focus-visible,.app textarea:focus-visible,.app input:focus-visible{outline:2px solid ${T.pink};outline-offset:2px}
-.app h2,.app h4{font-family:'Bodoni Moda',Georgia,serif;font-weight:600}
-.app h3{font-family:'Inter Tight',sans-serif;font-weight:600;letter-spacing:-.01em}
-.mono{font-family:'IBM Plex Mono',monospace;font-size:12.5px;letter-spacing:-.02em}
-.script{font-family:'Parisienne',cursive;color:${T.pink};font-size:26px;line-height:1;display:block}
+.app h2,.app h4{font-family:'Playfair Display',Georgia,serif;font-weight:700}
+.app h3{font-family:'Montserrat',system-ui,sans-serif;font-weight:600;letter-spacing:-.01em}
+.mono{font-family:'Montserrat',system-ui,sans-serif;font-size:12.5px;font-weight:600;letter-spacing:.01em}
+.script{font-family:'Dancing Script',cursive;color:${T.pink};font-size:26px;line-height:1;display:block}
 .script.sm{font-size:18px}.script.big{font-size:38px;color:#fff}
 .goldrule{display:block;height:2px;width:64px;border-radius:2px;background:${GOLDRULE};margin:9px 0}
 .spin{animation:sp 1s linear infinite}@keyframes sp{to{transform:rotate(360deg)}}
@@ -991,8 +1030,8 @@ const CSS = `
 .topline{height:4px;background:${BAND};position:sticky;top:0;z-index:25}
 .top{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 20px;background:${T.surface};border-bottom:1px solid ${T.line};position:sticky;top:4px;z-index:20;flex-wrap:wrap}
 .brand{display:flex;align-items:center;gap:11px}
-.mark{font-family:'Bodoni Moda',Georgia,serif;font-weight:700;font-size:24px;line-height:1;background:linear-gradient(125deg,${T.blueDeep},${T.aqua} 42%,${T.pink});-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:${T.blueDeep}}
-.bname{font-family:'Inter Tight',sans-serif;font-weight:600;font-size:14px;letter-spacing:.16em;text-transform:uppercase}
+.mark{height:52px;width:52px;object-fit:contain;display:block;flex:none}
+.bname{font-family:'Montserrat',system-ui,sans-serif;font-weight:600;font-size:14px;letter-spacing:.16em;text-transform:uppercase}
 .bsub{display:flex;align-items:center;gap:3px;font-size:11px;color:${T.goldInk};font-weight:600}
 .tright{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .reset{color:${T.muted};padding:6px;border-radius:7px}.reset:hover{background:${T.cream};color:${T.ink}}
@@ -1000,16 +1039,29 @@ const CSS = `
 .seg button{padding:7px 15px;border-radius:999px;font-size:13px;color:${T.muted};font-weight:500}
 .seg button.on{background:${T.ink};color:#fff}
 .seg.small button{padding:6px 12px;font-size:12px}
-.seg.lang button{padding:6px 11px;font-family:'IBM Plex Mono',monospace;font-size:11px}
+.seg.lang button{padding:6px 11px;font-family:'Montserrat',system-ui,sans-serif;font-size:11px}
 .seg.lang button.on{background:${T.pink}}
-.shell{display:flex;align-items:flex-start}
-.rail{width:184px;flex:none;padding:20px 12px}
+.shell{position:relative;z-index:1;max-width:1320px;margin:20px auto 46px;padding:2px;border-radius:24px;background:${GOLDEDGE};box-shadow:0 26px 60px -40px rgba(34,60,100,.75)}
+.shellInner{display:flex;align-items:stretch;background:#FFFDFA;border-radius:22px;overflow:hidden;min-height:660px}
+.rail{width:186px;flex:none;padding:18px 12px;display:flex;flex-direction:column;gap:16px;background:linear-gradient(180deg,#FFFFFF,#FBF6EF);border-right:1px solid ${T.hairSoft}}
+.raillogo{display:flex;align-items:center;gap:9px;padding:0 8px 13px;border-bottom:1px solid ${T.hairSoft}}
+.raillogo img{height:46px;width:46px;object-fit:contain;display:block;flex:none}
+.raillogo em{font-style:normal;font-size:9.5px;letter-spacing:.16em;font-weight:800;color:${T.goldInk};line-height:1.5}
+.booklink{margin-top:auto;border:1px solid ${T.hair};border-radius:14px;background:#fff;padding:12px}
+.booklink span{display:block;font-size:10px;letter-spacing:.12em;text-transform:uppercase;font-weight:800;color:${T.goldInk};margin-bottom:6px}
+.booklink em{display:block;font-style:normal;font-size:11.5px;color:#4B6484;line-height:1.5}
+.booklink b{color:${T.magenta}}
 .rail ul{list-style:none;display:flex;flex-direction:column;gap:2px}
 .nav{display:flex;align-items:center;gap:10px;width:100%;padding:9px 12px;border-radius:10px;font-size:14px;color:${T.muted};position:relative}
 .nav:hover{background:rgba(238,75,158,.07);color:${T.ink}}
 .nav.on{background:${T.surface};color:${T.pink};font-weight:600;box-shadow:0 2px 6px rgba(34,72,91,.08)}
-.dot{position:absolute;right:11px;font-style:normal;font-family:'IBM Plex Mono',monospace;font-size:10px;background:${T.pink};color:#fff;border-radius:999px;padding:1px 6px}
-.main{flex:1;padding:22px 26px 70px;min-width:0;max-width:1140px}
+.dot{position:absolute;right:11px;font-style:normal;font-family:'Montserrat',system-ui,sans-serif;font-size:10px;background:${T.pink};color:#fff;border-radius:999px;padding:1px 6px}
+.main{flex:1;padding:24px 24px 96px;min-width:0;position:relative;overflow:hidden;background:radial-gradient(120% 70% at 85% 0%,#FFFFFF,#FDFAF7 60%,#F7F1EA)}
+.mainInner{position:relative;z-index:1}
+.arcTop{position:absolute;top:-92px;right:-96px;width:46%;height:236px;border-radius:0 0 0 100%;background:linear-gradient(260deg,#EBD6A8,${T.gold} 40%,#F3E6C4 62%,#B98C33);pointer-events:none}
+.arcTop i{position:absolute;top:0;left:5px;right:0;bottom:5px;border-radius:0 0 0 100%;background:linear-gradient(210deg,${T.pink},#F072A2 55%,#F9C8DC);display:block}
+.arcBot{position:absolute;bottom:0;left:-10%;right:-10%;height:104px;border-radius:64% 20% 0 0 / 100% 46% 0 0;background:linear-gradient(100deg,#EBD6A8,${T.gold} 40%,#F3E6C4 62%,#B98C33);pointer-events:none}
+.arcBot i{position:absolute;top:5px;left:0;right:0;bottom:0;border-radius:64% 20% 0 0 / 100% 46% 0 0;background:${BAND};display:block}
 .phead{margin-bottom:16px}
 .dhead{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .eyebrow{display:block;color:${T.goldInk};text-transform:uppercase;letter-spacing:.12em;font-size:11px;font-weight:700;margin-bottom:6px}
@@ -1018,20 +1070,20 @@ const CSS = `
 .card{background:${T.surface};border:1px solid ${T.line};border-radius:16px;padding:17px;box-shadow:0 2px 10px rgba(34,72,91,.04)}
 .chead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:13px}
 .chead h3{font-size:15px}
-.unit{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:${T.muted}}
+.unit{font-family:'Montserrat',system-ui,sans-serif;font-size:11.5px;color:${T.muted}}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-bottom:13px;align-items:start}
 .stack{display:flex;flex-direction:column;gap:13px}
 .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:13px}
 .kpi{background:${T.surface};border:1px solid ${T.line};border-radius:16px;padding:15px;position:relative;overflow:hidden;box-shadow:0 2px 10px rgba(34,72,91,.04)}
 .kbar{position:absolute;left:0;top:0;bottom:0;width:4px}
 .kk{display:block;font-size:12px;color:${T.muted};margin-bottom:5px}
-.kv{display:block;font-family:'Bodoni Moda',Georgia,serif;font-weight:600;font-size:27px}
+.kv{display:block;font-family:'Playfair Display',Georgia,serif;font-weight:600;font-size:27px}
 .kd{display:block;color:${T.muted};margin-top:3px}
 .agenda{list-style:none}
 .appt{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid ${T.cream}}
 .appt:last-child{border:none}.appt.done{opacity:.45}
 .appt.now{background:linear-gradient(90deg,rgba(238,75,158,.09),transparent);margin:0 -8px;padding:10px 8px;border-radius:10px}
-.time{font-family:'IBM Plex Mono',monospace;font-size:12px;width:42px;flex:none;color:${T.muted}}
+.time{font-family:'Montserrat',system-ui,sans-serif;font-size:12px;width:42px;flex:none;color:${T.muted}}
 .stripe{width:3px;height:26px;border-radius:2px;flex:none}
 .who{flex:1;min-width:0}
 .who b{display:block;font-size:13.5px;font-weight:600}
@@ -1041,9 +1093,9 @@ const CSS = `
 .mini:hover{border-color:${T.pink};color:${T.pink}}
 .mini.solid{background:${T.pink};color:#fff;border-color:${T.pink}}
 .mini.gold{border-color:${T.goldSoft};color:${T.goldInk}}
-.paid{display:flex;align-items:center;gap:4px;font-size:11px;color:${T.teal};font-family:'IBM Plex Mono',monospace}
+.paid{display:flex;align-items:center;gap:4px;font-size:11px;color:${T.teal};font-family:'Montserrat',system-ui,sans-serif}
 .slotchips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:11px}
-.schip{font-family:'IBM Plex Mono',monospace;font-size:11.5px;border:1px solid rgba(46,144,217,.35);background:linear-gradient(160deg,rgba(111,211,236,.2),rgba(238,75,158,.08));color:#1F6F94;border-radius:8px;padding:5px 9px}
+.schip{font-family:'Montserrat',system-ui,sans-serif;font-size:11.5px;border:1px solid rgba(46,144,217,.35);background:linear-gradient(160deg,rgba(111,211,236,.2),rgba(238,75,158,.08));color:#1F6F94;border-radius:8px;padding:5px 9px}
 .postrow{display:flex;gap:11px;align-items:flex-start}
 .pthumb{width:42px;height:42px;border-radius:11px;display:grid;place-items:center;flex:none}
 .postrow b{display:block;font-size:12.5px}
@@ -1055,12 +1107,12 @@ const CSS = `
 .promoInner{background:linear-gradient(160deg,#FFFDFB,${T.cream});border-radius:15px;padding:18px;border:1px solid rgba(201,162,39,.35)}
 .promoTop{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
 .promoIcon{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;color:${T.goldInk};border:1px solid ${T.goldSoft};background:#fff}
-.promoHead{font-family:'Bodoni Moda',Georgia,serif;font-weight:700;font-size:25px;line-height:1;letter-spacing:.01em;color:${T.blueDeep}}
+.promoHead{font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:25px;line-height:1;letter-spacing:.01em;color:${T.blueDeep}}
 .promoBlurb{font-size:13px;color:${T.muted};line-height:1.6;margin-bottom:12px}
 .steps{display:flex;flex-direction:column;gap:7px;margin-bottom:11px}
 .step{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid;border-radius:11px;padding:9px 12px;background:#fff}
 .step span{font-size:12.5px;color:${T.ink};line-height:1.35}
-.step b{font-family:'Bodoni Moda',Georgia,serif;font-size:17px;white-space:nowrap}
+.step b{font-family:'Playfair Display',Georgia,serif;font-size:17px;white-space:nowrap}
 .terms{font-size:11.5px;color:${T.muted};line-height:1.55;border-top:1px solid ${T.line};padding-top:9px}
 .terms b{color:#C9186F;letter-spacing:.06em}
 .menugrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:9px}
@@ -1077,8 +1129,8 @@ const CSS = `
 .acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
 .grid-wrap{overflow-x:auto;margin-bottom:13px}
 .grid{display:grid;gap:4px;min-width:640px}
-.gh{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:${T.muted};text-align:center;padding-bottom:4px}
-.gt{font-family:'IBM Plex Mono',monospace;font-size:11px;color:${T.muted};display:flex;align-items:center}
+.gh{font-family:'Montserrat',system-ui,sans-serif;font-size:10.5px;color:${T.muted};text-align:center;padding-bottom:4px}
+.gt{font-family:'Montserrat',system-ui,sans-serif;font-size:11px;color:${T.muted};display:flex;align-items:center}
 .slot{border-radius:8px;padding:9px 4px;font-size:11px;text-align:center}
 .slot.open{background:linear-gradient(160deg,rgba(111,211,236,.22),rgba(238,75,158,.09));border:1px solid rgba(46,144,217,.4);color:#1F6F94}
 .slot.shut{background:${T.cream};border:1px dashed ${T.line};color:${T.muted}}
@@ -1086,12 +1138,12 @@ const CSS = `
 .slot.bk{border:1px solid;background:#fff}
 .conns{list-style:none;display:flex;flex-direction:column;gap:9px;margin-bottom:11px}
 .conns li{display:flex;align-items:center;gap:9px;font-size:13px}
-.conns em{margin-left:auto;font-style:normal;font-family:'IBM Plex Mono',monospace;font-size:11px;color:${T.muted}}
+.conns em{margin-left:auto;font-style:normal;font-family:'Montserrat',system-ui,sans-serif;font-size:11px;color:${T.muted}}
 .ok{width:17px;height:17px;border-radius:50%;background:${T.teal};color:#fff;display:grid;place-items:center;flex:none}
 .rules{list-style:none;display:flex;flex-direction:column;gap:8px}
 .rules li{font-size:13px;color:${T.muted};padding-left:12px;border-left:2px solid ${T.goldSoft}}
 .tbl{width:100%;border-collapse:collapse;font-size:13px}
-.tbl th{text-align:left;font-family:'IBM Plex Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:${T.muted};font-weight:400;padding:0 10px 9px;border-bottom:1px solid ${T.line}}
+.tbl th{text-align:left;font-family:'Montserrat',system-ui,sans-serif;font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:${T.muted};font-weight:400;padding:0 10px 9px;border-bottom:1px solid ${T.line}}
 .tbl td{padding:10px;border-bottom:1px solid ${T.cream}}
 .tbl tbody tr:hover{background:${T.cream};cursor:pointer}
 .tbl .right{text-align:right}
@@ -1107,16 +1159,16 @@ const CSS = `
 .panel{background:${T.surface};width:min(400px,92vw);padding:24px;overflow-y:auto;position:relative}
 .modal{background:${T.surface};width:min(380px,92vw);margin:auto;border-radius:18px;padding:24px;position:relative;height:fit-content;border-top:4px solid ${T.pink}}
 .x{position:absolute;top:15px;right:15px;color:${T.muted}}
-.panel h3,.modal h3{font-size:20px;font-family:'Bodoni Moda',Georgia,serif}
+.panel h3,.modal h3{font-size:20px;font-family:'Playfair Display',Georgia,serif}
 .sub{font-size:12.5px;color:${T.muted};margin-bottom:14px}
 .creditRow{display:flex;align-items:center;gap:8px;width:100%;border:1px solid ${T.goldSoft};background:rgba(201,162,39,.1);border-radius:11px;padding:11px;font-size:13px;color:${T.goldInk};margin-bottom:10px}
 .creditRow.on{background:rgba(201,162,39,.18)}
 .ckbox{width:15px;height:15px;border-radius:4px;border:1px solid ${T.gold};display:grid;place-items:center;flex:none}
 .totalRow{display:flex;justify-content:space-between;align-items:baseline;padding:10px 0;border-top:1px solid ${T.line};border-bottom:1px solid ${T.line};margin-bottom:13px;font-size:12.5px;color:${T.muted}}
-.totalRow b{font-family:'Bodoni Moda',Georgia,serif;font-size:23px;color:${T.ink}}
+.totalRow b{font-family:'Playfair Display',Georgia,serif;font-size:23px;color:${T.ink}}
 .stats{display:flex;gap:18px;padding:13px 0;border-top:1px solid ${T.line};border-bottom:1px solid ${T.line};margin-bottom:14px}
 .stats b{display:block;font-size:15px}.stats span{font-size:11px;color:${T.muted}}
-.mini-h{display:flex;align-items:center;gap:6px;font-family:'Inter Tight',sans-serif;font-weight:700;font-size:11.5px;text-transform:uppercase;letter-spacing:.09em;color:${T.goldInk};margin:16px 0 8px}
+.mini-h{display:flex;align-items:center;gap:6px;font-family:'Montserrat',system-ui,sans-serif;font-weight:700;font-size:11.5px;text-transform:uppercase;letter-spacing:.09em;color:${T.goldInk};margin:16px 0 8px}
 .hist{list-style:none;display:flex;flex-direction:column;gap:9px}
 .hist li{display:flex;align-items:center;gap:9px;font-size:12.5px}
 .hist b{display:block;font-size:12.5px}.hist em{font-style:normal;color:${T.muted}}
@@ -1147,7 +1199,7 @@ const CSS = `
 .empty{font-size:13.5px;color:${T.muted};line-height:1.6;padding:26px 8px;text-align:center}
 .empty.sm{padding:12px 4px;font-size:12.5px}
 .studio{grid-template-columns:1fr 1.12fr}
-.fl{display:block;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:${T.goldInk};margin:14px 0 7px}
+.fl{display:block;font-family:'Montserrat',system-ui,sans-serif;font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:${T.goldInk};margin:14px 0 7px}
 .fl:first-of-type{margin-top:0}
 .pills{display:flex;flex-wrap:wrap;gap:6px}
 .pill{display:flex;align-items:center;gap:6px;border:1px solid ${T.line};border-radius:999px;padding:6px 12px;font-size:12.5px;color:${T.muted}}
@@ -1156,16 +1208,16 @@ const CSS = `
 .pill.on{border-color:${T.ink};color:${T.ink};font-weight:500}
 .poster{border-radius:18px;padding:3px;background:${BAND}}
 .posterInner{border-radius:15px;padding:22px;color:#fff;background:linear-gradient(155deg,rgba(34,72,91,.86),rgba(34,72,91,.96));border:1px solid rgba(227,203,134,.5)}
-.pbadge{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.12em;background:${GOLDRULE};color:#3B2F06;padding:4px 11px;border-radius:999px;margin-bottom:12px;font-weight:500}
+.pbadge{display:inline-block;font-family:'Montserrat',system-ui,sans-serif;font-size:11px;text-transform:uppercase;letter-spacing:.12em;background:${GOLDRULE};color:#3B2F06;padding:4px 11px;border-radius:999px;margin-bottom:12px;font-weight:500}
 .posterInner h4{font-size:29px;line-height:1.05;text-transform:uppercase;letter-spacing:.01em}
 .posterInner .goldrule{margin:11px 0 10px}
 .posterInner p{font-size:13.5px;opacity:1;line-height:1.5;margin-bottom:13px}
 .posterInner ul{list-style:none;display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
 .posterInner li{display:flex;align-items:center;gap:7px;font-size:13.5px;opacity:1}
 .pcta{display:inline-block;background:${T.pink};color:#fff;padding:9px 18px;border-radius:999px;font-size:13px;font-weight:600}
-.pfoot{display:block;font-family:'IBM Plex Mono',monospace;font-size:10.5px;opacity:.88;margin-top:16px;letter-spacing:.04em}
+.pfoot{display:block;font-family:'Montserrat',system-ui,sans-serif;font-size:10.5px;opacity:.88;margin-top:16px;letter-spacing:.04em}
 .cap{border:1px solid ${T.line};border-radius:12px;padding:13px;margin-top:12px}
-.caphead{display:flex;align-items:center;gap:6px;font-family:'IBM Plex Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:${T.goldInk};margin-bottom:8px}
+.caphead{display:flex;align-items:center;gap:6px;font-family:'Montserrat',system-ui,sans-serif;font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:${T.goldInk};margin-bottom:8px}
 .cap p{font-size:13.5px;line-height:1.55}
 .tags2{color:${T.blueDeep};font-size:12.5px;margin-top:6px}
 .vials{display:flex;gap:11px;align-items:flex-end}
@@ -1173,18 +1225,30 @@ const CSS = `
 .tube{position:relative;height:168px;border:1px solid ${T.line};border-radius:5px 5px 10px 10px;background:linear-gradient(${T.cream},#FFFDFB);overflow:hidden;display:flex;align-items:flex-end}
 .grad{position:absolute;left:0;top:8px;bottom:8px;width:7px;background:repeating-linear-gradient(to bottom,${T.line} 0 1px,transparent 1px 18px);z-index:2}
 .liquid{width:100%;transition:height .9s cubic-bezier(.22,.9,.3,1);border-radius:3px 3px 9px 9px}
-.vlabel b{display:block;font-family:'IBM Plex Mono',monospace;font-size:12.5px;font-weight:500}
+.vlabel b{display:block;font-family:'Montserrat',system-ui,sans-serif;font-size:12.5px;font-weight:500}
 .vlabel span{display:block;font-size:11.5px;line-height:1.35;margin-top:3px}
-.vlabel em{display:block;font-family:'IBM Plex Mono',monospace;font-size:11px;color:${T.muted};font-style:normal;margin-top:2px}
+.vlabel em{display:block;font-family:'Montserrat',system-ui,sans-serif;font-size:11px;color:${T.muted};font-style:normal;margin-top:2px}
 .pwrap{padding:28px 18px 60px;display:flex;flex-direction:column;align-items:center;gap:16px}
-.phone{width:min(400px,100%);background:${T.surface};border:1px solid ${T.line};border-radius:28px;padding:6px;box-shadow:0 22px 55px -30px rgba(34,72,91,.55)}
-.phone>*{padding-left:18px;padding-right:18px}
-.phero{background:linear-gradient(155deg,#FFF8FB,#F2F7FC);border-radius:24px 24px 16px 16px;padding:26px 20px 20px !important;margin-bottom:14px;border-bottom:2px solid transparent;border-image:${GOLDRULE} 1}
-.phero h2{font-size:26px;line-height:1.05;letter-spacing:.02em;color:${T.blueDeep};margin-top:2px}
+/* the phone: gold frame, marble screen, arcs in the header and the footer */
+.phoneFrame{width:min(392px,100%);padding:3px;border-radius:42px;background:${GOLDEDGE};box-shadow:0 26px 60px -38px rgba(34,60,100,.8)}
+.phone{position:relative;overflow:hidden;border-radius:39px;background:${MARBLE};padding-bottom:18px}
+.parcTop{position:absolute;top:-60px;left:-70px;width:74%;height:180px;border-radius:0 0 100% 0;background:linear-gradient(110deg,#EBD6A8,${T.gold} 50%,#F3E6C4);pointer-events:none}
+.parcTop i{position:absolute;top:0;left:0;right:4px;bottom:4px;border-radius:0 0 100% 0;background:linear-gradient(150deg,${T.pink},#F28FB5 60%,#F9C8DC);display:block}
+.parcBot{position:absolute;bottom:0;left:-12%;right:-12%;height:92px;border-radius:64% 20% 0 0 / 100% 46% 0 0;background:linear-gradient(110deg,#EBD6A8,${T.gold} 50%,#F3E6C4);pointer-events:none}
+.parcBot i{position:absolute;top:4px;left:0;right:0;bottom:0;border-radius:64% 20% 0 0 / 100% 46% 0 0;background:${BAND};display:block}
+.phoneTop{position:relative;z-index:1;padding:22px 16px 0;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.phoneBrand{display:flex;align-items:center;gap:8px}
+.phoneBrand img{height:44px;width:44px;object-fit:contain;border-radius:12px;background:#fff;padding:3px;display:block;box-shadow:0 2px 8px -3px rgba(34,60,100,.35)}
+.phoneBrand b{display:block;font-size:11px;letter-spacing:.14em;font-weight:800;color:#fff}
+.phoneBrand em{display:block;font-style:normal;font-size:9.5px;color:rgba(255,255,255,.85)}
+.phoneAv{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.9);display:grid;place-items:center;font-size:11px;font-weight:800;color:${T.magenta}}
+.pcard{position:relative;z-index:1;margin:20px 14px 0;background:#fff;border:1px solid ${T.line};border-radius:26px;padding:16px;box-shadow:0 8px 26px -14px rgba(34,60,100,.3)}
+.phero{margin-bottom:13px}
+.phero h2{font-size:28px;line-height:1;font-weight:700;letter-spacing:.01em;color:${T.blue};margin-top:5px}
 .founder{display:block;font-size:11px;color:${T.goldInk};letter-spacing:.06em;text-transform:uppercase;font-weight:700}
 .promoStrip{display:flex;gap:8px;overflow-x:auto;padding-bottom:12px}
 .pstrip{flex:none;min-width:150px;border-radius:14px;padding:12px;background:linear-gradient(150deg,#FFF6FA,#EEF5FC);border:1px solid ${T.goldSoft}}
-.pstrip b{display:block;font-family:'Bodoni Moda',Georgia,serif;font-size:15px;line-height:1.1;color:${T.blueDeep};margin-top:2px}
+.pstrip b{display:block;font-family:'Playfair Display',Georgia,serif;font-size:15px;line-height:1.1;color:${T.blueDeep};margin-top:2px}
 .pstrip em{display:block;font-style:normal;font-size:12px;color:#C9186F;font-weight:600;margin-top:5px}
 .plist{display:flex;flex-direction:column;gap:7px}
 .pitem{display:flex;align-items:center;gap:11px;width:100%;text-align:left;border:1px solid ${T.line};border-radius:14px;padding:12px;background:#fff}
@@ -1217,18 +1281,18 @@ const CSS = `
 .days{display:flex;gap:6px;margin-bottom:13px}
 .day{flex:1;border:1px solid ${T.line};border-radius:12px;padding:9px 0;text-align:center;background:#fff}
 .day em{display:block;font-style:normal;font-size:10px;color:${T.muted}}
-.day b{display:block;font-size:15px;font-family:'IBM Plex Mono',monospace;font-weight:500}
+.day b{display:block;font-size:15px;font-family:'Montserrat',system-ui,sans-serif;font-weight:500}
 .day.on{background:${T.blueDeep};border-color:${T.blueDeep};color:#fff}
 .day.on em{color:rgba(255,255,255,.75)}
 .times{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
-.tslot{border:1px solid ${T.line};border-radius:11px;padding:10px 0;font-family:'IBM Plex Mono',monospace;font-size:12px;background:#fff}
+.tslot{border:1px solid ${T.line};border-radius:11px;padding:10px 0;font-family:'Montserrat',system-ui,sans-serif;font-size:12px;background:#fff}
 .tslot.on{background:${T.pink};border-color:${T.pink};color:#fff}
 .form{display:flex;flex-direction:column;gap:7px;margin-top:12px}
 .inp{border:1px solid ${T.line};border-radius:12px;padding:11px;font:inherit;font-size:13.5px;background:${T.surface};color:${T.ink}}
 .done{text-align:center;padding:26px 0}
 .tick2{width:56px;height:56px;border-radius:50%;background:${BAND};color:#fff;display:grid;place-items:center;margin:0 auto 15px}
 .done h2{font-size:26px;margin-bottom:8px}
-.dline{display:flex;align-items:center;justify-content:center;gap:6px;font-family:'IBM Plex Mono',monospace;font-size:13px}
+.dline{display:flex;align-items:center;justify-content:center;gap:6px;font-family:'Montserrat',system-ui,sans-serif;font-size:13px}
 .dsvc{font-size:12.5px;color:${T.muted};margin-top:4px}
 .dbox{background:${T.cream};border:1px solid ${T.goldSoft};border-radius:13px;padding:14px;font-size:12.5px;color:${T.muted};line-height:1.6;margin:16px 0;text-align:left}
 .pnote{font-size:12.5px;color:${T.muted};max-width:46ch;text-align:center;line-height:1.6}
@@ -1245,5 +1309,137 @@ const CSS = `
   .phead h2{font-size:26px}
   .modal{margin:auto 12px}
 }
-@media (prefers-reduced-motion:reduce){.liquid{transition:none}.spin{animation:none}}
+
+/* ============================================================
+   NÁCAR — the poster's construction applied to the console:
+   marble surfaces, gold hairlines, ombré arcs, gold-ringed
+   medallions, and every amount in a solid pill.
+   ============================================================ */
+/* app chrome */
+.topline{background:${BAND}}
+.top{background:rgba(255,255,255,.96);border-bottom:1px solid ${T.goldSoft};box-shadow:0 8px 30px -28px rgba(34,60,100,.45)}
+.bname{color:${T.ink}}
+.bsub{color:${T.goldInk};font-weight:700}
+.seg{background:#FBF6EF;border-color:${T.hairSoft}}
+.seg button{color:#4B6484;font-weight:600}
+.seg button.on{background:${T.ink};color:#fff}
+.seg.lang button.on{background:${T.pink}}
+.reset:hover{background:#FFF6FA;color:${T.magenta}}
+
+/* rail */
+.nav{border:1px solid transparent;border-radius:12px;font-weight:500;color:#4B6484}
+.nav:hover{background:#FFF8F5;border-color:${T.hair};color:${T.ink}}
+.nav.on{background:linear-gradient(100deg,#FFF6FA,#F6FAFF);border-color:${T.goldSoft};color:${T.magenta};font-weight:700;box-shadow:none}
+.dot{font-weight:800;font-size:10px;padding:2px 6px}
+
+/* type */
+.eyebrow{font-size:10.5px;letter-spacing:.13em;font-weight:800;color:${T.goldInk}}
+.phead h2{font-size:30px;line-height:1}
+.chead h3,.card h3,.panel h3,.modal h3{font-family:'Playfair Display',Georgia,serif;font-weight:700;color:${T.ink}}
+.chead h3{font-size:17px}
+.lede{color:#4B6484}
+.script{font-size:34px;font-weight:700;color:${T.pink}}
+.goldrule{background:linear-gradient(90deg,${T.gold},rgba(198,154,68,0));height:1.5px;width:auto}
+.mini-h,.fl{color:${T.goldInk};font-weight:800;letter-spacing:.12em}
+
+/* surfaces — white, gold hairline, no grey shadows */
+.card,.kpi{background:#fff;border:1px solid #EBDCBB;border-radius:18px;box-shadow:none}
+.panel,.modal{background:#fff;border:1px solid #EBDCBB;border-radius:18px}
+.modal{border-top:none}
+.appt{border-bottom-color:#F2E7D3}
+.mtile,.thread,.slot,.pitem,.step,.cap,.dbox,.day,.tslot,.inp,.ta,.composer textarea{border-color:${T.hair}}
+.note,.dbox{background:#FBF7F1;border:1px solid ${T.hair}}
+
+/* KPI figures in Playfair, colour carried by the left rule */
+.kbar{width:4px}
+.kk{font-size:11px;color:#5A7091}
+.kv{font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:27px}
+.kd{font-size:10.5px;color:${T.goldInk}}
+
+/* the day: time, colour stripe, then the amount and its status pill */
+.time{color:#5A7091;font-weight:600;width:46px}
+.stripe{width:4px;height:30px;border-radius:3px}
+.who b{font-weight:600}
+.who span{color:#5A7091}
+.paid{color:${T.deep};font-weight:700;font-size:10px;letter-spacing:.06em;text-transform:uppercase;background:${T.blueWash};border-radius:999px;padding:4px 9px}
+.mini{border-color:${T.goldSoft};color:#4B6484;border-radius:9px;font-weight:600}
+.mini:hover{border-color:${T.pink};color:${T.magenta}}
+.mini.solid{background:${T.pink};border-color:${T.pink};color:#fff}
+.mini.gold{border-color:${T.goldSoft};color:${T.goldInk};background:#FBF2DC}
+
+/* medallions: a solid disc inside a gold ring */
+.av{background:${BAND} padding-box,${GOLDEDGE} border-box;border:1.5px solid transparent;font-weight:800;width:34px;height:34px}
+.av.big{width:52px;height:52px;font-size:14px}
+.tick2{background:${BAND} padding-box,${GOLDEDGE} border-box;border:2px solid transparent}
+
+/* amounts and states, always a pill */
+.chip{border-color:#CFE2F3;background:#EAF3FB;color:${T.deep};font-weight:700;font-size:11px;letter-spacing:.04em}
+.creditPill{background:#FBF2DC;border-color:${T.goldSoft};color:${T.goldInk};font-weight:700}
+.hot{color:${T.magenta};font-weight:700}
+.link{color:${T.magenta}}
+.price{font-size:13.5px;font-weight:700;color:${T.deep};background:${T.blueWash};border-radius:9px;padding:4px 11px}
+.schip{background:#FBF2DC;border:1px dashed #E6D4AE;color:${T.goldInk};font-weight:600}
+
+/* buttons: magenta inside a gold ring */
+.btn{background:linear-gradient(100deg,${T.pink},#D62170) padding-box,${GOLDEDGE} border-box;border:2px solid transparent;font-weight:700;letter-spacing:.02em}
+.btn:hover{filter:brightness(1.07);background:linear-gradient(100deg,${T.pink},#D62170) padding-box,${GOLDEDGE} border-box}
+.btn.ghost{background:linear-gradient(#fff,#fff) padding-box,${GOLDEDGE} border-box;color:${T.ink}}
+.btn.ghost:hover{background:linear-gradient(#FFF8F5,#FFF8F5) padding-box,${GOLDEDGE} border-box;filter:none}
+.pcta{background:linear-gradient(100deg,${T.pink},#D62170) padding-box,${GOLDEDGE} border-box;border:2px solid transparent}
+
+/* table */
+.tbl th{background:#FBF6EF;font-family:'Montserrat',system-ui,sans-serif;font-size:10px;font-weight:800;letter-spacing:.11em;color:${T.goldInk};border-bottom:1px solid ${T.hairSoft}}
+.tbl td{border-bottom-color:#F5EDE0}
+.tbl tbody tr:hover{background:#FFF9FC}
+
+/* schedule grid — magenta booked, blue reserved online, dotted gold free */
+.slot.open{background:#FBF2DC;border:1px dashed #E6D4AE;color:${T.goldInk};font-weight:600}
+.slot.shut{background:#FBF7F1;border:1px dashed ${T.hair};color:#B39A63}
+.slot.na{background:repeating-linear-gradient(45deg,#FBF7F1 0 4px,transparent 4px 8px)}
+.rules li{border-left-color:${T.gold}}
+
+/* inbox */
+.thread:hover,.thread.on{background:#FFF9FC}
+.chi{border-radius:9px}
+.bubble.them{background:#FBF6EF}
+.bubble.mine{background:${BAND};color:#fff}
+
+/* studio + promos keep the poster frame */
+.promo{background:${GOLDEDGE}}
+.promoInner{background:linear-gradient(160deg,#FFFDFB,#FBF7F4);border-color:${T.goldSoft}}
+.promoHead{font-family:'Playfair Display',Georgia,serif;color:${T.blue}}
+.promoHead em,.terms b{color:${T.magenta}}
+.poster{background:${GOLDEDGE}}
+.pbadge{background:${GOLDRULE};color:#3B2F06;font-family:'Montserrat',system-ui,sans-serif;font-weight:700}
+.pill.on{background:#FFF6FA;border-color:${T.pink};color:${T.magenta};font-weight:700}
+.pill:hover{border-color:${T.goldSoft}}
+
+/* dashboard bars */
+.liquid{border-radius:8px 8px 3px 3px}
+.tube{border-color:${T.hair};background:linear-gradient(#FBF7F1,#FFFDFB)}
+
+/* patient phone interior */
+.pcard .phero h2{color:${T.blue}}
+.founder{color:${T.goldInk};font-weight:800;letter-spacing:.13em}
+.pstrip{background:linear-gradient(150deg,#FFF6FA,#F6FAFF);border-color:${T.goldSoft}}
+.pstrip b{font-family:'Playfair Display',Georgia,serif;color:${T.blue}}
+.pstrip em{color:${T.magenta};font-weight:700}
+.pitem{background:#FFFDFA;border-radius:14px}
+.pitem:hover{border-color:${T.pink}}
+.pbar{width:5px;border-radius:3px}
+.day.on{background:${T.ink};border-color:${T.ink}}
+.tslot.on{background:${T.pink};border-color:${T.pink}}
+.warn{background:#FFF9FC;border-color:#F6D2E3}
+.dhprice{background:rgba(255,255,255,.24);font-weight:700}
+.pnote,.pfine{color:#4B6484}
+
+@media (max-width:900px){
+  .shell{margin:12px 10px 74px;border-radius:20px}
+  .shellInner{display:block;border-radius:18px;min-height:0}
+  .rail{width:100%;position:fixed;bottom:0;left:0;background:#FFFDFA;border-right:none;border-top:1px solid ${T.goldSoft};padding:5px;gap:0;z-index:30}
+  .raillogo,.booklink{display:none}
+  .main{padding:18px 15px 96px}
+  .arcTop{width:62%;top:-70px;right:-70px;height:180px}
+}
+@media (prefers-reduced-motion:reduce){.liquid{transition:none}.spin{animation:none}.sheen{animation:none}}
 `;

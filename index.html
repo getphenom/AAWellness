@@ -1,21 +1,50 @@
 <!doctype html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>AA Wellness</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    *{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:#F8F3ED;color:#22485B;font-family:Arial,sans-serif;padding:24px}.card{width:min(680px,100%);background:white;border:1px solid #E6DFD4;border-radius:24px;padding:34px;box-shadow:0 18px 50px rgba(34,72,91,.10);text-align:center}.brand{font-family:Georgia,serif;font-size:48px;font-weight:700;background:linear-gradient(125deg,#2E90D9,#6FD3EC 42%,#EE4B9E);-webkit-background-clip:text;background-clip:text;color:transparent}.sub{letter-spacing:.18em;text-transform:uppercase;font-weight:700;font-size:14px;margin:4px 0 28px}.options{display:grid;grid-template-columns:1fr 1fr;gap:14px}.option{display:block;text-decoration:none;border-radius:18px;padding:26px 18px;border:1px solid #E6DFD4;color:#22485B;background:#fff}.option:hover{border-color:#EE4B9E;transform:translateY(-1px)}.option b{display:block;font-size:20px;margin-bottom:7px}.option span{font-size:14px;color:#55747F;line-height:1.45}.app{border-top:4px solid #EE4B9E}.design{border-top:4px solid #2E90D9}@media(max-width:560px){.options{grid-template-columns:1fr}.card{padding:26px 18px}}
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100vh;display:grid;place-items:center;padding:24px;color:#223C64;
+      font-family:'Montserrat',system-ui,sans-serif;-webkit-font-smoothing:antialiased;
+      background:radial-gradient(120% 90% at 18% 0%,#FFFFFF 0%,#FBF7F4 38%,#F3EAE4 100%)}
+    /* 2px of gold around a marble card — the poster's frame */
+    .frame{width:min(680px,100%);padding:2px;border-radius:26px;
+      background:linear-gradient(140deg,#EBD6A8,#C69A44 45%,#F3E6C4 66%,#B98C33);
+      box-shadow:0 30px 70px -46px rgba(34,60,100,.55)}
+    .card{background:#FFFDFA;border-radius:24px;padding:34px;text-align:center}
+    .logo{height:96px;width:auto;display:block;margin:0 auto 14px}
+    .kicker{display:flex;align-items:center;justify-content:center;gap:10px;font-size:10.5px;
+      letter-spacing:.15em;text-transform:uppercase;font-weight:800;color:#8A6A10;margin-bottom:9px}
+    .kicker i{display:block;width:38px;height:1px;background:linear-gradient(90deg,#C69A44,rgba(198,154,68,0))}
+    .brand{font-family:'Playfair Display',Georgia,serif;font-size:40px;font-weight:700;line-height:1;color:#8CBCE4}
+    .brand span{color:#E52E7B}
+    .sub{font-size:13px;color:#4B6484;margin:10px 0 26px;line-height:1.6}
+    .options{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+    .option{display:block;text-align:left;text-decoration:none;color:#223C64;background:#fff;
+      border:1px solid #EBDCBB;border-radius:18px;padding:20px 18px;position:relative;overflow:hidden}
+    .option:before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:#E52E7B}
+    .option.design:before{background:#8CBCE4}
+    .option:hover{border-color:#C69A44}
+    .option b{display:block;font-family:'Playfair Display',Georgia,serif;font-size:19px;font-weight:700;margin-bottom:6px}
+    .option span{display:block;font-size:12.5px;color:#5A7091;line-height:1.5}
+    @media(max-width:560px){.card{padding:26px 18px}.brand{font-size:32px}}
   </style>
 </head>
 <body>
-  <main class="card">
-    <div class="brand">A&amp;A</div>
-    <div class="sub">Wellness</div>
+  <main class="frame"><div class="card">
+    <img class="logo" src="./assets/aa-logo.png" alt="A&amp;A Healthcare Services LLC">
+    <div class="kicker">A&amp;A Wellness <i></i> Nácar</div>
+    <div class="brand">BIENESTAR EN <span>NÁCAR</span></div>
+    <p class="sub">La consola de la clínica y la app del paciente, con la construcción del afiche: mármol, arcos de rosa a azul con filo dorado y montos en píldora sólida.</p>
     <div class="options">
-      <a class="option app" href="./app.html"><b>View Official App</b><span>Open the interactive AA Wellness Nácar experience.</span></a>
-      <a class="option design" href="./design-options.html"><b>View Design Options</b><span>Review the visual/sign design directions.</span></a>
+      <a class="option app" href="./app.html"><b>Ver la app</b><span>Abre la consola de la clínica y la app del paciente.</span></a>
+      <a class="option design" href="./design-options.html"><b>Ver las direcciones</b><span>Compara las cuatro direcciones visuales.</span></a>
     </div>
-  </main>
+  </div></main>
 </body>
 </html>

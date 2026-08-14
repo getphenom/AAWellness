@@ -7,38 +7,77 @@
 <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.26.4/babel.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Montserrat:wght@400;500;600;700;800&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
 <link href="./demo.css" rel="stylesheet"/>
-<style id="nacar-official-theme">
-:root{--ink:#223C64!important;--muted:#5A7091!important;--cream:#FBF7F4!important;--line:#EDDFC1!important;--pink:#E52E7B!important;--blue:#8CBCE4!important;--gold:#C69A44!important;--gold2:#EAD9B5!important}
-html,body{background:#FBF7F4!important;font-family:Inter,system-ui,sans-serif!important;color:#223C64!important}
-.app{background:#FBF7F4!important}.topline{height:4px!important;background:linear-gradient(90deg,#E52E7B 0%,#C69A44 48%,#8CBCE4 100%)!important}.top{background:rgba(255,255,255,.96)!important;border-bottom:1px solid #EAD9B5!important;box-shadow:0 8px 30px -28px rgba(34,60,100,.45)!important}.mark{font-family:'Playfair Display',Georgia,serif!important;color:#223C64!important}.bname{font-family:'Playfair Display',Georgia,serif!important;color:#223C64!important}.bsub,.unit,.sub,.fine,.lede{color:#5A7091!important}
-.shell{background:#FBF7F4!important}.rail{background:#FFFDFA!important;border-right:1px solid #EAD9B5!important}.nav{color:#5A7091!important;border:1px solid transparent!important;border-radius:12px!important}.nav:hover{background:#FFF8F5!important;border-color:#EDDFC1!important;color:#223C64!important}.nav.on{background:#FFF6FA!important;border-color:#F3C6DA!important;color:#C81A66!important;box-shadow:inset 3px 0 0 #E52E7B!important}.main{background:radial-gradient(circle at 98% 0%,rgba(140,188,228,.12),transparent 29%),radial-gradient(circle at 0 3%,rgba(229,46,123,.07),transparent 24%),#FBF7F4!important}.phead .eyebrow,.eyebrow,.fl,.mini-h{color:#8A6A10!important}.phead h2,.chead h3,.card h3,.panel h3,.modal h3,.demo-page-head h2,.section-bar-native h3{font-family:'Playfair Display',Georgia,serif!important;color:#223C64!important}.card,.panel,.modal,.summary-card,.svc-native-card,.native-card,.patient-clean-card,.progress-main-clean,.progress-side-clean,.patient-service-clean{background:#fff!important;border-color:#EAD9B5!important;border-radius:18px!important;box-shadow:0 10px 30px -26px rgba(34,60,100,.42)!important}.kpi{background:#fff!important;border-color:#EAD9B5!important}.kpi b{font-family:'Playfair Display',Georgia,serif!important;color:#223C64!important}.btn,.demo-btn{background:#E52E7B!important;color:#fff!important}.btn.ghost,.demo-btn.secondary,.demo-btn.ghost,.mini,.pill{background:#fff!important;color:#223C64!important;border-color:#EAD9B5!important}.mini.solid{background:#223C64!important;color:#fff!important;border-color:#223C64!important}.pill.on{background:#FFF6FA!important;color:#C81A66!important;border-color:#E52E7B!important}.schip,.chip,.creditPill{border-color:#EAD9B5!important}.mtile,.thread,.slot,.appt{border-color:#EDDFC1!important}.mbar,.svc-accent{background:linear-gradient(90deg,#E52E7B,#C69A44,#8CBCE4)!important}.promo{border-color:#EAD9B5!important}.promoHead,.script{font-family:'Playfair Display',Georgia,serif!important}.script,.scriptish{font-family:'Dancing Script',cursive!important;color:#E52E7B!important}.goldrule{background:linear-gradient(90deg,#EAD9B5,#C69A44,#EAD9B5)!important}.av,.profile-avatar,.cheer-dot{background:linear-gradient(135deg,#E52E7B 0%,#F18FB7 46%,#8CBCE4 100%)!important}.profile-hero-native,.nacar-clean-hero{background:radial-gradient(circle at 88% 8%,rgba(140,188,228,.18),transparent 28%),radial-gradient(circle at 8% 6%,rgba(229,46,123,.12),transparent 28%),#FFFDFA!important;border-color:#EAD9B5!important}.profile-id h2,.patient-clean-card h3,.progress-side-clean h2,.weight-big{font-family:'Playfair Display',Georgia,serif!important}.patient-demo-top{background:rgba(255,253,250,.96)!important;border-bottom-color:#EAD9B5!important}.patient-demo-mark{font-family:'Playfair Display',Georgia,serif!important;color:#223C64!important}.patient-demo-mark i{color:#E52E7B!important}.patient-demo-tabs button{border-color:#EAD9B5!important}.patient-demo-tabs button.on{background:#223C64!important;border-color:#223C64!important}.nacar-clean-hero h1{font-family:'Playfair Display',Georgia,serif!important;color:#8CBCE4!important}.patient-cheer-clean{background:#FFF8FB!important;border-color:#F3C6DA!important}.patient-cheer-clean b{font-family:'Playfair Display',Georgia,serif!important;color:#C81A66!important}.positive-box{background:#FFF8FB!important;color:#C81A66!important;border:1px solid #F3C6DA!important}
-.progress-ring-clean{position:relative!important;width:100%!important;height:14px!important;border-radius:999px!important;margin:52px 0 20px!important;background:linear-gradient(90deg,#E52E7B 0 49%,#EEE7DE 49% 100%)!important;display:block!important;box-shadow:none!important}.progress-ring-clean:after{content:'49% hacia la meta'!important;position:absolute!important;left:0!important;top:-38px!important;width:auto!important;height:auto!important;border-radius:0!important;background:transparent!important;font-family:'Playfair Display',Georgia,serif!important;font-size:28px!important;color:#223C64!important;display:block!important}.progress-main-clean{display:block!important}.progress-bar i{background:linear-gradient(90deg,#E52E7B,#8CBCE4)!important}.doc-icon-native{background:linear-gradient(145deg,#FFF0F6,#EEF6FC)!important}.social-pill{border-color:#EAD9B5!important;background:#fff!important}
-@media(max-width:760px){.main{padding-left:14px!important;padding-right:14px!important}.progress-clean{grid-template-columns:1fr!important}.patient-home-clean,.patient-services-clean{grid-template-columns:1fr!important}}
-</style>
 </head>
 <body>
-<div id="root"><div class="loading">Opening AA Wellness…</div></div>
+<div id="root"><div class="loading">Abriendo AA Wellness…</div></div>
 <div class="demo-modal-bg" id="demo-modal-bg"><div class="demo-modal" id="demo-modal"></div></div>
+
+<!-- The patient app: a phone with the poster's construction — gold frame,
+     marble screen, ombré arcs in the header and along the foot, and every
+     piece of content on a white card. -->
 <div id="patient-demo-clean">
-<div class="patient-demo-top"><div class="patient-demo-brand"><span class="patient-demo-mark">A<i>&amp;</i>A</span><div><b>WELLNESS</b><span>A&amp;A Healthcare · Loíza, PR</span></div></div><button class="patient-exit" id="patient-exit">← Clínica</button></div>
+<div class="patient-demo-top">
+  <button class="patient-exit" id="patient-exit">← Clínica</button>
+  <span class="patient-demo-kicker">App del paciente</span>
+</div>
 <div class="patient-demo-wrap">
-<div class="patient-demo-tabs"><button class="on" data-pview="home">Inicio</button><button data-pview="progress">Progreso</button><button data-pview="visits">Visitas</button><button data-pview="docs">Documentos</button></div>
+<div class="pnacar-frame"><div class="pnacar-screen">
+<span class="parcTop" aria-hidden="true"><i></i></span>
+<span class="parcBot" aria-hidden="true"><i></i></span>
+
+<div class="pnacar-head">
+  <span class="pnacar-brand">
+    <img src="./assets/aa-logo.png" alt="A&amp;A Healthcare Services LLC">
+    <span><b>WELLNESS</b><em>Loíza, PR</em></span>
+  </span>
+  <span class="pnacar-av">DP</span>
+</div>
+
+<div class="pnacar-card">
+<div class="patient-demo-tabs"><button class="on" data-pview="home">Inicio</button><button data-pview="progress">Progreso</button><button data-pview="visits">Visitas</button><button data-pview="docs">Docs</button></div>
+
 <div class="patient-view-clean on" id="pview-home">
-<section class="nacar-clean-hero"><span class="scriptish">Siéntete</span><h1>MEJOR HOY</h1><p>Tu bienestar, tu progreso y tus próximas visitas, organizados de una forma simple y positiva.</p></section>
+<section class="nacar-clean-hero">
+  <span class="scriptish">Siéntete</span>
+  <h1>MEJOR <span>HOY</span></h1>
+  <span class="hero-rule" aria-hidden="true"><i></i><svg width="11" height="11" viewBox="0 0 24 24" fill="#C69A44"><path d="M12 21s-8-5.4-8-11a4.8 4.8 0 018-3.2A4.8 4.8 0 0120 10c0 5.6-8 11-8 11z"></path></svg><i></i></span>
+</section>
 <div class="patient-home-clean">
-<section class="patient-clean-card"><span class="label">Próxima visita</span><h3>Viernes, 10:30 AM</h3><p>Seguimiento de control de peso · 20 min</p></section>
-<section class="patient-clean-card"><span class="label">Tu progreso</span><h3>179.8 lb</h3><p>−8.6 lb desde el inicio · Meta 165 lb</p></section>
-<section class="patient-cheer-clean"><span class="cheer-dot">✓</span><div><b>Vas muy bien</b><span>El progreso ha sido constante durante cuatro semanas. Sigue a tu ritmo.</span></div></section>
+  <section class="patient-clean-card"><span class="label">Próxima visita</span><h3>Viernes, 10:30 AM</h3><p>Seguimiento de control de peso · 20 min</p></section>
+  <section class="patient-clean-card medal"><span class="medallion">−8.6</span><span><span class="label">Tu progreso</span><h3>179.8 lb</h3><p>−8.6 lb desde el inicio · meta 165 lb</p></span></section>
+  <section class="patient-cheer-clean"><span class="cheer-dot">✓</span><div><b>Vas muy bien</b><span>Cuatro semanas de progreso constante. Sigue a tu ritmo.</span></div></section>
 </div>
-<section class="patient-section-clean"><h3>Servicios</h3><div class="patient-services-clean"><div class="patient-service-clean"><b>Programa de Control de Peso</b><span>$325 · seguimiento semanal</span></div><div class="patient-service-clean"><b>Hidratación Revive</b><span>$165 · 45 min</span></div><div class="patient-service-clean"><b>Inmunidad Myers</b><span>$185 · 45 min</span></div><div class="patient-service-clean"><b>Refuerzo B12</b><span>$45 · 15 min</span></div></div></section>
+<section class="patient-section-clean"><h3>Servicios</h3><div class="patient-services-clean">
+  <div class="patient-service-clean"><span class="sbar"></span><span class="sbody"><b>Programa de Control de Peso</b><em>seguimiento semanal</em></span><b class="sprice">$325</b></div>
+  <div class="patient-service-clean"><span class="sbar blue"></span><span class="sbody"><b>Hidratación Revive</b><em>1000 mL IV · 45 min</em></span><b class="sprice">$165</b></div>
+  <div class="patient-service-clean"><span class="sbar rose"></span><span class="sbody"><b>Inmunidad Myers</b><em>vitamina C y complejo B · 45 min</em></span><b class="sprice">$185</b></div>
+  <div class="patient-service-clean"><span class="sbar gold"></span><span class="sbody"><b>Refuerzo de Energía B12</b><em>1 mL IM · 15 min</em></span><b class="sprice">$45</b></div>
+</div></section>
 </div>
-<div class="patient-view-clean" id="pview-progress"><div class="progress-clean"><section class="progress-main-clean"><span class="label">Camino hacia la meta</span><div class="progress-ring-clean"></div><div class="positive-box">✓ Progreso constante. Sigue así.</div></section><section class="progress-side-clean"><span class="label">Peso actual</span><h2>179.8 lb</h2><p>Comenzaste en 188.4 lb · Meta 165 lb</p><div class="progress-metrics-clean"><div><span>Cambio</span><b>−8.6 lb</b></div><div><span>Racha</span><b>4 sem</b></div><div><span>Visitas</span><b>5</b></div><div><span>Hidratación</span><b>82%</b></div><div><span>Sueño</span><b>7.2 h</b></div><div><span>Actitud</span><b>Positiva</b></div></div></section></div></div>
+
+<div class="patient-view-clean" id="pview-progress">
+<span class="label">Camino hacia la meta</span>
+<div class="ring-wrap"><span class="progress-ring-clean"><span class="ring-hole"><span><b>37%</b><em>de la meta</em></span></span></span></div>
+<div class="positive-box"><span class="cheer-dot">✓</span>Progreso constante. Sigue así.</div>
+<section class="progress-side-clean">
+  <span class="label">Peso actual</span>
+  <h2>179.8 lb</h2>
+  <p>Comenzaste en 188.4 lb · meta 165 lb</p>
+  <div class="progress-metrics-clean"><div><span>Cambio</span><b>−8.6 lb</b></div><div><span>Racha</span><b>4 sem</b></div><div><span>Visitas</span><b>5</b></div><div><span>Hidratación</span><b>82%</b></div><div><span>Sueño</span><b>7.2 h</b></div><div><span>Actitud</span><b>Positiva</b></div></div>
+</section>
+</div>
+
 <div class="patient-view-clean" id="pview-visits"><div class="section-bar-native"><div><span>Historial</span><h3>Tus visitas</h3></div></div><div class="patient-visits-clean" id="patient-clean-visits"></div></div>
 <div class="patient-view-clean" id="pview-docs"><div class="section-bar-native"><div><span>Documentos</span><h3>Formularios y archivos</h3></div></div><div class="patient-docs-clean" id="patient-clean-docs"></div></div>
+
+<div class="pnacar-cta"><button type="button">Reservar cita <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M5 12h13M13 6l6 6-6 6"></path></svg></button></div>
+</div>
+</div></div>
 </div>
 </div>
+
 <script type="module">
 try {
 let src = await (await fetch('./aa-healthcare-app.jsx')).text();
