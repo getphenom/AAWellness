@@ -1,0 +1,61 @@
+name: Assemble uploaded AA Wellness files
+
+on:
+  push:
+    paths:
+      - '.upload/READY'
+
+permissions:
+  contents: write
+
+jobs:
+  assemble:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Reconstruct uploaded files exactly
+        shell: bash
+        run: |
+          set -euo pipefail
+          decode_gz() {
+            src="$1"
+            dst="$2"
+            cat ${src}*.part | base64 -d | gzip -dc > "$dst"
+          }
+
+          decode_gz '.upload/cuatro-bundle-' 'AA - Cuatro Direcciones -bundle-src-.html'
+          decode_gz '.upload/cuatro-dc-' 'AA - Cuatro Direcciones.dc.html'
+          decode_gz '.upload/nacar-bundle-' 'AA App - Nacar -bundle-src-.html'
+          decode_gz '.upload/nacar-dc-' 'AA App - Nacar.dc.html'
+          decode_gz '.upload/nacar-dir4-' 'AA Direccion 4 - Nacar.dc.html'
+          decode_gz '.upload/github-md-' 'github.md'
+          decode_gz '.upload/support-js-' 'support.js'
+          decode_gz '.upload/thumbnail-' '.thumbnail'
+
+          check_hash() {
+            file="$1"
+            expected="$2"
+            actual="$(git hash-object "$file")"
+            test "$actual" = "$expected" || { echo "Hash mismatch: $file ($actual != $expected)"; exit 1; }
+          }
+
+          check_hash 'AA - Cuatro Direcciones -bundle-src-.html' '50a92e11afaa5baa285333cd12db9e0ab1ae3121'
+          check_hash 'AA - Cuatro Direcciones.dc.html' '560b69e3992003bd8e5b1e81e3ec3ef545053eb8'
+          check_hash 'AA App - Nacar -bundle-src-.html' '05cbdfb1b75942b78d72636069f906698eb0e1cd'
+          check_hash 'AA App - Nacar.dc.html' '6bb231b94b15b7f43c9f999aac8ce51688e8823e'
+          check_hash 'AA Direccion 4 - Nacar.dc.html' '56492f0d4382dc6667984d1de7c05c71cda13b4c'
+          check_hash 'AA Wellness - Cuatro Direcciones.html' '4fb9339fd572c5cd15d8147145276cc3fe5140ae'
+          check_hash 'AA Wellness App - Nacar.html' '3fac622f3059e8baceb88d4f3f0f69ed6e5d13cb'
+          check_hash 'github.md' 'd6f80af4c438f3dd71261074b0d31dbc82e1f5e8'
+          check_hash 'support.js' 'cb009b69ec6b5e00f48c6287a587fe7e0c6c421b'
+          check_hash '.thumbnail' '97f050464197b58436d976fcb0d497cc5333a9e0'
+
+          rm -rf .upload
+          git rm .github/workflows/assemble-uploaded-files.yml
+          git add 'AA - Cuatro Direcciones -bundle-src-.html' 'AA - Cuatro Direcciones.dc.html' 'AA App - Nacar -bundle-src-.html' 'AA App - Nacar.dc.html' 'AA Direccion 4 - Nacar.dc.html' 'github.md' 'support.js' '.thumbnail'
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Add uploaded AA Wellness source files'
+          git push
