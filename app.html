@@ -11,8 +11,10 @@
     .loading{min-height:100vh;display:grid;place-items:center;color:#55747F}
 
     /* Demo-only service manager */
-    #svc-demo-open{position:fixed;right:18px;bottom:18px;z-index:80;border:0;border-radius:999px;background:#22485B;color:#fff;padding:11px 16px;font:600 13px/1 system-ui,sans-serif;box-shadow:0 10px 30px rgba(34,72,91,.24);cursor:pointer}
-    #svc-demo-open:hover{background:#183B4C}
+    #svc-demo-open{display:none}
+    #svc-demo-open[data-mounted="1"]{display:flex;align-items:center;gap:10px;width:100%;padding:9px 12px;border:0;border-radius:10px;background:none;color:#55747F;font:500 14px/1.2 system-ui,sans-serif;cursor:pointer;text-align:left}
+    #svc-demo-open[data-mounted="1"]:hover{background:rgba(238,75,158,.07);color:#22485B}
+    #svc-demo-open .svc-nav-icon{width:17px;display:inline-grid;place-items:center;font-size:15px;flex:none}
     #svc-demo-backdrop{display:none;position:fixed;inset:0;z-index:90;background:rgba(34,72,91,.38)}
     #svc-demo-panel{position:absolute;right:0;top:0;height:100%;width:min(480px,94vw);background:#F8F3ED;box-shadow:-18px 0 50px rgba(34,72,91,.18);overflow:auto}
     .svc-demo-head{position:sticky;top:0;z-index:2;background:#fff;border-bottom:1px solid #E6DFD4;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px}
@@ -45,13 +47,12 @@
     .svc-demo-card-actions button:hover{border-color:#EE4B9E;color:#EE4B9E}
     .svc-demo-card-actions .danger{color:#B44444}
     .svc-demo-note{margin:14px 2px 0;color:#55747F;font-size:10.5px;line-height:1.45;text-align:center}
-    @media(max-width:900px){#svc-demo-open{bottom:78px;right:12px}}
   </style>
 </head>
 <body>
   <div id="root"><div class="loading">Opening AA Wellness…</div></div>
 
-  <button id="svc-demo-open" type="button">⚙ Servicios</button>
+  <button id="svc-demo-open" type="button"><span class="svc-nav-icon">⚙</span><span>Servicios</span></button>
   <div id="svc-demo-backdrop">
     <aside id="svc-demo-panel" role="dialog" aria-modal="true" aria-label="Gestionar servicios">
       <div class="svc-demo-head">
@@ -114,6 +115,18 @@
       let editing=null;
       const saveStore=()=>{try{localStorage.setItem(KEY,JSON.stringify(items))}catch(e){}};
       const money=n=>'$'+Math.round(Number(n)||0).toLocaleString();
+      function mountNav(){
+        const rail=document.querySelector('.rail ul');
+        const b=$('svc-demo-open');
+        if(!rail||!b||b.dataset.mounted==='1')return;
+        const li=document.createElement('li');
+        li.appendChild(b);
+        rail.appendChild(li);
+        b.dataset.mounted='1';
+      }
+      const observer=new MutationObserver(mountNav);
+      observer.observe(document.getElementById('root'),{childList:true,subtree:true});
+      mountNav();
       function render(){
         $('svc-demo-list').innerHTML=items.map(x=>`<div class="svc-demo-card ${x.active?'':'paused'}">
           <div class="svc-demo-row"><div><div class="svc-demo-name">${escapeHtml(x.name)}</div><div class="svc-demo-desc">${escapeHtml(x.desc||'')}</div></div><div class="svc-demo-price">${money(x.price)}</div></div>
