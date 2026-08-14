@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>AA Wellness App</title>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.26.4/babel.min.js"></script>
+  <style>html,body,#root{margin:0;min-height:100%;}body{min-height:100vh;background:#F8F3ED;font-family:system-ui,sans-serif}.loading{min-height:100vh;display:grid;place-items:center;color:#55747F}</style>
+</head>
+<body>
+  <div id="root"><div class="loading">Opening AA Wellness…</div></div>
+  <script type="module">
+    try {
+      let src = await (await fetch('./aa-healthcare-app.jsx')).text();
+      src = src.replace('from "react";', 'from "https://esm.sh/react@19.1.1";');
+      src = src.replace('from "lucide-react";', 'from "https://esm.sh/lucide-react@0.468.0?deps=react@19.1.1";');
+      src = 'import ReactDOM from "https://esm.sh/react-dom@19.1.1/client";\n' + src;
+      src += '\nReactDOM.createRoot(document.getElementById("root")).render(React.createElement(App));';
+      const js = Babel.transform(src, {presets:['react'], sourceType:'module'}).code;
+      const url = URL.createObjectURL(new Blob([js], {type:'text/javascript'}));
+      await import(url);
+    } catch (e) {
+      console.error(e);
+      document.getElementById('root').innerHTML = '<div class="loading">The app could not load. Please refresh.</div>';
+    }
+  </script>
+</body>
+</html>
