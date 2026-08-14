@@ -3,7 +3,7 @@ name: Assemble uploaded AA Wellness files
 on:
   push:
     paths:
-      - '.upload/READY'
+      - '.safe/READY'
 
 permissions:
   contents: write
@@ -15,7 +15,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Reconstruct uploaded files exactly
+      - name: Reconstruct and verify uploaded files
         shell: bash
         run: |
           set -euo pipefail
@@ -25,16 +25,6 @@ jobs:
             echo "Decoding $dst"
             cat ${src}*.part | base64 -d | gzip -dc > "$dst"
           }
-
-          decode_gz '.upload/cuatro-bundle-' 'AA - Cuatro Direcciones -bundle-src-.html'
-          decode_gz '.upload/cuatro-dc-correct-' 'AA - Cuatro Direcciones.dc.html'
-          decode_gz '.upload/nacar-bundle-' 'AA App - Nacar -bundle-src-.html'
-          decode_gz '.upload/nacar-dc-' 'AA App - Nacar.dc.html'
-          decode_gz '.upload/nacar-dir4-' 'AA Direccion 4 - Nacar.dc.html'
-          decode_gz '.upload/github-md-' 'github.md'
-          decode_gz '.upload/support-js-' 'support.js'
-          decode_gz '.upload/thumbnail-' '.thumbnail'
-
           check_hash() {
             file="$1"
             expected="$2"
@@ -42,6 +32,15 @@ jobs:
             echo "$file: $actual"
             test "$actual" = "$expected" || { echo "Hash mismatch: $file ($actual != $expected)"; exit 1; }
           }
+
+          decode_gz '.safe/f0-' 'AA - Cuatro Direcciones -bundle-src-.html'
+          decode_gz '.safe/f1-' 'AA - Cuatro Direcciones.dc.html'
+          decode_gz '.safe/f2-' 'AA App - Nacar -bundle-src-.html'
+          decode_gz '.safe/f3-' 'AA App - Nacar.dc.html'
+          decode_gz '.safe/f4-' 'AA Direccion 4 - Nacar.dc.html'
+          decode_gz '.safe/f5-' 'github.md'
+          decode_gz '.safe/f6-' 'support.js'
+          decode_gz '.upload/thumbnail-' '.thumbnail'
 
           check_hash 'AA - Cuatro Direcciones -bundle-src-.html' '50a92e11afaa5baa285333cd12db9e0ab1ae3121'
           check_hash 'AA - Cuatro Direcciones.dc.html' '560b69e3992003bd8e5b1e81e3ec3ef545053eb8'
@@ -54,9 +53,8 @@ jobs:
           check_hash 'support.js' 'cb009b69ec6b5e00f48c6287a587fe7e0c6c421b'
           check_hash '.thumbnail' '97f050464197b58436d976fcb0d497cc5333a9e0'
 
-          rm -rf .upload
-          git rm .github/workflows/assemble-uploaded-files.yml
-          git add 'AA - Cuatro Direcciones -bundle-src-.html' 'AA - Cuatro Direcciones.dc.html' 'AA App - Nacar -bundle-src-.html' 'AA App - Nacar.dc.html' 'AA Direccion 4 - Nacar.dc.html' 'github.md' 'support.js' '.thumbnail'
+          rm -rf .safe .upload
+          git add -A
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git commit -m 'Add uploaded AA Wellness source files'
