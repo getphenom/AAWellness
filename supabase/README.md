@@ -1,11 +1,22 @@
-# Supabase setup — do this once
+# Supabase setup
 
-Everything is written and waiting. When your Supabase account exists, this
-takes about ten minutes.
+> ## ✅ Steps 1–3 are DONE
+> Project **AAWellness** (`ldzvxhchpuebiejppceu`, us-east-2) is live.
+> Schema, RLS policies, triggers and seed data are applied. Credentials are in
+> `app/js/config.js`. **Start at step 4.**
+>
+> Applied as migrations: `aa_wellness_types_and_tables`, `aa_wellness_rls_policies`,
+> `aa_wellness_triggers`, `aa_wellness_seed_services`, `aa_wellness_seed_templates`,
+> `aa_wellness_harden_functions`, `aa_wellness_revoke_anon_and_cleanup`.
+>
+> Post-deploy hardening applied after running Supabase's security advisor:
+> pinned `search_path` on `touch_updated_at`; revoked REST access to
+> `handle_new_user`; revoked `anon` execute on the role helpers; revoked all
+> `anon` table privileges (this app has no public data).
 
 ---
 
-## 1. Create the project
+## 1. Create the project — done
 
 [supabase.com](https://supabase.com) → **New project**.
 
