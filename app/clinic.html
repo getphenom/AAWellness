@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Montserrat:wght@400;500;600;700;800&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
-<link href="./css/app.css?v=1786828255" rel="stylesheet">
+<link href="./css/app.css?v=1786828527" rel="stylesheet">
 </head>
 <body class="has-rail">
 
@@ -44,13 +44,13 @@
 </div>
 
 <script type="module">
-import { requireRole, signOut, getSession } from "./js/client.js?v=1786828255";
-import * as slots from "./js/slots.js?v=1786828255";
-import * as api from "./js/api.js?v=1786828255";
+import { requireRole, signOut, getSession } from "./js/client.js?v=1786828527";
+import * as slots from "./js/slots.js?v=1786828527";
+import * as api from "./js/api.js?v=1786828527";
 import { $, $$, esc, money, fmtDate, fmtDateTime, fmtTime, initials, openModal,
          closeModal, toast, loading, emptyState, errorState, bodyHtml,
          signatureHtml, STATUS_ES, STATUS_CLASS, dayKey, todayKey, monthLabel,
-         longDate } from "./js/ui.js?v=1786828255";
+         longDate } from "./js/ui.js?v=1786828527";
 
 const profile = await requireRole("staff");
 if (!profile) throw new Error("redirecting");
@@ -142,64 +142,159 @@ async function route() {
 
 /* ============================================================== HOY ==== */
 async function viewToday() {
-  const { appts, pendingDocs, unread } = await api.todaySnapshot();
-  const expected = appts.filter((a) => a.status !== "cancelled")
-    .reduce((s, a) => s + (a.services?.price_cents || 0), 0);
+  const snap = await api.todaySnapshot();
+  const board = snap.appts;
+
+  const live = board.filter((a) => a.status !== "cancelled");
+  const booked = live.reduce((n, a) => n + (a.services?.price_cents || 0), 0);
+  const takenCents = live.reduce(
+    (n, a) => n + (a.visit ? a.visit.price_cents || 0 : 0), 0);
+
+  // Free slots today, from the same generator the Agenda uses.
+  const clinic = await api.getClinic();
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  const key = slots.dayKey(today);
+  const week = slots.buildWeek({
+    anchor: today,
+    schedule: clinic?.schedule || {},
+    slotMinutes: clinic?.slot_minutes || 45,
+    overrides: await api.listOverrides(key, key),
+    appointments: live
+  });
+  // bookableSlots covers the whole week; today is the only day we want here.
+  const free = slots.bookableSlots(week)
+    .filter((c) => slots.dayKey(c.startsAt) === key);
 
   main.innerHTML = `
-    ${phead("Resumen del día", "Hoy",
-      new Date().toLocaleDateString("es-PR",
-        { weekday:"long", day:"numeric", month:"long", year:"numeric" }))}
+    ${phead(new Date().toLocaleDateString("es-PR",
+      { weekday:"long", day:"numeric", month:"long" }), "Hoy")}
 
-    <div class="grid grid-3" style="margin-bottom:16px">
-      <div class="stat"><span>Citas de hoy</span><b>${appts.length}</b></div>
-      <div class="stat"><span>Ingreso esperado</span><b>${money(expected)}</b></div>
-      <div class="stat"><span>Firmas pendientes</span><b>${pendingDocs.length}</b></div>
+    <div class="kpirow">
+      <div class="kpi edge-pink">
+        <span>Citas de hoy</span><b>${live.length}</b>
+        <em>${free.length} espacio${free.length===1?"":"s"} disponible${free.length===1?"":"s"}</em>
+      </div>
+      <div class="kpi edge-blue">
+        <span>Ingreso esperado</span><b>${money(booked)}</b>
+        <em>${money(takenCents)} registrado</em>
+      </div>
+      <div class="kpi edge-gold">
+        <span>Esperan respuesta</span><b>${snap.unread.length}</b>
+        <em>mensajes sin contestar</em>
+      </div>
+      <div class="kpi edge-navy">
+        <span>Firmas pendientes</span><b>${snap.pendingDocs.length}</b>
+        <em>documentos por firmar</em>
+      </div>
     </div>
 
-    <div class="card">
-      <div class="card-head"><h3>Citas de hoy</h3>
-        <button class="btn sm" id="new-appt">+ Nueva cita</button></div>
-      ${appts.length ? appts.map((a) => `<div class="row">
-        <span class="pill">${esc(fmtTime(a.starts_at))}</span>
-        <div class="main"><b>${esc(a.patients?.full_name || "Paciente")}</b>
-          <span>${esc(a.services?.name || "Cita")} · ${a.minutes} min</span></div>
-        <span class="pill ${a.status === "completed" ? "done" : ""}">${esc(a.status)}</span>
-      </div>`).join("") : emptyState("No hay citas para hoy.")}
-    </div>
+    <div class="grid grid-2">
+      <div class="card">
+        <div class="card-head">
+          <h3>El día</h3>
+          <span class="hint">${live.length} cita${live.length===1?"":"s"}</span>
+        </div>
+        ${live.length ? `<div class="daylist">${live.map(apptRow).join("")}</div>`
+          : emptyState("No hay citas para hoy.")}
+      </div>
 
-    <div class="card">
-      <div class="card-head"><h3>Documentos por firmar</h3></div>
-      ${pendingDocs.length ? pendingDocs.slice(0, 8).map((d) =>
-        `<div class="row click" data-goto="${esc(d.patient_id)}">
-          <div class="main"><b>${esc(d.patients?.full_name || "Paciente")}</b>
-            <span>${esc(d.title)}</span></div>
-          <span class="pill ${STATUS_CLASS[d.status]}">${esc(STATUS_ES[d.status])}</span>
-        </div>`).join("") : emptyState("Nada pendiente de firma ✓")}
-    </div>
+      <div>
+        <div class="card">
+          <div class="card-head">
+            <h3>Espacios libres hoy</h3>
+            <span class="hint">${free.length} libre${free.length===1?"":"s"}</span>
+          </div>
+          ${free.length
+            ? `<div class="freewrap">${free.map((f) => `
+                 <span class="freechip">${esc(slots.minutesToLabel(f.minutes))}</span>`).join("")}</div>`
+            : emptyState("Todo reservado. Bellísimo.")}
+        </div>
 
-    <div class="card">
-      <div class="card-head"><h3>Mensajes sin leer</h3></div>
-      ${unread.length ? unread.slice(0, 8).map((m) =>
-        `<div class="row click" data-msg="${esc(m.patient_id)}">
-          <div class="main"><b>${esc(m.patients?.full_name || "Paciente")}</b>
-            <span>${esc(m.body.slice(0, 80))}</span></div>
-          <span class="pill todo">${esc(fmtDate(m.created_at))}</span>
-        </div>`).join("") : emptyState("No hay mensajes sin leer.")}
+        <div class="card">
+          <div class="card-head"><h3>Documentos por firmar</h3></div>
+          ${snap.pendingDocs.length
+            ? `<p class="lede">${snap.pendingDocs.length} documento${snap.pendingDocs.length===1?"":"s"}
+                 esperando firma.</p>
+               <button class="btn secondary sm" data-go="docs">Ver documentos</button>`
+            : emptyState("Nada pendiente de firma ✓")}
+        </div>
+      </div>
     </div>`;
 
-  $("#new-appt").onclick = () => apptModal();
-  $$("[data-goto]").forEach((r) => r.onclick = () => {
-    view = { name: "patient", patientId: r.dataset.goto, tab: "docs" }; paintNav(); route();
-  });
-  $$("[data-msg]").forEach((r) => r.onclick = () => {
-    view = { name: "inbox", patientId: r.dataset.msg }; paintNav(); route();
-  });
+  $$("[data-go]").forEach((b) => b.onclick = () => { location.hash = b.dataset.go; });
+  $$("[data-arrive]").forEach((b) => b.onclick = () => onArrive(b.dataset.arrive));
+  $$("[data-charge]").forEach((b) => b.onclick = () => onCharge(board, b.dataset.charge));
 }
 
-/* =========================================================== AGENDA ====
-   Week grid of bookable slots, matching how the clinic actually books.
-   Tap a slot to open or close it; patients only ever see the open ones.   */
+/* One row of the day list. Paid rows lose their buttons and go quiet. */
+function apptRow(a) {
+  const t = new Date(a.starts_at).toLocaleTimeString("es-PR",
+    { hour: "numeric", minute: "2-digit" });
+  const svc = a.services?.name || "Sin servicio";
+  const done = !!a.visit;
+
+  return `<div class="dayrow ${done ? "done" : ""} st-${esc(a.status)}">
+    <span class="dtime">${esc(t)}</span>
+    <span class="dbar"></span>
+    <span class="dwho">
+      <b>${esc(a.patients?.full_name || "Paciente")}</b>
+      <em>${esc(svc)} · ${a.minutes} min</em>
+    </span>
+    <span class="dact">
+      ${done
+        ? `<span class="tag paid">✓ Registrado</span>`
+        : `${a.status === "arrived"
+              ? ""
+              : `<button class="btn secondary sm" data-arrive="${a.id}">Llegó</button>`}
+           <button class="btn sm" data-charge="${a.id}">Cobrar</button>`}
+    </span>
+  </div>`;
+}
+
+async function onArrive(id) {
+  try { await api.setApptStatus(id, "arrived"); toast("Marcada como llegada."); route(); }
+  catch (e) { toast("No se pudo actualizar: " + e.message, "err"); }
+}
+
+function onCharge(board, id) {
+  const a = board.find((x) => x.id === id);
+  if (!a) return;
+  const price = a.services?.price_cents || 0;
+
+  openModal(`
+    <h3>Registrar la visita</h3>
+    <p class="lede">
+      <b>${esc(a.patients?.full_name || "Paciente")}</b> ·
+      ${esc(a.services?.name || "Sin servicio")}
+    </p>
+    <div class="stat" style="margin:10px 0">
+      <span>Se registra por</span><b>${money(price)}</b>
+    </div>
+    <div class="banner warn">
+      <b>Esto no confirma el pago</b>
+      Registra que el tratamiento se dio, a este precio, y lo suma al Panel.
+      El cobro por Clover todavía no está conectado, así que confirma el pago
+      por tu medio habitual.
+    </div>
+    <div class="modal-actions">
+      <button class="btn secondary" data-x>Cancelar</button>
+      <button class="btn" id="do-charge">Registrar</button>
+    </div>`);
+
+  $$("[data-x]").forEach((b) => b.onclick = closeModal);
+  $("#do-charge").onclick = async (ev) => {
+    const btn = ev.currentTarget;
+    btn.disabled = true; btn.textContent = "Registrando…";
+    try {
+      await api.chargeAppointment(a);
+      closeModal(); toast("Visita registrada."); route();
+    } catch (e) {
+      toast(e.message, "err");
+      btn.disabled = false; btn.textContent = "Registrar";
+    }
+  };
+}
+
 async function viewSchedule() {
   const clinic = await api.getClinic();
   const schedule = clinic?.schedule || {};

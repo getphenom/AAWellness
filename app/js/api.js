@@ -1,4 +1,4 @@
-import { periodStart, summarise } from "./revenue.js?v=1786828255";
+import { periodStart, summarise } from "./revenue.js?v=1786828527";
 /* ============================================================================
    api.js — every database call lives here.
 
@@ -8,7 +8,7 @@ import { periodStart, summarise } from "./revenue.js?v=1786828255";
    why the patient and clinic views can share the same query helpers safely.
    ========================================================================= */
 
-import { supabase } from "./client.js?v=1786828255";
+import { supabase } from "./client.js?v=1786828527";
 
 const unwrap = ({ data, error }) => {
   if (error) throw new Error(error.message);
@@ -205,7 +205,7 @@ export async function todaySnapshot() {
   const start = new Date(); start.setHours(0, 0, 0, 0);
   const end = new Date();   end.setHours(23, 59, 59, 999);
 
-  const [appts, docs, msgs] = await Promise.all([
+  const [appts, docs, msgs, visits] = await Promise.all([
     supabase.from("appointments")
       .select("*, patients(full_name), services(name, price_cents)")
       .gte("starts_at", start.toISOString())
@@ -217,9 +217,19 @@ export async function todaySnapshot() {
     supabase.from("messages")
       .select("id, body, created_at, patient_id, from_clinic, read_at, patients(full_name)")
       .eq("from_clinic", false).is("read_at", null)
-      .order("created_at", { ascending: false }).then(unwrap)
+      .order("created_at", { ascending: false }).then(unwrap),
+    supabase.from("visits")
+      .select("id, appointment_id, price_cents")
+      .not("appointment_id", "is", null).then(unwrap)
   ]);
-  return { appts, pendingDocs: docs, unread: msgs };
+
+  // Attach the visit, if any, so the day list knows what is already recorded.
+  const charged = new Map(visits.map((v) => [v.appointment_id, v]));
+  return {
+    appts: appts.map((a) => ({ ...a, visit: charged.get(a.id) || null })),
+    pendingDocs: docs,
+    unread: msgs
+  };
 }
 
 /* Revenue for a period, built from what each visit actually charged.
@@ -235,6 +245,34 @@ export async function revenueStats(period = "month") {
     .then(unwrap);
 
   return { since, period, ...summarise(visits) };
+}
+
+/* Record that a treatment happened, at the price on the day. The unique index
+   on visits.appointment_id means a double tap cannot charge twice — the second
+   insert is rejected by the database, not by the button being disabled. */
+export async function chargeAppointment(appt) {
+  const { data, error } = await supabase.from("visits").insert({
+    patient_id: appt.patient_id,
+    service_id: appt.service_id,
+    appointment_id: appt.id,
+    title: appt.services?.name || "Visita",
+    price_cents: appt.services?.price_cents ?? 0,
+    occurred_at: appt.starts_at
+  }).select("id, price_cents").single();
+
+  if (error) {
+    if (error.code === "23505") throw new Error("Esta cita ya fue cobrada.");
+    throw error;
+  }
+  await supabase.from("appointments")
+    .update({ status: "completed" }).eq("id", appt.id);
+  return data;
+}
+
+export async function setApptStatus(id, status) {
+  const { error } = await supabase.from("appointments")
+    .update({ status }).eq("id", id);
+  if (error) throw error;
 }
 
 export async function dashboardStats() {
