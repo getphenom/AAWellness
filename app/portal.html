@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Montserrat:wght@400;500;600;700;800&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
-<link href="./css/app.css?v=202608152040" rel="stylesheet">
+<link href="./css/app.css?v=1786826804" rel="stylesheet">
 </head>
 <body>
 
@@ -26,16 +26,23 @@
   <button class="btn secondary sm" id="out">Salir</button>
 </header>
 
-<main class="portal" id="main">
-  <div class="state"><span class="spinner"></span>Cargando tu información…</div>
-</main>
+<main class="portal">
+    <span class="arcTop" aria-hidden="true"><i></i></span>
+    <span class="arcBot" aria-hidden="true"><i></i></span>
+    <div class="mainInner" id="main">
+  
+    <span class="arcTop" aria-hidden="true"><i></i></span>
+    <span class="arcBot" aria-hidden="true"><i></i></span>
+<div class="state"><span class="spinner"></span>Cargando tu información…</div>
+</div>
+  </main>
 
 <script type="module">
-import { requireRole, signOut, getSession } from "./js/client.js?v=202608152040";
-import * as api from "./js/api.js?v=202608152040";
+import { requireRole, signOut, getSession } from "./js/client.js?v=1786826804";
+import * as api from "./js/api.js?v=1786826804";
 import { $, $$, esc, money, fmtDate, fmtDateTime, openModal, closeModal, toast,
          loading, emptyState, errorState, mountPad, bodyHtml, signatureHtml,
-         STATUS_ES, STATUS_CLASS } from "./js/ui.js?v=202608152040";
+         STATUS_ES, STATUS_CLASS } from "./js/ui.js?v=1786826804";
 
 const profile = await requireRole("patient");
 if (!profile) throw new Error("redirecting");
@@ -74,6 +81,15 @@ if (!patient) {
 }
 
 /* -------------------------------------------------------------- render */
+/* Same page header as the clinic console. */
+function phead(kicker, title, lead) {
+  return `<div class="phead">
+    <span class="kicker">${esc(kicker)}</span>
+    <h2>${esc(title)}</h2>
+    ${lead ? `<p>${esc(lead)}</p>` : ""}
+  </div>`;
+}
+
 function shell(inner) {
   main.innerHTML = `
     <div class="hero">

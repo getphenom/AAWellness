@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Montserrat:wght@400;500;600;700;800&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
-<link href="./css/app.css?v=202608152040" rel="stylesheet">
+<link href="./css/app.css?v=1786826804" rel="stylesheet">
 </head>
 <body class="has-rail">
 
@@ -35,19 +35,23 @@
     </div>
   </aside>
 
-  <main class="railmain" id="main">
-    <div class="state"><span class="spinner"></span>Cargando la clínica…</div>
+  <main class="railmain">
+    <span class="arcTop" aria-hidden="true"><i></i></span>
+    <span class="arcBot" aria-hidden="true"><i></i></span>
+    <div class="mainInner" id="main">
+      <div class="state"><span class="spinner"></span>Cargando la clínica…</div>
+    </div>
   </main>
 </div>
 
 <script type="module">
-import { requireRole, signOut, getSession } from "./js/client.js?v=202608152040";
-import * as slots from "./js/slots.js?v=202608152040";
-import * as api from "./js/api.js?v=202608152040";
+import { requireRole, signOut, getSession } from "./js/client.js?v=1786826804";
+import * as slots from "./js/slots.js?v=1786826804";
+import * as api from "./js/api.js?v=1786826804";
 import { $, $$, esc, money, fmtDate, fmtDateTime, fmtTime, initials, openModal,
          closeModal, toast, loading, emptyState, errorState, bodyHtml,
          signatureHtml, STATUS_ES, STATUS_CLASS, dayKey, todayKey, monthLabel,
-         longDate } from "./js/ui.js?v=202608152040";
+         longDate } from "./js/ui.js?v=1786826804";
 
 const profile = await requireRole("staff");
 if (!profile) throw new Error("redirecting");
@@ -111,6 +115,15 @@ async function refreshBadges() {
   } catch (e) { /* badges are cosmetic — never block the view */ }
 }
 
+/* Demo-style page header: gold kicker, serif title, lead paragraph. */
+function phead(kicker, title, lead) {
+  return `<div class="phead">
+    <span class="kicker">${esc(kicker)}</span>
+    <h2>${esc(title)}</h2>
+    ${lead ? `<p>${esc(lead)}</p>` : ""}
+  </div>`;
+}
+
 async function route() {
   main.innerHTML = loading();
   try {
@@ -133,9 +146,9 @@ async function viewToday() {
     .reduce((s, a) => s + (a.services?.price_cents || 0), 0);
 
   main.innerHTML = `
-    <h2 style="margin-bottom:4px">Hoy</h2>
-    <p class="lede">${esc(new Date().toLocaleDateString("es-PR",
-      { weekday:"long", day:"numeric", month:"long", year:"numeric" }))}</p>
+    ${phead("Resumen del día", "Hoy",
+      new Date().toLocaleDateString("es-PR",
+        { weekday:"long", day:"numeric", month:"long", year:"numeric" }))}
 
     <div class="grid grid-3" style="margin-bottom:16px">
       <div class="stat"><span>Citas de hoy</span><b>${appts.length}</b></div>
@@ -190,6 +203,7 @@ async function viewSchedule() {
   const clinic = await api.getClinic();
   const schedule = clinic?.schedule || {};
   const slotMin = clinic?.slot_minutes || 45;
+  const rules = Array.isArray(clinic?.booking_rules) ? clinic.booking_rules : [];
 
   const days = slots.weekDays(calRef);
   const from = new Date(days[0]); from.setHours(0, 0, 0, 0);
@@ -209,9 +223,8 @@ async function viewSchedule() {
   const booked = week.cells.flat().filter((c) => c.state === "booked").length;
 
   main.innerHTML = `
-    <h2 style="margin-bottom:4px">Agenda</h2>
-    <p class="lede">Toca un espacio para abrirlo o cerrarlo. Los pacientes solo
-      ven los abiertos, y en cuanto alguien reserva, desaparece del enlace.</p>
+    ${phead("Próximos siete días", "Agenda",
+      "Toca un espacio para abrirlo o cerrarlo. Los pacientes solo ven los abiertos, y en cuanto alguien reserva, desaparece del enlace.")}
 
     <div class="card">
       <div class="calbar">
@@ -242,6 +255,30 @@ async function viewSchedule() {
       <p class="hint" style="margin-top:10px">
         Rayado = cerrado · Crema = abierto · Blanco con borde = reservado
       </p>
+    </div>
+
+    <div class="grid grid-2">
+      <div class="card">
+        <div class="card-head"><h3>Calendarios conectados</h3></div>
+        ${[["Google Calendar","—"],["Outlook","—"],
+           ["Botón de reserva en Instagram","—"],["Reservas desde Facebook","—"]]
+          .map(([n,st]) => `<div class="connrow">
+            <span class="tick" style="background:var(--hair3);color:var(--muted)">·</span>
+            <span>${esc(n)}</span><span class="state">sin conectar</span>
+          </div>`).join("")}
+        <p class="hint" style="margin-top:10px">
+          Ninguno está conectado todavía. Cada uno necesita OAuth y un servidor;
+          hasta entonces las citas solo viven en esta app.
+        </p>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h3>Reglas de reserva</h3></div>
+        ${rules.length
+          ? rules.map((r) => `<div class="ruleline">${esc(r)}</div>`).join("")
+          : emptyState("Aún no hay reglas.")}
+        <button class="btn secondary sm" id="edit-rules" style="margin-top:10px">Editar reglas</button>
+      </div>
     </div>`;
 
   $("#wk-prev").onclick  = () => { calRef = shiftWeek(calRef, -7); route(); };
@@ -250,6 +287,7 @@ async function viewSchedule() {
   $("#wk-add").onclick   = () => apptModal();
 
   $$("[data-slot]").forEach((b) => b.onclick = () => onSlot(b.dataset.slot, b.dataset.state));
+  $("#edit-rules").onclick = () => editRules(rules);
 
   function cellHtml(cell, c, r) {
     if (cell.state === "booked") {
@@ -278,6 +316,31 @@ async function viewSchedule() {
       route();
     } catch (e) { toast("No se pudo cambiar: " + e.message, "err"); }
   }
+}
+
+function editRules(rules) {
+  openModal(`
+    <h3>Reglas de reserva</h3>
+    <p class="lede">Una regla por línea. Se muestran en la Agenda.</p>
+    <div class="field">
+      <textarea id="rules-body" rows="7">${esc(rules.join("\n"))}</textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn secondary" data-x>Cancelar</button>
+      <button class="btn" id="rules-save">Guardar</button>
+    </div>`);
+  $$("[data-x]").forEach((b) => b.onclick = closeModal);
+  $("#rules-save").onclick = async () => {
+    const list = $("#rules-body").value.split("\n").map((x) => x.trim()).filter(Boolean);
+    const btn = $("#rules-save"); btn.disabled = true; btn.textContent = "Guardando…";
+    try {
+      await api.saveClinic({ booking_rules: list });
+      closeModal(); toast("Reglas actualizadas."); route();
+    } catch (e) {
+      toast("No se pudo guardar: " + e.message, "err");
+      btn.disabled = false; btn.textContent = "Guardar";
+    }
+  };
 }
 
 function shiftWeek(ref, delta) {
@@ -364,8 +427,8 @@ async function apptModal(patientId, dayISO) {
 async function viewPatients() {
   const patients = await api.listPatients();
   main.innerHTML = `
-    <h2 style="margin-bottom:4px">Pacientes</h2>
-    <p class="lede">${patients.length} paciente${patients.length===1?"":"s"} activo${patients.length===1?"":"s"}.</p>
+    ${phead("Expedientes", "Pacientes",
+      `${patients.length} paciente${patients.length===1?"":"s"} activo${patients.length===1?"":"s"}.`)}
     <div class="card">
       <div class="card-head"><h3>Lista</h3>
         <button class="btn sm" id="add-patient">+ Nuevo paciente</button></div>
@@ -552,8 +615,8 @@ async function viewDocs() {
   let filter = "all";
 
   main.innerHTML = `
-    <h2 style="margin-bottom:4px">Documentos</h2>
-    <p class="lede">Todos los documentos de la clínica, de todos los pacientes.</p>
+    ${phead("Archivo", "Documentos",
+      "Todos los documentos de la clínica, de todos los pacientes.")}
     <div class="grid grid-3" style="margin-bottom:16px">
       <div class="stat"><span>Total</span><b>${counts.all}</b></div>
       <div class="stat"><span>Por firmar</span><b>${counts.pending}</b></div>
@@ -709,8 +772,8 @@ async function viewInbox() {
   const selected = view.patientId || withMsgs[0]?.id || patients[0]?.id || null;
 
   main.innerHTML = `
-    <h2 style="margin-bottom:4px">Mensajes</h2>
-    <p class="lede">Conversaciones con pacientes. Solo tú y ese paciente las ven.</p>
+    ${phead("Conversaciones", "Mensajes",
+      "Solo tú y ese paciente las ven.")}
     ${!patients.length ? emptyState("Aún no hay pacientes.") : `
     <div class="grid grid-2">
       <div class="card">
@@ -764,8 +827,8 @@ async function viewInbox() {
 async function viewServices() {
   services = await api.getServices();
   main.innerHTML = `
-    <h2 style="margin-bottom:4px">Servicios</h2>
-    <p class="lede">Precios y enlaces de pago de Clover. Se reflejan en el portal del paciente.</p>
+    ${phead("Catálogo", "Servicios",
+      "Precios y enlaces de pago de Clover. Se reflejan en el portal del paciente.")}
     <div class="card">
       ${services.map((s) => `<div class="row">
         <div class="main"><b>${esc(s.name)}</b>
@@ -819,8 +882,7 @@ async function viewPanel() {
   const max = svc.length ? svc[0][1] : 1;
 
   main.innerHTML = `
-    <h2 style="margin-bottom:4px">Panel</h2>
-    <p class="lede">Resumen de los últimos 30 días.</p>
+    ${phead("Últimos 30 días", "Panel", "Cómo va la clínica este mes.")}
 
     <div class="grid grid-3" style="margin-bottom:16px">
       <div class="stat"><span>Pacientes activos</span><b>${s.patients}</b></div>
