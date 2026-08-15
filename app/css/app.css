@@ -248,22 +248,80 @@ button,input,select,textarea{font-family:inherit}
   .hero h1{font-size:26px}
 }
 
-/* ---- section nav (clinic) --------------------------------------------- */
-.railnav{
-  display:flex;gap:4px;overflow-x:auto;padding:10px 20px 0;
-  border-bottom:1px solid var(--hair2);background:rgba(255,253,250,.75);
-  position:sticky;top:63px;z-index:30;-webkit-overflow-scrolling:touch;
+/* ---- side rail (clinic) -----------------------------------------------
+   Matches the demo console: a 186px vertical rail on the left, collapsing to
+   a fixed bottom bar on narrow screens.                                    */
+.shell{display:flex;min-height:calc(100vh - 63px);align-items:stretch}
+
+.rail{
+  width:186px;flex:none;padding:18px 12px;
+  display:flex;flex-direction:column;gap:16px;
+  background:linear-gradient(180deg,#FFFFFF,#FBF6EF);
+  border-right:1px solid var(--hair2);
+  position:sticky;top:63px;height:calc(100vh - 63px);
 }
-.railnav button{
-  border:0;background:none;cursor:pointer;white-space:nowrap;
-  display:flex;align-items:center;gap:7px;
-  padding:11px 15px;font-size:12.5px;font-weight:700;color:var(--muted);
-  border-bottom:2px solid transparent;margin-bottom:-1px;border-radius:10px 10px 0 0;
+.raillogo{
+  display:flex;align-items:center;gap:9px;
+  padding:0 8px 13px;border-bottom:1px solid var(--hair2);
 }
-.railnav button i{font-style:normal;font-size:13px;opacity:.75}
-.railnav button:hover{color:var(--ink);background:var(--cream)}
-.railnav button.on{color:var(--pink);border-bottom-color:var(--pink);background:transparent}
-.railnav button.on i{opacity:1}
+.raillogo img{height:46px;width:46px;object-fit:contain;display:block;flex:none}
+.raillogo em{
+  font-style:normal;font-size:9.5px;letter-spacing:.16em;font-weight:800;
+  color:var(--gold-ink);line-height:1.5;
+}
+.rail ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+
+.rail .nav{
+  display:flex;align-items:center;gap:10px;width:100%;
+  padding:9px 12px;border:0;background:none;cursor:pointer;
+  border-radius:10px;font-family:inherit;font-size:14px;color:var(--muted);
+  position:relative;text-align:left;
+}
+.rail .nav i{font-style:normal;font-size:14px;opacity:.75;width:17px;text-align:center}
+.rail .nav:hover{background:rgba(238,75,158,.07);color:var(--ink)}
+.rail .nav.on{
+  background:var(--marble);color:var(--pink);font-weight:600;
+  box-shadow:0 2px 6px rgba(34,72,91,.08);
+}
+.rail .nav.on i{opacity:1}
+.rail .dot{
+  position:absolute;right:11px;font-style:normal;font-size:10px;font-weight:700;
+  background:var(--pink);color:#fff;border-radius:999px;padding:1px 6px;min-width:18px;text-align:center;
+}
+
+.booklink{
+  margin-top:auto;border:1px solid var(--hair3);border-radius:14px;
+  background:#fff;padding:12px;
+}
+.booklink span{
+  display:block;font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+  font-weight:800;color:var(--gold-ink);margin-bottom:6px;
+}
+.booklink em{display:block;font-style:normal;font-size:11.5px;color:var(--muted2);line-height:1.5}
+.booklink b{color:var(--magenta)}
+
+.railmain{flex:1;min-width:0;padding:20px;max-width:1160px}
+
+@media(max-width:860px){
+  .shell{display:block}
+  .rail{
+    width:100%;position:fixed;bottom:0;left:0;top:auto;height:auto;
+    flex-direction:row;padding:6px 4px;gap:0;z-index:50;
+    background:#FFFDFA;border-right:none;border-top:1px solid var(--gold2);
+    box-shadow:0 -8px 24px -20px rgba(34,60,100,.6);
+  }
+  .raillogo,.booklink{display:none}
+  .rail ul{flex-direction:row;justify-content:space-between;width:100%;gap:0}
+  .rail ul li{flex:1}
+  .rail .nav{
+    flex-direction:column;gap:3px;padding:7px 2px;font-size:9.5px;
+    justify-content:center;border-radius:8px;
+  }
+  .rail .nav i{font-size:15px;width:auto}
+  .rail .nav.on{box-shadow:none;background:var(--pink-wash)}
+  .rail .dot{position:static;margin-left:3px;padding:0 5px;font-size:9px}
+  .railmain{padding:14px 14px 84px}
+}
 
 /* ---- schedule day grouping -------------------------------------------- */
 .daygroup{margin-bottom:16px}
@@ -306,7 +364,5 @@ select.mini:focus{outline:none;border-color:var(--gold)}
 .barval{flex:0 0 auto;font-size:12px;font-weight:700;color:var(--ink);min-width:22px;text-align:right}
 
 @media(max-width:620px){
-  .railnav{top:57px;padding:8px 12px 0}
-  .railnav button{padding:9px 11px;font-size:11.5px}
   .barlabel{flex:0 0 34%}
 }

@@ -22,11 +22,23 @@
   <button class="btn secondary sm" id="out">Salir</button>
 </header>
 
-<nav class="railnav" id="railnav"></nav>
+<div class="shell">
+  <aside class="rail">
+    <div class="raillogo">
+      <img src="../assets/aa-logo.png" alt="" onerror="this.style.display='none'">
+      <em>A&amp;A<br>WELLNESS</em>
+    </div>
+    <ul id="railnav"></ul>
+    <div class="booklink">
+      <span>Enlace de reservas</span>
+      <em>Comparte el portal con tus pacientes:<br><b id="booklink-url">…</b></em>
+    </div>
+  </aside>
 
-<main class="wrap" id="main">
-  <div class="state"><span class="spinner"></span>Cargando la clínica…</div>
-</main>
+  <main class="railmain" id="main">
+    <div class="state"><span class="spinner"></span>Cargando la clínica…</div>
+  </main>
+</div>
 
 <script type="module">
 import { requireRole, signOut, getSession } from "./js/client.js";
@@ -61,15 +73,36 @@ catch (e) { console.warn(e.message); }
 
 paintNav();
 route();
+refreshBadges();
+
+const portalUrl = new URL("./portal.html", location.href).href;
+$("#booklink-url").textContent = portalUrl.replace(/^https?:\/\//, "");
+$("#booklink-url").title = portalUrl;
+
+/* Badge counts shown on the rail (pending signatures, unread messages). */
+let badges = { docs: 0, inbox: 0 };
 
 function paintNav() {
-  $("#railnav").innerHTML = SECTIONS.map((s) =>
-    `<button data-nav="${s.id}" class="${view.name === s.id ? "on" : ""}">
-      <i>${s.icon}</i>${esc(s.label)}</button>`).join("");
+  const active = view.name === "patient" ? "patients" : view.name;
+  $("#railnav").innerHTML = SECTIONS.map((s) => {
+    const n = badges[s.id] || 0;
+    return `<li><button class="nav ${active === s.id ? "on" : ""}" data-nav="${s.id}">
+      <i>${s.icon}</i><span>${esc(s.label)}</span>
+      ${n ? `<i class="dot">${n}</i>` : ""}</button></li>`;
+  }).join("");
   $$("[data-nav]").forEach((b) => b.onclick = () => {
     view = { name: b.dataset.nav, patientId: null, tab: "docs" };
     paintNav(); route();
   });
+}
+
+/* Kept fresh so the rail reflects reality without a manual refresh. */
+async function refreshBadges() {
+  try {
+    const { pendingDocs, unread } = await api.todaySnapshot();
+    badges = { docs: pendingDocs.length, inbox: unread.length };
+    paintNav();
+  } catch (e) { /* badges are cosmetic — never block the view */ }
 }
 
 async function route() {
@@ -84,6 +117,7 @@ async function route() {
     main.innerHTML = errorState("No se pudo cargar: " + e.message);
     console.error(e);
   }
+  refreshBadges();
 }
 
 /* ============================================================== HOY ==== */
