@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Montserrat:wght@400;500;600;700;800&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
-<link href="./css/app.css?v=202608152033" rel="stylesheet">
+<link href="./css/app.css?v=202608152036" rel="stylesheet">
 </head>
 <body class="has-rail">
 
@@ -45,11 +45,12 @@
 </div>
 
 <script type="module">
-import { requireRole, signOut, getSession } from "./js/client.js?v=202608152033";
-import * as api from "./js/api.js?v=202608152033";
+import { requireRole, signOut, getSession } from "./js/client.js?v=202608152036";
+import * as api from "./js/api.js?v=202608152036";
 import { $, $$, esc, money, fmtDate, fmtDateTime, fmtTime, initials, openModal,
          closeModal, toast, loading, emptyState, errorState, bodyHtml,
-         signatureHtml, STATUS_ES, STATUS_CLASS } from "./js/ui.js?v=202608152033";
+         signatureHtml, STATUS_ES, STATUS_CLASS, dayKey, todayKey, monthLabel,
+         longDate } from "./js/ui.js?v=202608152036";
 
 const profile = await requireRole("staff");
 if (!profile) throw new Error("redirecting");
@@ -74,6 +75,9 @@ let templates = [], services = [];
    Declared here, above every call site — `let` is not hoisted, so declaring
    it lower down puts paintNav() in the temporal dead zone and throws. */
 let badges = { docs: 0, inbox: 0 };
+/* Calendar state: which month the grid is showing, and which day is selected. */
+let calRef = new Date();
+let calSel = todayKey();
 const main = $("#main");
 
 try { [templates, services] = await Promise.all([api.listTemplates(), api.getServices()]); }
@@ -182,50 +186,99 @@ async function viewToday() {
   });
 }
 
-/* =========================================================== AGENDA ==== */
+/* =========================================================== AGENDA ====
+   A real month calendar. Days are keyed by LOCAL date so an 8pm appointment
+   in Puerto Rico does not land on tomorrow's cell.                        */
 async function viewSchedule() {
   const appts = await api.listAppointments(null, { upcomingOnly: false });
-  const cutoff = Date.now() - 864e5;
-  const future = appts.filter((a) => new Date(a.starts_at).getTime() >= cutoff);
 
-  const days = {};
-  for (const a of future) {
-    const k = new Date(a.starts_at).toISOString().slice(0, 10);
-    (days[k] = days[k] || []).push(a);
-  }
-  const keys = Object.keys(days).sort();
+  const byDay = {};
+  for (const a of appts) (byDay[dayKey(a.starts_at)] ||= []).push(a);
+  for (const k in byDay) byDay[k].sort((x, y) => x.starts_at.localeCompare(y.starts_at));
 
   main.innerHTML = `
     <h2 style="margin-bottom:4px">Agenda</h2>
-    <p class="lede">Citas próximas, agrupadas por día.</p>
+    <p class="lede">Calendario de citas. Toca un día para verlo o añadir una cita.</p>
     <div class="card">
-      <div class="card-head"><h3>Próximas citas</h3>
-        <button class="btn sm" id="new-appt">+ Nueva cita</button></div>
-      ${keys.length ? keys.map((k) => `
-        <div class="daygroup">
-          <span class="dayhead">${esc(new Date(k + "T12:00:00").toLocaleDateString("es-PR",
-            { weekday:"long", day:"numeric", month:"long" }))}</span>
-          ${days[k].map((a) => `<div class="row">
-            <span class="pill">${esc(fmtTime(a.starts_at))}</span>
-            <div class="main"><b>${esc(a.patients?.full_name || "Paciente")}</b>
-              <span>${esc(a.services?.name || "Cita")} · ${a.minutes} min</span></div>
-            <select class="mini" data-appt="${esc(a.id)}">
-              ${["scheduled","confirmed","completed","cancelled","no_show"].map((s) =>
-                `<option value="${s}" ${a.status===s?"selected":""}>${s}</option>`).join("")}
-            </select>
-          </div>`).join("")}
-        </div>`).join("") : emptyState("No hay citas programadas.")}
-    </div>`;
+      <div class="calbar">
+        <button class="btn secondary sm" id="cal-prev" aria-label="Mes anterior">‹</button>
+        <b id="cal-title">${esc(monthLabel(calRef))}</b>
+        <button class="btn secondary sm" id="cal-next" aria-label="Mes siguiente">›</button>
+        <span style="flex:1"></span>
+        <button class="btn secondary sm" id="cal-today">Hoy</button>
+        <button class="btn sm" id="cal-add">+ Nueva cita</button>
+      </div>
+      <div class="calgrid" id="calgrid"></div>
+    </div>
+    <div class="card" id="daypanel"></div>`;
 
-  $("#new-appt").onclick = () => apptModal();
-  $$("[data-appt]").forEach((sel) => sel.onchange = async () => {
-    try { await api.updateAppointment(sel.dataset.appt, { status: sel.value });
-          toast("Cita actualizada."); }
-    catch (e) { toast("No se pudo actualizar: " + e.message, "err"); }
-  });
+  $("#cal-prev").onclick  = () => { calRef = new Date(calRef.getFullYear(), calRef.getMonth() - 1, 1); route(); };
+  $("#cal-next").onclick  = () => { calRef = new Date(calRef.getFullYear(), calRef.getMonth() + 1, 1); route(); };
+  $("#cal-today").onclick = () => { calRef = new Date(); calSel = todayKey(); route(); };
+  $("#cal-add").onclick   = () => apptModal(null, calSel);
+
+  paintGrid();
+  paintDay();
+
+  function paintGrid() {
+    const y = calRef.getFullYear(), m = calRef.getMonth();
+    const first = new Date(y, m, 1);
+    const lead = first.getDay();                    // 0 = Sunday
+    const days = new Date(y, m + 1, 0).getDate();
+    const today = todayKey();
+
+    const names = ["D", "L", "M", "M", "J", "V", "S"];
+    let html = names.map((n) => `<span class="calhead">${n}</span>`).join("");
+
+    for (let i = 0; i < lead; i++) html += `<span class="calcell muted-cell"></span>`;
+
+    for (let d = 1; d <= days; d++) {
+      const key = `${y}-${String(m + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+      const list = byDay[key] || [];
+      const shown = list.slice(0, 3);
+      const extra = list.length - shown.length;
+      html += `<button class="calcell${key === today ? " is-today" : ""}${
+        key === calSel ? " is-sel" : ""}" data-day="${key}">
+        <span class="caldate">${d}</span>
+        ${shown.map((a) => `<span class="calchip ${a.status}">
+            ${esc(fmtTime(a.starts_at))} ${esc((a.patients?.full_name || "").split(" ")[0])}
+          </span>`).join("")}
+        ${extra > 0 ? `<span class="calmore">+${extra} más</span>` : ""}
+      </button>`;
+    }
+    $("#calgrid").innerHTML = html;
+    $$("[data-day]").forEach((b) => b.onclick = () => {
+      calSel = b.dataset.day;
+      $$("[data-day]").forEach((x) => x.classList.toggle("is-sel", x === b));
+      paintDay();
+    });
+  }
+
+  function paintDay() {
+    const list = byDay[calSel] || [];
+    $("#daypanel").innerHTML = `
+      <div class="card-head"><h3 style="text-transform:capitalize">${esc(longDate(calSel))}</h3>
+        <button class="btn sm" id="day-add">+ Añadir</button></div>
+      ${list.length ? list.map((a) => `<div class="row">
+        <span class="pill">${esc(fmtTime(a.starts_at))}</span>
+        <div class="main"><b>${esc(a.patients?.full_name || "Paciente")}</b>
+          <span>${esc(a.services?.name || "Cita")} · ${a.minutes} min</span></div>
+        <select class="mini" data-appt="${esc(a.id)}">
+          ${["scheduled","confirmed","completed","cancelled","no_show"].map((v) =>
+            `<option value="${v}" ${a.status===v?"selected":""}>${v}</option>`).join("")}
+        </select>
+      </div>`).join("") : emptyState("No hay citas este día.")}`;
+
+    $("#day-add").onclick = () => apptModal(null, calSel);
+    $$("[data-appt]").forEach((sel) => sel.onchange = async () => {
+      try { await api.updateAppointment(sel.dataset.appt, { status: sel.value });
+            toast("Cita actualizada."); route(); }
+      catch (e) { toast("No se pudo actualizar: " + e.message, "err"); }
+    });
+  }
 }
 
-async function apptModal(patientId) {
+async function apptModal(patientId, dayISO) {
   const patients = await api.listPatients();
   if (!patients.length) { toast("Primero crea un paciente.", "err"); return; }
   openModal(`
@@ -239,7 +292,8 @@ async function apptModal(patientId) {
         `<option value="${esc(s.id)}" data-min="${s.minutes}">${esc(s.name)} · ${money(s.price_cents)}</option>`
       ).join("")}</select></div>
     <div class="field"><label for="a-when">Fecha y hora</label>
-      <input id="a-when" type="datetime-local"></div>
+      <input id="a-when" type="datetime-local"
+             value="${dayISO ? dayISO + "T09:00" : ""}"></div>
     <div class="field"><label for="a-min">Duración (minutos)</label>
       <input id="a-min" type="number" min="5" step="5" value="30"></div>
     <div class="modal-actions">

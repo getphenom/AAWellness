@@ -34,6 +34,27 @@ export function fmtTime(iso) {
     { hour: "numeric", minute: "2-digit" });
 }
 
+/* Calendar grouping must use LOCAL dates, not UTC. Appointments are stored as
+   timestamptz; slicing the ISO string would push late-evening appointments in
+   Puerto Rico (UTC-4) onto the following day. */
+export function dayKey(value) {
+  const d = value instanceof Date ? value : new Date(value);
+  if (isNaN(d)) return "";
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
+export const todayKey = () => dayKey(new Date());
+
+export function monthLabel(d) {
+  return d.toLocaleDateString("es-PR", { month: "long", year: "numeric" });
+}
+
+export function longDate(key) {
+  const [y, m, day] = key.split("-").map(Number);
+  return new Date(y, m - 1, day).toLocaleDateString("es-PR",
+    { weekday: "long", day: "numeric", month: "long" });
+}
+
 export const initials = (n) =>
   String(n || "").trim().split(/\s+/).slice(0, 2).map((x) => x[0] || "").join("").toUpperCase();
 
