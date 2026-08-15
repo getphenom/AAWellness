@@ -7,7 +7,7 @@
    why the patient and clinic views can share the same query helpers safely.
    ========================================================================= */
 
-import { supabase } from "./client.js?v=202608152036";
+import { supabase } from "./client.js?v=202608152039";
 
 const unwrap = ({ data, error }) => {
   if (error) throw new Error(error.message);
@@ -149,6 +149,30 @@ export const updateAppointment = (id, patch) =>
 
 export const deleteAppointment = (id) =>
   supabase.from("appointments").delete().eq("id", id).then(unwrap);
+
+/* ---- availability ------------------------------------------------------
+   Slots are GENERATED from clinic_settings.schedule, not stored. Only the
+   exceptions live in slot_overrides, so changing working hours does not
+   require rewriting rows.                                                  */
+
+export const listOverrides = (fromISO, toISO) =>
+  supabase.from("slot_overrides").select("*")
+    .gte("starts_at", fromISO).lte("starts_at", toISO).then(unwrap);
+
+export async function setSlotOpen(startsAtISO, isOpen, userId) {
+  return supabase.from("slot_overrides")
+    .upsert({ starts_at: startsAtISO, is_open: isOpen, created_by: userId },
+            { onConflict: "starts_at" })
+    .select().single().then(unwrap);
+}
+
+export const clearSlotOverride = (startsAtISO) =>
+  supabase.from("slot_overrides").delete().eq("starts_at", startsAtISO).then(unwrap);
+
+export const saveSchedule = (schedule, slotMinutes) =>
+  supabase.from("clinic_settings")
+    .update({ schedule, slot_minutes: slotMinutes })
+    .eq("id", true).select().single().then(unwrap);
 
 /* ---- messages ---------------------------------------------------------- */
 
