@@ -7,17 +7,17 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Montserrat:wght@400;500;600;700;800&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
-<link href="./css/app.css?v=202608152039" rel="stylesheet">
+<link href="./css/app.css?v=202608152040" rel="stylesheet">
 </head>
 <body class="has-rail">
 
 <span class="arc-top"></span>
 <header class="topbar">
   <span class="brand">
-    <img src="../assets/aa-logo.png" alt="" width="34" height="34"
-         style="width:34px;height:34px;object-fit:contain"
+    <img src="../assets/aa-logo.png" alt="" width="36" height="36"
+         style="width:36px;height:36px;object-fit:contain"
          onerror="this.style.display='none'">
-    <b>A&amp;A <span>CLÍNICA</span></b>
+    <b>A&amp;A <span>WELLNESS</span></b>
   </span>
   <span class="spacer"></span>
   <span class="who"><b id="who-name">…</b><span id="who-sub">Consola de la clínica</span></span>
@@ -26,12 +26,6 @@
 
 <div class="shell">
   <aside class="rail">
-    <div class="raillogo">
-      <img src="../assets/aa-logo.png" alt="" width="42" height="42"
-           style="width:42px;height:42px;object-fit:contain"
-           onerror="this.style.display='none'">
-      <em>A&amp;A<br>WELLNESS</em>
-    </div>
     <ul id="railnav"></ul>
     <div class="booklink">
       <span>Enlace de reservas</span>
@@ -45,13 +39,13 @@
 </div>
 
 <script type="module">
-import { requireRole, signOut, getSession } from "./js/client.js?v=202608152039";
-import * as slots from "./js/slots.js?v=202608152039";
-import * as api from "./js/api.js?v=202608152039";
+import { requireRole, signOut, getSession } from "./js/client.js?v=202608152040";
+import * as slots from "./js/slots.js?v=202608152040";
+import * as api from "./js/api.js?v=202608152040";
 import { $, $$, esc, money, fmtDate, fmtDateTime, fmtTime, initials, openModal,
          closeModal, toast, loading, emptyState, errorState, bodyHtml,
          signatureHtml, STATUS_ES, STATUS_CLASS, dayKey, todayKey, monthLabel,
-         longDate } from "./js/ui.js?v=202608152039";
+         longDate } from "./js/ui.js?v=202608152040";
 
 const profile = await requireRole("staff");
 if (!profile) throw new Error("redirecting");

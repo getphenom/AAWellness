@@ -7,15 +7,15 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Montserrat:wght@400;500;600;700;800&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
-<link href="./css/app.css?v=202608152039" rel="stylesheet">
+<link href="./css/app.css?v=202608152040" rel="stylesheet">
 </head>
 <body>
 
 <span class="arc-top"></span>
 <header class="topbar">
   <span class="brand">
-    <img src="../assets/aa-logo.png" alt="" width="34" height="34"
-         style="width:34px;height:34px;object-fit:contain"
+    <img src="../assets/aa-logo.png" alt="" width="36" height="36"
+         style="width:36px;height:36px;object-fit:contain"
          onerror="this.style.display='none'">
     <b>A&amp;A <span>WELLNESS</span></b>
   </span>
@@ -29,11 +29,11 @@
 </main>
 
 <script type="module">
-import { requireRole, signOut, getSession } from "./js/client.js?v=202608152039";
-import * as api from "./js/api.js?v=202608152039";
+import { requireRole, signOut, getSession } from "./js/client.js?v=202608152040";
+import * as api from "./js/api.js?v=202608152040";
 import { $, $$, esc, money, fmtDate, fmtDateTime, openModal, closeModal, toast,
          loading, emptyState, errorState, mountPad, bodyHtml, signatureHtml,
-         STATUS_ES, STATUS_CLASS } from "./js/ui.js?v=202608152039";
+         STATUS_ES, STATUS_CLASS } from "./js/ui.js?v=202608152040";
 
 const profile = await requireRole("patient");
 if (!profile) throw new Error("redirecting");
