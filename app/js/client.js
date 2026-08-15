@@ -7,7 +7,7 @@
    ========================================================================= */
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.47.10";
-import { SUPABASE_URL, SUPABASE_ANON_KEY, isConfigured } from "./config.js";
+import { SUPABASE_URL, SUPABASE_ANON_KEY, isConfigured } from "./config.js?v=202608152025";
 
 export const configured = isConfigured();
 
