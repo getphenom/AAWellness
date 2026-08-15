@@ -7,7 +7,7 @@
    why the patient and clinic views can share the same query helpers safely.
    ========================================================================= */
 
-import { supabase } from "./client.js?v=202608152031";
+import { supabase } from "./client.js?v=202608152033";
 
 const unwrap = ({ data, error }) => {
   if (error) throw new Error(error.message);
@@ -130,8 +130,11 @@ export const createVisit = (row) =>
   supabase.from("visits").insert(row).select().single().then(unwrap);
 
 export const listAppointments = (patientId, { upcomingOnly = false } = {}) => {
+  /* patients is joined because the clinic-wide Agenda shows who each
+     appointment is for. RLS still applies to the joined table, so a patient
+     calling this can only ever see their own row. */
   let q = supabase.from("appointments")
-    .select("*, services(name, minutes)")
+    .select("*, services(name, minutes, price_cents), patients(full_name)")
     .order("starts_at", { ascending: true });
   if (patientId) q = q.eq("patient_id", patientId);
   if (upcomingOnly) q = q.gte("starts_at", new Date().toISOString());

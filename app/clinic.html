@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Montserrat:wght@400;500;600;700;800&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
-<link href="./css/app.css?v=202608152031" rel="stylesheet">
+<link href="./css/app.css?v=202608152033" rel="stylesheet">
 </head>
 <body class="has-rail">
 
@@ -45,11 +45,11 @@
 </div>
 
 <script type="module">
-import { requireRole, signOut, getSession } from "./js/client.js?v=202608152031";
-import * as api from "./js/api.js?v=202608152031";
+import { requireRole, signOut, getSession } from "./js/client.js?v=202608152033";
+import * as api from "./js/api.js?v=202608152033";
 import { $, $$, esc, money, fmtDate, fmtDateTime, fmtTime, initials, openModal,
          closeModal, toast, loading, emptyState, errorState, bodyHtml,
-         signatureHtml, STATUS_ES, STATUS_CLASS } from "./js/ui.js?v=202608152031";
+         signatureHtml, STATUS_ES, STATUS_CLASS } from "./js/ui.js?v=202608152033";
 
 const profile = await requireRole("staff");
 if (!profile) throw new Error("redirecting");
