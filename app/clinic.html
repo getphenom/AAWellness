@@ -9,7 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Montserrat:wght@400;500;600;700;800&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
 <link href="./css/app.css" rel="stylesheet">
 </head>
-<body>
+<body class="has-rail">
 
 <span class="arc-top"></span>
 <header class="topbar">
@@ -87,8 +87,8 @@ function paintNav() {
   $("#railnav").innerHTML = SECTIONS.map((s) => {
     const n = badges[s.id] || 0;
     return `<li><button class="nav ${active === s.id ? "on" : ""}" data-nav="${s.id}">
-      <i>${s.icon}</i><span>${esc(s.label)}</span>
-      ${n ? `<i class="dot">${n}</i>` : ""}</button></li>`;
+      <span class="ico">${s.icon}</span><span class="lbl">${esc(s.label)}</span>
+      ${n ? `<span class="dot">${n}</span>` : ""}</button></li>`;
   }).join("");
   $$("[data-nav]").forEach((b) => b.onclick = () => {
     view = { name: b.dataset.nav, patientId: null, tab: "docs" };
