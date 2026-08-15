@@ -39,6 +39,24 @@
 
         <div id="err" class="banner err" style="display:none"></div>
 
+        <!-- set a new password (shown only after a recovery link) -->
+        <form id="form-new" style="display:none" autocomplete="on">
+          <div class="banner warn">
+            <b>Elige una contraseña nueva</b>
+            Escribe la contraseña que usarás de ahora en adelante.
+          </div>
+          <div class="field">
+            <label for="np-pass">Contraseña nueva</label>
+            <input id="np-pass" type="password" autocomplete="new-password" required minlength="6">
+            <span class="hint">Mínimo 6 caracteres.</span>
+          </div>
+          <div class="field">
+            <label for="np-pass2">Repite la contraseña</label>
+            <input id="np-pass2" type="password" autocomplete="new-password" required minlength="6">
+          </div>
+          <button class="btn wide" type="submit" id="np-go">Guardar contraseña</button>
+        </form>
+
         <!-- sign in -->
         <form id="form-in" autocomplete="on">
           <div class="field">
@@ -85,7 +103,7 @@
 </main>
 
 <script type="module">
-import { configured, getSession, getProfile, signIn, signUp, sendReset, homeFor } from "./js/client.js";
+import { configured, supabase, getSession, getProfile, signIn, signUp, sendReset, homeFor } from "./js/client.js";
 import { $, $$, toast } from "./js/ui.js";
 
 const boot  = $("#boot");
@@ -97,9 +115,34 @@ function showError(msg) {
   errEl.style.display = msg ? "block" : "none";
 }
 
+/* A password-recovery link comes back with `type=recovery` in the URL hash.
+   We must show the "set a new password" form INSTEAD of routing the user on —
+   otherwise they get signed in and never actually change the password. */
+const hash = new URLSearchParams(location.hash.replace(/^#/, ""));
+let recovering = hash.get("type") === "recovery";
+
+/* Supabase also announces it on the auth state channel, which fires after the
+   client has parsed the hash — catch that too. */
+if (configured) {
+  supabase.auth.onAuthStateChange((event) => {
+    if (event === "PASSWORD_RECOVERY") { recovering = true; showRecovery(); }
+  });
+}
+
+function showRecovery() {
+  boot.style.display = "none";
+  forms.style.display = "block";
+  $("#tabs").style.display = "none";
+  $("#form-in").style.display = "none";
+  $("#form-up").style.display = "none";
+  $("#form-new").style.display = "block";
+}
+
 if (!configured) {
   boot.style.display = "none";
   $("#setup").style.display = "block";
+} else if (recovering) {
+  showRecovery();
 } else {
   // Already signed in? Go straight to the right view.
   const session = await getSession();
@@ -112,6 +155,26 @@ if (!configured) {
     forms.style.display = "block";
   }
 }
+
+$("#form-new").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  showError("");
+  const a = $("#np-pass").value, b = $("#np-pass2").value;
+  if (a !== b) { showError("Las contraseñas no coinciden."); return; }
+
+  const btn = $("#np-go");
+  btn.disabled = true; btn.textContent = "Guardando…";
+  const { error } = await supabase.auth.updateUser({ password: a });
+  if (error) {
+    showError(error.message);
+    btn.disabled = false; btn.textContent = "Guardar contraseña";
+    return;
+  }
+  history.replaceState(null, "", location.pathname);   // drop the token from the URL
+  toast("Contraseña actualizada.");
+  const profile = await getProfile({ refresh: true });
+  location.replace(homeFor(profile));
+});
 
 // tab switching
 $$("#tabs button").forEach((b) => {
