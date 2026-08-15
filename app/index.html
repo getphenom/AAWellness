@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>A&amp;A Wellness · Entrar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Montserrat:wght@400;500;600;700;800&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
+<link href="./css/app.css" rel="stylesheet">
+</head>
+<body>
+
+<main class="center-wrap">
+  <div class="frame" style="width:min(440px,100%)">
+    <div class="card-sheet">
+
+      <div style="text-align:center;margin-bottom:22px">
+        <img src="../assets/aa-logo.png" alt="A&amp;A Healthcare Services LLC"
+             style="height:74px;margin-bottom:10px" onerror="this.style.display='none'">
+        <span class="kicker">A&amp;A Wellness · Loíza, PR</span>
+        <h1 style="font-size:27px;color:var(--blue)">BIENESTAR EN <span style="color:var(--pink)">NÁCAR</span></h1>
+      </div>
+
+      <div id="setup" style="display:none">
+        <div class="banner warn">
+          <b>Falta conectar Supabase</b>
+          Abre <code>app/js/config.js</code> y pega la URL del proyecto y la clave
+          <code>anon</code>. Las encuentras en Supabase → Project Settings → API.
+        </div>
+      </div>
+
+      <div id="app-forms" style="display:none">
+
+        <div class="tabs" id="tabs">
+          <button data-tab="in" class="on">Entrar</button>
+          <button data-tab="up">Crear cuenta</button>
+        </div>
+
+        <div id="err" class="banner err" style="display:none"></div>
+
+        <!-- sign in -->
+        <form id="form-in" autocomplete="on">
+          <div class="field">
+            <label for="in-email">Correo electrónico</label>
+            <input id="in-email" type="email" autocomplete="email" required placeholder="tu@correo.com">
+          </div>
+          <div class="field">
+            <label for="in-pass">Contraseña</label>
+            <input id="in-pass" type="password" autocomplete="current-password" required>
+          </div>
+          <button class="btn wide" type="submit" id="in-go">Entrar</button>
+          <button class="btn ghost wide" type="button" id="forgot" style="margin-top:8px">
+            Olvidé mi contraseña
+          </button>
+        </form>
+
+        <!-- sign up -->
+        <form id="form-up" style="display:none" autocomplete="on">
+          <div class="field">
+            <label for="up-name">Nombre completo</label>
+            <input id="up-name" type="text" autocomplete="name" required placeholder="Nombre y apellido">
+          </div>
+          <div class="field">
+            <label for="up-email">Correo electrónico</label>
+            <input id="up-email" type="email" autocomplete="email" required placeholder="tu@correo.com">
+          </div>
+          <div class="field">
+            <label for="up-pass">Contraseña</label>
+            <input id="up-pass" type="password" autocomplete="new-password" required minlength="6">
+            <span class="hint">Mínimo 6 caracteres.</span>
+          </div>
+          <button class="btn wide" type="submit" id="up-go">Crear cuenta</button>
+          <p class="hint" style="margin-top:12px;text-align:center">
+            Las cuentas nuevas son de paciente. El acceso de la clínica lo asigna la dueña.
+          </p>
+        </form>
+
+      </div>
+
+      <div id="boot" class="state"><span class="spinner"></span>Cargando…</div>
+
+    </div>
+  </div>
+</main>
+
+<script type="module">
+import { configured, getSession, getProfile, signIn, signUp, sendReset, homeFor } from "./js/client.js";
+import { $, $$, toast } from "./js/ui.js";
+
+const boot  = $("#boot");
+const forms = $("#app-forms");
+const errEl = $("#err");
+
+function showError(msg) {
+  errEl.textContent = msg;
+  errEl.style.display = msg ? "block" : "none";
+}
+
+if (!configured) {
+  boot.style.display = "none";
+  $("#setup").style.display = "block";
+} else {
+  // Already signed in? Go straight to the right view.
+  const session = await getSession();
+  if (session) {
+    const profile = await getProfile();
+    if (profile) { location.replace(homeFor(profile)); }
+    else { boot.style.display = "none"; forms.style.display = "block"; }
+  } else {
+    boot.style.display = "none";
+    forms.style.display = "block";
+  }
+}
+
+// tab switching
+$$("#tabs button").forEach((b) => {
+  b.onclick = () => {
+    $$("#tabs button").forEach((x) => x.classList.toggle("on", x === b));
+    const up = b.dataset.tab === "up";
+    $("#form-in").style.display = up ? "none" : "block";
+    $("#form-up").style.display = up ? "block" : "none";
+    showError("");
+  };
+});
+
+$("#form-in").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  showError("");
+  const btn = $("#in-go");
+  btn.disabled = true; btn.textContent = "Entrando…";
+  const r = await signIn($("#in-email").value.trim(), $("#in-pass").value);
+  if (!r.ok) {
+    showError(r.message);
+    btn.disabled = false; btn.textContent = "Entrar";
+    return;
+  }
+  const profile = await getProfile({ refresh: true });
+  location.replace(homeFor(profile));
+});
+
+$("#form-up").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  showError("");
+  const btn = $("#up-go");
+  btn.disabled = true; btn.textContent = "Creando…";
+  const r = await signUp(
+    $("#up-email").value.trim(), $("#up-pass").value, $("#up-name").value.trim());
+  btn.disabled = false; btn.textContent = "Crear cuenta";
+  if (!r.ok) { showError(r.message); return; }
+  toast("Cuenta creada. Revisa tu correo para confirmarla.");
+  $$("#tabs button")[0].click();
+});
+
+$("#forgot").onclick = async () => {
+  const email = $("#in-email").value.trim();
+  if (!email) { showError("Escribe tu correo primero."); return; }
+  const r = await sendReset(email);
+  if (!r.ok) { showError(r.message); return; }
+  toast("Te enviamos un enlace para restablecer la contraseña.");
+};
+</script>
+</body>
+</html>

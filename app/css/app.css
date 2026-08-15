@@ -1,0 +1,249 @@
+/* ============================================================================
+   app.css — Nácar. Marble, gold edge, rose-to-blue arc.
+   Carried forward from the existing build so the real app looks like the demo.
+   ========================================================================= */
+
+:root{
+  --ink:#223C64; --muted:#5A7091; --muted2:#4B6484;
+  --cream:#FBF7F4; --marble:#FFFDFA; --white:#fff;
+  --line:#EAD9B5; --hair:#EDDFC1; --hair2:#F0E4CE; --hair3:#EBDCBB;
+  --pink:#E52E7B; --magenta:#C81A66; --rose:#F1A7C4;
+  --pink-wash:#FDEAF3; --pink-line:#F6D2E3;
+  --blue:#8CBCE4; --blue-deep:#2F6DA8; --blue-ink:#1F4E7C;
+  --blue-wash:#DCEAF7; --blue-wash2:#EAF3FB; --blue-line:#CFE2F3;
+  --gold:#C69A44; --gold2:#EAD9B5; --gold-ink:#8A6A10;
+  --gold-wash:#FBF2DC; --gold-dash:#E6D4AE;
+  --gold-edge:linear-gradient(140deg,#EBD6A8,#C69A44 45%,#F3E6C4 66%,#B98C33);
+  --band:linear-gradient(96deg,#E52E7B 0%,#F28FB5 34%,#DCC8DE 58%,#8CBCE4 100%);
+  --teal:#2F6DA8; --ok:#2F8F5B; --err:#C4353B;
+  --shadow:0 30px 70px -46px rgba(34,60,100,.55);
+}
+
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  min-height:100vh; color:var(--ink);
+  font-family:'Montserrat',system-ui,-apple-system,sans-serif;
+  -webkit-font-smoothing:antialiased;
+  background:radial-gradient(120% 90% at 18% 0%,#FFF 0%,#FBF7F4 38%,#F3EAE4 100%);
+}
+h1,h2,h3{font-family:'Playfair Display',Georgia,serif;font-weight:700;margin:0}
+button,input,select,textarea{font-family:inherit}
+
+/* ---- layout ---------------------------------------------------------- */
+.wrap{max-width:1160px;margin:0 auto;padding:20px}
+.center-wrap{min-height:100vh;display:grid;place-items:center;padding:24px}
+
+.frame{padding:2px;border-radius:26px;background:var(--gold-edge);box-shadow:var(--shadow)}
+.card-sheet{background:var(--marble);border-radius:24px;padding:32px}
+
+.topbar{
+  display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  padding:14px 20px;background:rgba(255,253,250,.92);
+  backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--hair2);position:sticky;top:0;z-index:40;
+}
+.topbar .brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.02em}
+.topbar .brand img{height:34px;width:auto}
+.topbar .brand b{font-family:'Playfair Display',serif;font-size:17px;color:var(--blue)}
+.topbar .brand b span{color:var(--pink)}
+.topbar .spacer{flex:1}
+.topbar .who{font-size:12px;color:var(--muted);text-align:right;line-height:1.35}
+.topbar .who b{display:block;color:var(--ink);font-size:12.5px}
+
+.arc-top{display:block;height:3px;background:var(--band)}
+
+/* ---- typography helpers ---------------------------------------------- */
+.kicker{
+  display:block;font-size:10px;font-weight:800;letter-spacing:.15em;
+  text-transform:uppercase;color:var(--gold-ink);margin-bottom:6px;
+}
+.muted{color:var(--muted)}
+.lede{font-size:13px;color:var(--muted2);line-height:1.6;margin:8px 0 20px}
+
+/* ---- cards ----------------------------------------------------------- */
+.card{
+  background:#fff;border:1px solid var(--hair2);border-radius:18px;
+  padding:20px;margin-bottom:14px;
+}
+.card-head{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.card-head h3{font-size:16px;flex:1}
+
+.grid{display:grid;gap:14px}
+.grid-2{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.grid-3{grid-template-columns:repeat(auto-fit,minmax(210px,1fr))}
+
+/* ---- buttons --------------------------------------------------------- */
+.btn{
+  border:0;border-radius:999px;padding:10px 18px;cursor:pointer;
+  font-size:12.5px;font-weight:700;color:#fff;
+  background:linear-gradient(96deg,#E52E7B 0%,#C81A66 100%);
+  box-shadow:0 8px 20px -12px rgba(200,26,102,.9);
+  transition:filter .15s ease,transform .05s ease;
+}
+.btn:hover{filter:brightness(1.07)}
+.btn:active{transform:translateY(1px)}
+.btn:disabled{opacity:.45;cursor:not-allowed;filter:none;box-shadow:none}
+.btn.secondary{
+  background:#fff;color:var(--muted2);border:1px solid var(--hair3);box-shadow:none;
+}
+.btn.secondary:hover{border-color:var(--gold);color:var(--ink)}
+.btn.ghost{background:transparent;color:var(--muted);box-shadow:none;padding:8px 12px}
+.btn.ghost:hover{color:var(--ink)}
+.btn.wide{width:100%;padding:13px}
+.btn.sm{padding:7px 13px;font-size:11.5px}
+
+/* ---- forms ----------------------------------------------------------- */
+.field{margin-bottom:14px}
+.field label{
+  display:block;font-size:11px;font-weight:700;letter-spacing:.04em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:6px;
+}
+.field input,.field select,.field textarea{
+  width:100%;font-size:13.5px;color:var(--ink);background:#fff;
+  border:1px solid var(--hair3);border-radius:12px;padding:11px 13px;
+}
+.field textarea{resize:vertical;line-height:1.55}
+.field input:focus,.field select:focus,.field textarea:focus{
+  outline:none;border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-wash);
+}
+.field .hint{font-size:11.5px;color:var(--muted);margin-top:5px}
+
+.check{
+  display:flex;align-items:flex-start;gap:9px;font-size:12.5px;line-height:1.5;
+  color:var(--muted2);background:var(--gold-wash);border:1px solid var(--gold-dash);
+  border-radius:12px;padding:11px 13px;margin-bottom:12px;cursor:pointer;
+}
+.check input{margin-top:2px;accent-color:#E52E7B;flex:0 0 auto}
+
+/* ---- tabs ------------------------------------------------------------ */
+.tabs{display:flex;gap:6px;border-bottom:1px solid var(--hair2);margin-bottom:16px;overflow-x:auto}
+.tabs button{
+  border:0;background:none;padding:10px 14px;cursor:pointer;white-space:nowrap;
+  font-size:12.5px;font-weight:700;color:var(--muted);
+  border-bottom:2px solid transparent;margin-bottom:-1px;
+}
+.tabs button.on{color:var(--pink);border-bottom-color:var(--pink)}
+
+/* ---- lists / rows ---------------------------------------------------- */
+.row{
+  display:flex;align-items:center;gap:12px;padding:13px 14px;
+  border:1px solid var(--hair2);border-radius:14px;background:#fff;margin-bottom:8px;
+}
+.row:hover{border-color:var(--gold2)}
+.row .main{flex:1;min-width:0}
+.row .main b{display:block;font-size:13.5px;margin-bottom:2px}
+.row .main span{display:block;font-size:11.5px;color:var(--muted)}
+.row.click{cursor:pointer}
+
+.avatar{
+  width:38px;height:38px;border-radius:50%;flex:0 0 auto;
+  display:grid;place-items:center;font-size:12px;font-weight:800;color:#fff;
+  background:linear-gradient(140deg,#8CBCE4,#2F6DA8);
+}
+
+.pill{
+  flex:0 0 auto;font-size:10.5px;font-weight:700;padding:5px 11px;border-radius:999px;
+  border:1px solid var(--hair3);background:var(--cream);color:var(--muted2);
+}
+.pill.todo{background:var(--pink-wash);color:var(--magenta);border-color:var(--pink-line)}
+.pill.warn{background:var(--gold-wash);color:var(--gold-ink);border-color:var(--gold-dash)}
+.pill.done{background:var(--blue-wash2);color:var(--blue-ink);border-color:var(--blue-line)}
+
+/* ---- stats ----------------------------------------------------------- */
+.stat{background:var(--cream);border:1px solid var(--hair2);border-radius:14px;padding:14px}
+.stat span{display:block;font-size:10.5px;font-weight:700;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.stat b{font-family:'Playfair Display',serif;font-size:24px}
+
+/* ---- modal ----------------------------------------------------------- */
+.modal-bg{
+  position:fixed;inset:0;background:rgba(34,60,100,.42);backdrop-filter:blur(3px);
+  display:none;place-items:center;padding:20px;z-index:100;
+}
+.modal-bg.on{display:grid}
+.modal{
+  background:var(--marble);border-radius:20px;padding:26px;
+  width:min(560px,100%);max-height:88vh;overflow-y:auto;box-shadow:var(--shadow);
+}
+.modal h3{font-size:19px;margin-bottom:6px}
+.modal-actions{display:flex;gap:9px;justify-content:flex-end;margin-top:18px;flex-wrap:wrap}
+
+/* ---- document viewer -------------------------------------------------- */
+.doc-body{
+  max-height:44vh;overflow-y:auto;border:1px solid var(--hair2);border-radius:14px;
+  background:#fff;padding:16px 16px 4px;margin:12px 0 14px;-webkit-overflow-scrolling:touch;
+}
+.doc-p{font-size:12.8px;line-height:1.68;color:var(--muted2);margin:0 0 12px;white-space:pre-line}
+.doc-p:first-child{color:var(--ink);font-weight:500}
+
+/* ---- signature pad ---------------------------------------------------- */
+.pad-wrap{position:relative;margin-bottom:14px}
+.pad{
+  display:block;width:100%;height:170px;background:#fff;
+  border:1px dashed var(--gold-dash);border-radius:14px;touch-action:none;cursor:crosshair;
+}
+.pad-wrap::after{
+  content:"";position:absolute;left:22px;right:22px;bottom:42px;height:1px;
+  background:var(--hair3);pointer-events:none;
+}
+.pad-clear{
+  position:absolute;top:9px;right:10px;border:1px solid var(--hair3);
+  background:rgba(255,255,255,.92);color:var(--muted);border-radius:999px;
+  font-size:10.5px;font-weight:700;padding:5px 11px;cursor:pointer;
+}
+.pad-clear:hover{color:var(--ink);border-color:var(--gold)}
+
+.signed-block{
+  border-top:1px solid var(--hair2);margin-top:4px;padding:14px 0 12px;
+  display:grid;gap:6px;justify-items:start;
+}
+.signed-label{font-size:10px;font-weight:800;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--gold-ink)}
+.sig-img{max-width:240px;max-height:76px;display:block}
+.sig-typed{font-family:'Dancing Script',cursive;font-size:30px;line-height:1.1;color:var(--ink)}
+.signed-meta{font-size:11.5px;color:var(--muted)}
+
+/* ---- states ----------------------------------------------------------- */
+.state{
+  display:flex;align-items:center;justify-content:center;gap:9px;
+  padding:26px 14px;font-size:12.5px;color:var(--muted);text-align:center;
+}
+.state.err{color:var(--err)}
+.spinner{
+  width:15px;height:15px;border:2px solid var(--gold2);border-top-color:var(--gold);
+  border-radius:50%;animation:spin .7s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.banner{
+  border-radius:14px;padding:13px 15px;font-size:12.5px;line-height:1.55;margin-bottom:16px;
+}
+.banner.warn{background:var(--gold-wash);border:1px solid var(--gold-dash);color:var(--gold-ink)}
+.banner.err{background:#FDEDED;border:1px solid #F3C9C9;color:var(--err)}
+.banner b{display:block;margin-bottom:3px}
+
+/* ---- toasts ----------------------------------------------------------- */
+.toasts{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:200;
+  display:grid;gap:8px;width:min(420px,calc(100% - 32px))}
+.toast{
+  background:var(--ink);color:#fff;border-radius:12px;padding:12px 16px;
+  font-size:12.5px;box-shadow:var(--shadow);animation:rise .22s ease;
+}
+.toast.err{background:var(--err)}
+.toast.out{opacity:0;transition:opacity .3s}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}}
+
+/* ---- patient portal shell ---------------------------------------------- */
+.portal{max-width:560px;margin:0 auto;padding:18px}
+.hero{text-align:center;padding:22px 0 18px}
+.hero .script{font-family:'Dancing Script',cursive;font-size:26px;color:var(--pink)}
+.hero h1{font-size:32px;letter-spacing:.01em;color:var(--blue)}
+.hero h1 span{color:var(--pink)}
+
+@media(max-width:620px){
+  .wrap{padding:14px}
+  .card-sheet{padding:22px 18px}
+  .modal{padding:20px}
+  .hero h1{font-size:26px}
+}

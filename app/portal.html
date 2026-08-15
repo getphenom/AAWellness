@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>A&amp;A Wellness · Mi portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Montserrat:wght@400;500;600;700;800&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
+<link href="./css/app.css" rel="stylesheet">
+</head>
+<body>
+
+<span class="arc-top"></span>
+<header class="topbar">
+  <span class="brand">
+    <img src="../assets/aa-logo.png" alt="" onerror="this.style.display='none'">
+    <b>A&amp;A <span>WELLNESS</span></b>
+  </span>
+  <span class="spacer"></span>
+  <span class="who"><b id="who-name">…</b><span id="who-sub">Mi portal</span></span>
+  <button class="btn secondary sm" id="out">Salir</button>
+</header>
+
+<main class="portal" id="main">
+  <div class="state"><span class="spinner"></span>Cargando tu información…</div>
+</main>
+
+<script type="module">
+import { requireRole, signOut, getSession } from "./js/client.js";
+import * as api from "./js/api.js";
+import { $, $$, esc, money, fmtDate, fmtDateTime, openModal, closeModal, toast,
+         loading, emptyState, errorState, mountPad, bodyHtml, signatureHtml,
+         STATUS_ES, STATUS_CLASS } from "./js/ui.js";
+
+const profile = await requireRole("patient");
+if (!profile) throw new Error("redirecting");
+
+$("#out").onclick = signOut;
+$("#who-name").textContent = profile.full_name || profile.email || "Paciente";
+
+const main = $("#main");
+let patient = null, tab = "docs";
+
+/* ---------------------------------------------------------------- boot */
+try {
+  patient = await api.getMyPatient();
+} catch (e) {
+  main.innerHTML = errorState("No pudimos cargar tu información: " + e.message);
+  throw e;
+}
+
+/* A signed-up user with no linked clinical record yet. This is a real state:
+   the clinic has to create/link the patient before anything shows up. */
+if (!patient) {
+  main.innerHTML = `
+    <div class="hero">
+      <span class="script">Hola</span>
+      <h1>BIENVENIDA A <span>A&amp;A</span></h1>
+    </div>
+    <div class="banner warn">
+      <b>Tu cuenta aún no está enlazada a un expediente</b>
+      La clínica debe enlazar tu cuenta antes de que veas tus documentos y citas.
+      Si ya eres paciente, avísale a la clínica que creaste tu cuenta con
+      <strong>${esc(profile.email || "")}</strong>.
+    </div>`;
+} else {
+  $("#who-sub").textContent = patient.plan || "Mi portal";
+  render();
+}
+
+/* -------------------------------------------------------------- render */
+function shell(inner) {
+  main.innerHTML = `
+    <div class="hero">
+      <span class="script">Siéntete</span>
+      <h1>MEJOR <span>HOY</span></h1>
+    </div>
+    <div class="tabs" id="ptabs">
+      <button data-t="docs"   class="${tab==='docs'?'on':''}">Documentos <span id="pend"></span></button>
+      <button data-t="visits" class="${tab==='visits'?'on':''}">Visitas</button>
+      <button data-t="appts"  class="${tab==='appts'?'on':''}">Citas</button>
+    </div>
+    <div id="panel">${inner}</div>`;
+  $$("#ptabs button").forEach((b) => b.onclick = () => { tab = b.dataset.t; render(); });
+}
+
+async function render() {
+  shell(loading());
+  const panel = $("#panel");
+  try {
+    if (tab === "docs")   panel.innerHTML = await renderDocs();
+    if (tab === "visits") panel.innerHTML = await renderVisits();
+    if (tab === "appts")  panel.innerHTML = await renderAppts();
+    wire();
+  } catch (e) {
+    panel.innerHTML = errorState("No se pudo cargar: " + e.message);
+  }
+}
+
+async function renderDocs() {
+  const docs = await api.listDocuments(patient.id);
+  const pending = docs.filter((d) => d.status === "pending" || d.status === "accepted").length;
+  const badge = $("#pend");
+  if (badge) badge.textContent = pending ? `(${pending})` : "";
+
+  if (!docs.length) return emptyState("Aún no tienes documentos.");
+
+  const order = { pending: 0, accepted: 1, signed: 2, filed: 3 };
+  docs.sort((a, b) => (order[a.status] - order[b.status]) ||
+    String(b.assigned_at).localeCompare(String(a.assigned_at)));
+
+  return docs.map((d) => {
+    const open = d.status === "pending" || d.status === "accepted";
+    const label = open ? (d.requires_signature ? "Revisar y firmar" : "Revisar") : "Ver";
+    const sub = d.status === "signed" && d.signatures?.length
+      ? "Firmado " + fmtDate(d.completed_at)
+      : (d.requires_signature ? "Requiere firma" : "Solo lectura");
+    return `<div class="row">
+      <div class="main"><b>${esc(d.title)}</b><span>${esc(sub)}</span></div>
+      <span class="pill ${STATUS_CLASS[d.status]}">${esc(STATUS_ES[d.status])}</span>
+      <button class="btn ${open ? "" : "secondary"} sm" data-doc="${esc(d.id)}">${label}</button>
+    </div>`;
+  }).join("");
+}
+
+async function renderVisits() {
+  const visits = await api.listVisits(patient.id);
+  if (!visits.length) return emptyState("Aún no hay visitas registradas.");
+  return visits.map((v) => `<div class="row">
+    <div class="main"><b>${esc(v.title)}</b><span>${esc(fmtDate(v.occurred_at))}${
+      v.notes ? " · " + esc(v.notes) : ""}</span></div>
+    ${v.metric ? `<span class="pill">${esc(v.metric)}</span>` : ""}
+  </div>`).join("");
+}
+
+async function renderAppts() {
+  const appts = await api.listAppointments(patient.id, { upcomingOnly: true });
+  if (!appts.length) return emptyState("No tienes citas próximas.");
+  return appts.map((a) => `<div class="row">
+    <div class="main"><b>${esc(a.services?.name || "Cita")}</b>
+      <span>${esc(fmtDateTime(a.starts_at))} · ${a.minutes} min</span></div>
+    <span class="pill">${esc(a.status)}</span>
+  </div>`).join("");
+}
+
+function wire() {
+  $$("[data-doc]").forEach((b) => b.onclick = () => openDoc(b.dataset.doc));
+}
+
+/* ------------------------------------------------------------ document */
+async function openDoc(id) {
+  let doc;
+  try { doc = await api.getDocument(id); }
+  catch (e) { toast("No se pudo abrir: " + e.message, "err"); return; }
+
+  const done = doc.status === "signed" || doc.status === "filed";
+  const sig = doc.signatures?.[0];
+
+  let actions;
+  if (done) {
+    actions = `<div class="modal-actions"><button class="btn secondary" data-x>Cerrar</button></div>`;
+  } else if (doc.requires_signature) {
+    actions = `
+      <label class="check"><input type="checkbox" id="agree">
+        He leído y acepto este documento.</label>
+      <div class="modal-actions">
+        <button class="btn secondary" data-x>Ahora no</button>
+        <button class="btn" id="to-sign" disabled>Firmar</button>
+      </div>`;
+  } else {
+    actions = `<div class="modal-actions">
+        <button class="btn secondary" data-x>Cerrar</button>
+        <button class="btn" id="accept">Aceptar</button>
+      </div>`;
+  }
+
+  const kindEs = { consent:"Consentimiento", form:"Formulario", policy:"Política", file:"Archivo" };
+  openModal(`
+    <span class="kicker">${esc(kindEs[doc.kind] || "Documento")}</span>
+    <h3>${esc(doc.title)}</h3>
+    <div class="doc-body">${bodyHtml(doc)}${signatureHtml(sig)}</div>
+    ${actions}`);
+
+  $$("[data-x]").forEach((b) => b.onclick = closeModal);
+
+  const agree = $("#agree"), toSign = $("#to-sign");
+  if (agree && toSign) {
+    agree.onchange = () => { toSign.disabled = !agree.checked; };
+    toSign.onclick = () => openSign(doc);
+  }
+  const acc = $("#accept");
+  if (acc) acc.onclick = async () => {
+    acc.disabled = true;
+    try { await api.acceptDocument(doc.id); closeModal(); toast("Documento aceptado."); render(); }
+    catch (e) { toast("No se pudo guardar: " + e.message, "err"); acc.disabled = false; }
+  };
+}
+
+/* ---------------------------------------------------------------- sign */
+async function openSign(doc) {
+  openModal(`
+    <span class="kicker">Firma</span>
+    <h3>${esc(doc.title)}</h3>
+    <p class="lede">Firme con el dedo o el ratón, o escriba su nombre completo.</p>
+    <div class="pad-wrap">
+      <canvas id="pad" class="pad"></canvas>
+      <button type="button" class="pad-clear" id="pad-clear">Borrar</button>
+    </div>
+    <div class="field">
+      <label for="typed">O escriba su nombre completo</label>
+      <input id="typed" type="text" placeholder="${esc(patient.full_name)}">
+    </div>
+    <div class="modal-actions">
+      <button class="btn secondary" data-x>Cancelar</button>
+      <button class="btn" id="save">Firmar documento</button>
+    </div>`);
+
+  const pad = mountPad($("#pad"));
+  $("#pad-clear").onclick = () => pad.clear();
+  $$("[data-x]").forEach((b) => b.onclick = closeModal);
+
+  $("#save").onclick = async () => {
+    const typed = $("#typed").value.trim();
+    if (pad.isEmpty() && !typed) { $("#typed").focus(); toast("Firme o escriba su nombre.", "err"); return; }
+
+    const btn = $("#save");
+    btn.disabled = true; btn.textContent = "Guardando…";
+    try {
+      const session = await getSession();
+      await api.signDocument(doc, {
+        kind: pad.isEmpty() ? "type" : "draw",
+        dataUrl: pad.isEmpty() ? null : pad.dataUrl(),
+        typedName: typed || patient.full_name,
+        signerName: typed || patient.full_name,
+        userId: session?.user?.id
+      });
+      closeModal();
+      toast("Documento firmado.");
+      render();
+    } catch (e) {
+      toast("No se pudo firmar: " + e.message, "err");
+      btn.disabled = false; btn.textContent = "Firmar documento";
+    }
+  };
+}
+</script>
+</body>
+</html>
