@@ -1,6 +1,17 @@
 repo: getphenom/AAWellness
 branch: main
 
+## Tracking
+- Jira: https://solvops.atlassian.net/browse/AAWELLNESS
+- Confluence: https://solvops.atlassian.net/wiki/spaces/AAWellness
+
+Open blockers as of 2026-08-15:
+- AAWELLNESS-6  website content (contact/hours still empty in clinic-data.js)
+- AAWELLNESS-7  Clover payment links per service
+- AAWELLNESS-8  backend for cross-device signing
+- AAWELLNESS-9  patient login
+- AAWELLNESS-10 clinical/legal review of consent templates - REQUIRED before real patients sign
+
 ## Last sync
 date: 2026-08-15
 
