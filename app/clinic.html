@@ -9,11 +9,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Montserrat:wght@400;500;600;700;800&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
-<link href="./css/app.css?v=1786826804" rel="stylesheet">
+<link href="./css/app.css?v=1786827602" rel="stylesheet">
 </head>
 <body class="has-rail">
 
-<span class="arc-top"></span>
 <header class="topbar">
   <span class="brand">
     <img src="../assets/aa-logo.png" alt="" width="36" height="36"
@@ -45,13 +44,13 @@
 </div>
 
 <script type="module">
-import { requireRole, signOut, getSession } from "./js/client.js?v=1786826804";
-import * as slots from "./js/slots.js?v=1786826804";
-import * as api from "./js/api.js?v=1786826804";
+import { requireRole, signOut, getSession } from "./js/client.js?v=1786827602";
+import * as slots from "./js/slots.js?v=1786827602";
+import * as api from "./js/api.js?v=1786827602";
 import { $, $$, esc, money, fmtDate, fmtDateTime, fmtTime, initials, openModal,
          closeModal, toast, loading, emptyState, errorState, bodyHtml,
          signatureHtml, STATUS_ES, STATUS_CLASS, dayKey, todayKey, monthLabel,
-         longDate } from "./js/ui.js?v=1786826804";
+         longDate } from "./js/ui.js?v=1786827602";
 
 const profile = await requireRole("staff");
 if (!profile) throw new Error("redirecting");

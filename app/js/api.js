@@ -7,7 +7,7 @@
    why the patient and clinic views can share the same query helpers safely.
    ========================================================================= */
 
-import { supabase } from "./client.js?v=1786826804";
+import { supabase } from "./client.js?v=1786827602";
 
 const unwrap = ({ data, error }) => {
   if (error) throw new Error(error.message);

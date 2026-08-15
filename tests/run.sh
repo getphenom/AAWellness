@@ -5,5 +5,6 @@ cd "$(dirname "$0")/.."
 echo "--- slot math"        && node tests/slots.test.mjs | grep -c PASS | sed 's/^/    /;s/$/ passing/'
 echo "--- imports/helpers"  && (cd app && node ../tests/imports.cjs)
 echo "--- top-level exec"   && (cd app && node ../tests/toplevel.cjs)
+echo "--- layout guards"    && (cd app && node ../tests/layout.cjs)
 echo "--- temporal dead zone" && (cd app && node ../tests/tdz.cjs clinic.html && node ../tests/tdz.cjs portal.html)
 echo "all checks passed"
