@@ -1,3 +1,4 @@
+import { periodStart, summarise } from "./revenue.js?v=1786828255";
 /* ============================================================================
    api.js — every database call lives here.
 
@@ -7,7 +8,7 @@
    why the patient and clinic views can share the same query helpers safely.
    ========================================================================= */
 
-import { supabase } from "./client.js?v=1786827602";
+import { supabase } from "./client.js?v=1786828255";
 
 const unwrap = ({ data, error }) => {
   if (error) throw new Error(error.message);
@@ -219,6 +220,21 @@ export async function todaySnapshot() {
       .order("created_at", { ascending: false }).then(unwrap)
   ]);
   return { appts, pendingDocs: docs, unread: msgs };
+}
+
+/* Revenue for a period, built from what each visit actually charged.
+   `period` is "week" | "month" | "ytd". Returns cents throughout — no floats
+   touch money anywhere in this app. */
+export async function revenueStats(period = "month") {
+  const since = periodStart(period);
+
+  const visits = await supabase
+    .from("visits")
+    .select("id, patient_id, occurred_at, price_cents, service_id, services(name)")
+    .gte("occurred_at", since.toISOString())
+    .then(unwrap);
+
+  return { since, period, ...summarise(visits) };
 }
 
 export async function dashboardStats() {

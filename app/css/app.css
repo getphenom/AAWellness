@@ -405,7 +405,7 @@ body.has-rail .topbar{position:static}
   background:repeating-linear-gradient(45deg,#FBF7F1 0 4px,transparent 4px 8px);
 }
 .slot.closed:hover{border-color:var(--gold-dash)}
-.slot.booked{border:1px solid var(--navy);background:#fff;color:var(--navy)}
+.slot.booked{border:1px solid var(--ink);background:#fff;color:var(--ink)}
 .slot.booked.confirmed{border-color:var(--pink);color:var(--pink)}
 .slot.booked.completed{border-color:var(--blue);color:var(--blue-ink)}
 .slot.booked.cancelled,.slot.booked.no_show{
@@ -483,4 +483,74 @@ select.mini:focus{outline:none;border-color:var(--gold)}
 
 @media(max-width:620px){
   .barlabel{flex:0 0 34%}
+}
+
+/* ---- Panel: KPI row, period toggle, revenue columns --------------------
+   Values taken from the demo (aa-healthcare-app.jsx) rather than guessed.  */
+.panelhead{
+  display:flex;align-items:flex-start;justify-content:space-between;
+  gap:16px;flex-wrap:wrap;
+}
+.panelhead .phead{margin-bottom:12px}
+
+.seg{
+  display:flex;background:#FBF6EF;border:1px solid var(--hair2);
+  border-radius:999px;padding:4px;gap:2px;flex:none;
+}
+.seg button{
+  padding:7px 15px;border-radius:999px;font-size:13px;font-weight:600;
+  color:#4B6484;background:none;border:0;cursor:pointer;font-family:inherit;
+  white-space:nowrap;
+}
+.seg button.on{background:var(--ink);color:#fff}
+
+.kpirow{
+  display:grid;gap:12px;margin-bottom:16px;
+  grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+}
+.kpi{
+  background:#fff;border:1px solid #EBDCBB;border-radius:18px;
+  padding:14px 16px;border-left-width:4px;border-left-style:solid;
+  display:flex;flex-direction:column;gap:2px;min-width:0;
+}
+.kpi > span{font-size:12.5px;color:var(--muted2)}
+.kpi > b{
+  font-family:'Playfair Display',Georgia,serif;font-size:30px;line-height:1.1;
+  color:var(--ink);overflow-wrap:anywhere;
+}
+.kpi > b.ser{font-size:23px}
+.kpi > em{font-size:12px;color:var(--muted);font-style:italic}
+.kpi.edge-pink{border-left-color:var(--pink)}   .kpi.edge-pink b{color:var(--pink)}
+.kpi.edge-blue{border-left-color:var(--blue)}   .kpi.edge-blue b{color:var(--blue-ink)}
+.kpi.edge-gold{border-left-color:var(--gold)}   .kpi.edge-gold b{color:var(--gold-ink)}
+.kpi.edge-navy{border-left-color:var(--blue-deep)} .kpi.edge-navy b{color:var(--blue-deep)}
+
+.colwrap{overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:4px}
+.cols{display:flex;gap:12px;align-items:flex-end;min-width:min-content}
+.col{flex:1 1 0;min-width:112px;display:flex;flex-direction:column;gap:3px}
+/* Fixed-height track so every bar shares one baseline and one scale. */
+.coltrack{
+  height:210px;display:flex;align-items:flex-end;
+  background:linear-gradient(180deg,#FDFBF7,#FBF6EF);
+  border:1px solid var(--hair2);border-radius:12px;padding:5px;
+}
+.coltrack i{display:block;width:100%;border-radius:8px;min-height:6px}
+.col b{
+  font-family:'Playfair Display',Georgia,serif;font-size:15px;
+  color:var(--ink);margin-top:6px;
+}
+.col span{font-size:12.5px;color:var(--ink);line-height:1.35}
+.col em{font-size:11.5px;color:var(--muted);font-style:normal}
+.tone-blue-deep{background:var(--blue-deep)}
+.tone-gold{background:var(--gold)}
+.tone-blue{background:var(--blue)}
+.tone-pink{background:var(--pink)}
+.tone-navy{background:var(--ink)}
+
+@media(max-width:760px){
+  .panelhead{flex-direction:column}
+  .seg{width:100%}
+  .seg button{flex:1;padding:7px 8px;font-size:12px}
+  .coltrack{height:150px}
+  .col{min-width:96px}
 }

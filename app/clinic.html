@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Montserrat:wght@400;500;600;700;800&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
-<link href="./css/app.css?v=1786827602" rel="stylesheet">
+<link href="./css/app.css?v=1786828255" rel="stylesheet">
 </head>
 <body class="has-rail">
 
@@ -44,13 +44,13 @@
 </div>
 
 <script type="module">
-import { requireRole, signOut, getSession } from "./js/client.js?v=1786827602";
-import * as slots from "./js/slots.js?v=1786827602";
-import * as api from "./js/api.js?v=1786827602";
+import { requireRole, signOut, getSession } from "./js/client.js?v=1786828255";
+import * as slots from "./js/slots.js?v=1786828255";
+import * as api from "./js/api.js?v=1786828255";
 import { $, $$, esc, money, fmtDate, fmtDateTime, fmtTime, initials, openModal,
          closeModal, toast, loading, emptyState, errorState, bodyHtml,
          signatureHtml, STATUS_ES, STATUS_CLASS, dayKey, todayKey, monthLabel,
-         longDate } from "./js/ui.js?v=1786827602";
+         longDate } from "./js/ui.js?v=1786828255";
 
 const profile = await requireRole("staff");
 if (!profile) throw new Error("redirecting");
@@ -90,6 +90,8 @@ refreshBadges();
 const portalUrl = new URL("./portal.html", location.href).href;
 $("#booklink-url").textContent = portalUrl.replace(/^https?:\/\//, "");
 $("#booklink-url").title = portalUrl;
+
+let panelPeriod = "month";
 
 function paintNav() {
   const active = view.name === "patient" ? "patients" : view.name;
@@ -876,47 +878,99 @@ async function editService(s) {
 
 /* ============================================================= PANEL === */
 async function viewPanel() {
-  const s = await api.dashboardStats();
-  const svc = Object.entries(s.byService).sort((a, b) => b[1] - a[1]);
-  const max = svc.length ? svc[0][1] : 1;
+  const period = panelPeriod;
+  const [r, st] = await Promise.all([api.revenueStats(period), api.dashboardStats()]);
+
+  const label = { week: "Semana", month: "Mes", ytd: "Año hasta hoy" };
+  const sinceTxt = r.since.toLocaleDateString("es-PR",
+    { weekday: "short", day: "numeric", month: "short" });
+
+  // Bars are sized against the largest value, with a floor so a small service
+  // stays visible. Height carries the shape; the numbers are printed below.
+  const max = r.rows.reduce((m, x) => Math.max(m, x.cents), 0) || 1;
+  const tone = ["blue-deep", "gold", "blue", "pink", "navy"];
 
   main.innerHTML = `
-    ${phead("Últimos 30 días", "Panel", "Cómo va la clínica este mes.")}
-
-    <div class="grid grid-3" style="margin-bottom:16px">
-      <div class="stat"><span>Pacientes activos</span><b>${s.patients}</b></div>
-      <div class="stat"><span>Nuevos (30 d)</span><b>${s.newPatients}</b></div>
-      <div class="stat"><span>Visitas (30 d)</span><b>${s.visits30}</b></div>
-      <div class="stat"><span>Citas próximas</span><b>${s.upcoming}</b></div>
-      <div class="stat"><span>Ingreso esperado</span><b>${money(s.expectedCents)}</b></div>
-      <div class="stat"><span>Firmas pendientes</span><b>${s.docsPending}</b></div>
+    <div class="panelhead">
+      ${phead(`Desde ${sinceTxt}`, "Panel")}
+      <div class="seg">
+        ${["week", "month", "ytd"].map((k) => `
+          <button class="${k === period ? "on" : ""}" data-period="${k}"
+                  aria-pressed="${k === period}">${label[k]}</button>`).join("")}
+      </div>
     </div>
 
-    <div class="card">
-      <div class="card-head"><h3>Documentos</h3></div>
-      <div class="grid grid-3">
-        <div class="stat"><span>Total</span><b>${s.docsTotal}</b></div>
-        <div class="stat"><span>Firmados</span><b>${s.docsSigned}</b></div>
-        <div class="stat"><span>Por firmar</span><b>${s.docsPending}</b></div>
+    <div class="kpirow">
+      <div class="kpi edge-pink">
+        <span>Ingresos</span><b>${money(r.totalCents)}</b>
+        <em>${r.treatments} tratamiento${r.treatments === 1 ? "" : "s"}</em>
+      </div>
+      <div class="kpi edge-blue">
+        <span>Ticket promedio</span><b>${money(r.avgCents)}</b><em>por visita</em>
+      </div>
+      <div class="kpi edge-gold">
+        <span>Pacientes atendidos</span><b>${r.patients}</b>
+        <em>distintos en el período</em>
+      </div>
+      <div class="kpi edge-navy">
+        <span>Más vendido</span>
+        <b class="ser">${r.top ? esc(r.top.name) : "—"}</b>
+        <em>${r.top ? money(r.top.cents) : "sin datos"}</em>
       </div>
     </div>
 
     <div class="card">
-      <div class="card-head"><h3>Servicios más usados (30 d)</h3></div>
-      ${svc.length ? svc.map(([name, n]) => `
-        <div class="barrow">
-          <span class="barlabel">${esc(name)}</span>
-          <span class="bartrack"><i style="width:${Math.round(n / max * 100)}%"></i></span>
-          <span class="barval">${n}</span>
-        </div>`).join("") : emptyState("Aún no hay visitas registradas.")}
+      <div class="card-head">
+        <h3>De dónde vinieron los ingresos</h3>
+        <span class="hint">${esc(label[period].toLowerCase())}</span>
+      </div>
+      ${r.rows.length ? `
+        <div class="colwrap"><div class="cols">
+          ${r.rows.map((x, n) => `
+            <div class="col">
+              <div class="coltrack">
+                <i class="tone-${tone[n % tone.length]}"
+                   style="height:${Math.max(6, Math.round(x.cents / max * 100))}%"></i>
+              </div>
+              <b>${money(x.cents)}</b>
+              <span>${esc(x.name)}</span>
+              <em>${x.count} × ${money(Math.round(x.cents / x.count))}</em>
+            </div>`).join("")}
+        </div></div>`
+        : emptyState("Todavía no hay visitas registradas en este período.")}
     </div>
 
-    <div class="banner warn">
-      <b>“Ingreso esperado” es una estimación</b>
-      Suma el precio de lista de las citas próximas. No es dinero cobrado — la
-      app todavía no registra pagos de Clover.
-    </div>`;
+    <div class="grid grid-2">
+      <div class="card">
+        <div class="card-head"><h3>Documentos</h3></div>
+        <div class="grid grid-3">
+          <div class="stat"><span>Total</span><b>${st.docsTotal}</b></div>
+          <div class="stat"><span>Firmados</span><b>${st.docsSigned}</b></div>
+          <div class="stat"><span>Por firmar</span><b>${st.docsPending}</b></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3>Pacientes</h3></div>
+        <div class="grid grid-3">
+          <div class="stat"><span>Activos</span><b>${st.patients}</b></div>
+          <div class="stat"><span>Nuevos (30 d)</span><b>${st.newPatients}</b></div>
+          <div class="stat"><span>Citas próximas</span><b>${st.upcoming}</b></div>
+        </div>
+      </div>
+    </div>
+
+    <p class="hint" style="margin-top:12px">
+      Los ingresos salen de las visitas registradas, al precio que tenía el
+      servicio ese día: cambiar un precio en Servicios no altera los meses
+      anteriores. Todavía no incluye pagos de Clover.
+    </p>`;
+
+  $$("[data-period]").forEach((b) => b.onclick = () => {
+    panelPeriod = b.dataset.period;
+    route();
+  });
 }
+
 </script>
 </body>
 </html>
