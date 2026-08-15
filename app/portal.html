@@ -80,6 +80,7 @@ function shell(inner) {
       <button data-t="docs"   class="${tab==='docs'?'on':''}">Documentos <span id="pend"></span></button>
       <button data-t="visits" class="${tab==='visits'?'on':''}">Visitas</button>
       <button data-t="appts"  class="${tab==='appts'?'on':''}">Citas</button>
+      <button data-t="msgs"   class="${tab==='msgs'?'on':''}">Mensajes <span id="unread"></span></button>
     </div>
     <div id="panel">${inner}</div>`;
   $$("#ptabs button").forEach((b) => b.onclick = () => { tab = b.dataset.t; render(); });
@@ -92,6 +93,7 @@ async function render() {
     if (tab === "docs")   panel.innerHTML = await renderDocs();
     if (tab === "visits") panel.innerHTML = await renderVisits();
     if (tab === "appts")  panel.innerHTML = await renderAppts();
+    if (tab === "msgs")   panel.innerHTML = await renderMsgs();
     wire();
   } catch (e) {
     panel.innerHTML = errorState("No se pudo cargar: " + e.message);
@@ -144,8 +146,39 @@ async function renderAppts() {
   </div>`).join("");
 }
 
+async function renderMsgs() {
+  const msgs = await api.listMessages(patient.id);
+  return `<div class="thread">${msgs.length ? msgs.map((m) => `
+      <div class="bubble ${m.from_clinic ? "theirs" : "mine"}">
+        <p>${esc(m.body)}</p><span>${esc(fmtDateTime(m.created_at))}</span>
+      </div>`).join("") : emptyState("Sin mensajes todavía. Escribe a la clínica.")}
+    </div>
+    <div class="field" style="margin-top:12px">
+      <textarea id="pm-body" rows="3" placeholder="Escribe un mensaje a la clínica…"></textarea>
+    </div>
+    <button class="btn wide" id="pm-send">Enviar</button>`;
+}
+
 function wire() {
   $$("[data-doc]").forEach((b) => b.onclick = () => openDoc(b.dataset.doc));
+
+  const send = $("#pm-send");
+  if (send) send.onclick = async () => {
+    const body = $("#pm-body").value.trim();
+    if (!body) return;
+    send.disabled = true; send.textContent = "Enviando…";
+    try {
+      const s = await getSession();
+      /* from_clinic stays false — the RLS policy rejects a patient trying to
+         post a message marked as coming from the clinic. */
+      await api.sendMessage(patient.id, body, false, s?.user?.id);
+      toast("Mensaje enviado.");
+      render();
+    } catch (e) {
+      toast("No se pudo enviar: " + e.message, "err");
+      send.disabled = false; send.textContent = "Enviar";
+    }
+  };
 }
 
 /* ------------------------------------------------------------ document */

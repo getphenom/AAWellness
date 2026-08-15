@@ -22,6 +22,8 @@
   <button class="btn secondary sm" id="out">Salir</button>
 </header>
 
+<nav class="railnav" id="railnav"></nav>
+
 <main class="wrap" id="main">
   <div class="state"><span class="spinner"></span>Cargando la clínica…</div>
 </main>
@@ -29,9 +31,9 @@
 <script type="module">
 import { requireRole, signOut, getSession } from "./js/client.js";
 import * as api from "./js/api.js";
-import { $, $$, esc, money, fmtDate, fmtDateTime, initials, openModal, closeModal,
-         toast, loading, emptyState, errorState, bodyHtml, signatureHtml,
-         STATUS_ES, STATUS_CLASS } from "./js/ui.js";
+import { $, $$, esc, money, fmtDate, fmtDateTime, fmtTime, initials, openModal,
+         closeModal, toast, loading, emptyState, errorState, bodyHtml,
+         signatureHtml, STATUS_ES, STATUS_CLASS } from "./js/ui.js";
 
 const profile = await requireRole("staff");
 if (!profile) throw new Error("redirecting");
@@ -40,62 +42,217 @@ $("#out").onclick = signOut;
 $("#who-name").textContent = profile.full_name || profile.email;
 $("#who-sub").textContent = profile.role === "owner" ? "Dueña" : "Personal";
 
+const SECTIONS = [
+  { id: "today",    label: "Hoy",        icon: "☀" },
+  { id: "sched",    label: "Agenda",     icon: "▦" },
+  { id: "patients", label: "Pacientes",  icon: "◉" },
+  { id: "docs",     label: "Documentos", icon: "▤" },
+  { id: "services", label: "Servicios",  icon: "✦" },
+  { id: "inbox",    label: "Mensajes",   icon: "✉" },
+  { id: "panel",    label: "Panel",      icon: "◑" }
+];
+
+let view = { name: "today", patientId: null, tab: "docs" };
+let templates = [], services = [];
 const main = $("#main");
-let view = { name: "patients", patientId: null, tab: "docs" };
-let templates = [];
 
-try { templates = await api.listTemplates(); }
-catch (e) { console.warn("templates:", e.message); }
+try { [templates, services] = await Promise.all([api.listTemplates(), api.getServices()]); }
+catch (e) { console.warn(e.message); }
 
+paintNav();
 route();
 
-/* ------------------------------------------------------------- routing */
-async function route() {
-  main.innerHTML = loading();
-  try {
-    if (view.name === "patients") await viewPatients();
-    else if (view.name === "patient") await viewPatient();
-    else if (view.name === "services") await viewServices();
-  } catch (e) {
-    main.innerHTML = errorState("No se pudo cargar: " + e.message);
-  }
-}
-
-function nav() {
-  return `<div class="tabs" style="margin-bottom:18px">
-    <button class="${view.name!=='services'?'on':''}" data-nav="patients">Pacientes</button>
-    <button class="${view.name==='services'?'on':''}" data-nav="services">Servicios</button>
-  </div>`;
-}
-function wireNav() {
+function paintNav() {
+  $("#railnav").innerHTML = SECTIONS.map((s) =>
+    `<button data-nav="${s.id}" class="${view.name === s.id ? "on" : ""}">
+      <i>${s.icon}</i>${esc(s.label)}</button>`).join("");
   $$("[data-nav]").forEach((b) => b.onclick = () => {
-    view = { name: b.dataset.nav, patientId: null, tab: "docs" }; route();
+    view = { name: b.dataset.nav, patientId: null, tab: "docs" };
+    paintNav(); route();
   });
 }
 
-/* ------------------------------------------------------ patient list */
+async function route() {
+  main.innerHTML = loading();
+  try {
+    await ({
+      today: viewToday, sched: viewSchedule, patients: viewPatients,
+      patient: viewPatient, docs: viewDocs, services: viewServices,
+      inbox: viewInbox, panel: viewPanel
+    }[view.name])();
+  } catch (e) {
+    main.innerHTML = errorState("No se pudo cargar: " + e.message);
+    console.error(e);
+  }
+}
+
+/* ============================================================== HOY ==== */
+async function viewToday() {
+  const { appts, pendingDocs, unread } = await api.todaySnapshot();
+  const expected = appts.filter((a) => a.status !== "cancelled")
+    .reduce((s, a) => s + (a.services?.price_cents || 0), 0);
+
+  main.innerHTML = `
+    <h2 style="margin-bottom:4px">Hoy</h2>
+    <p class="lede">${esc(new Date().toLocaleDateString("es-PR",
+      { weekday:"long", day:"numeric", month:"long", year:"numeric" }))}</p>
+
+    <div class="grid grid-3" style="margin-bottom:16px">
+      <div class="stat"><span>Citas de hoy</span><b>${appts.length}</b></div>
+      <div class="stat"><span>Ingreso esperado</span><b>${money(expected)}</b></div>
+      <div class="stat"><span>Firmas pendientes</span><b>${pendingDocs.length}</b></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>Citas de hoy</h3>
+        <button class="btn sm" id="new-appt">+ Nueva cita</button></div>
+      ${appts.length ? appts.map((a) => `<div class="row">
+        <span class="pill">${esc(fmtTime(a.starts_at))}</span>
+        <div class="main"><b>${esc(a.patients?.full_name || "Paciente")}</b>
+          <span>${esc(a.services?.name || "Cita")} · ${a.minutes} min</span></div>
+        <span class="pill ${a.status === "completed" ? "done" : ""}">${esc(a.status)}</span>
+      </div>`).join("") : emptyState("No hay citas para hoy.")}
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>Documentos por firmar</h3></div>
+      ${pendingDocs.length ? pendingDocs.slice(0, 8).map((d) =>
+        `<div class="row click" data-goto="${esc(d.patient_id)}">
+          <div class="main"><b>${esc(d.patients?.full_name || "Paciente")}</b>
+            <span>${esc(d.title)}</span></div>
+          <span class="pill ${STATUS_CLASS[d.status]}">${esc(STATUS_ES[d.status])}</span>
+        </div>`).join("") : emptyState("Nada pendiente de firma ✓")}
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>Mensajes sin leer</h3></div>
+      ${unread.length ? unread.slice(0, 8).map((m) =>
+        `<div class="row click" data-msg="${esc(m.patient_id)}">
+          <div class="main"><b>${esc(m.patients?.full_name || "Paciente")}</b>
+            <span>${esc(m.body.slice(0, 80))}</span></div>
+          <span class="pill todo">${esc(fmtDate(m.created_at))}</span>
+        </div>`).join("") : emptyState("No hay mensajes sin leer.")}
+    </div>`;
+
+  $("#new-appt").onclick = () => apptModal();
+  $$("[data-goto]").forEach((r) => r.onclick = () => {
+    view = { name: "patient", patientId: r.dataset.goto, tab: "docs" }; paintNav(); route();
+  });
+  $$("[data-msg]").forEach((r) => r.onclick = () => {
+    view = { name: "inbox", patientId: r.dataset.msg }; paintNav(); route();
+  });
+}
+
+/* =========================================================== AGENDA ==== */
+async function viewSchedule() {
+  const appts = await api.listAppointments(null, { upcomingOnly: false });
+  const cutoff = Date.now() - 864e5;
+  const future = appts.filter((a) => new Date(a.starts_at).getTime() >= cutoff);
+
+  const days = {};
+  for (const a of future) {
+    const k = new Date(a.starts_at).toISOString().slice(0, 10);
+    (days[k] = days[k] || []).push(a);
+  }
+  const keys = Object.keys(days).sort();
+
+  main.innerHTML = `
+    <h2 style="margin-bottom:4px">Agenda</h2>
+    <p class="lede">Citas próximas, agrupadas por día.</p>
+    <div class="card">
+      <div class="card-head"><h3>Próximas citas</h3>
+        <button class="btn sm" id="new-appt">+ Nueva cita</button></div>
+      ${keys.length ? keys.map((k) => `
+        <div class="daygroup">
+          <span class="dayhead">${esc(new Date(k + "T12:00:00").toLocaleDateString("es-PR",
+            { weekday:"long", day:"numeric", month:"long" }))}</span>
+          ${days[k].map((a) => `<div class="row">
+            <span class="pill">${esc(fmtTime(a.starts_at))}</span>
+            <div class="main"><b>${esc(a.patients?.full_name || "Paciente")}</b>
+              <span>${esc(a.services?.name || "Cita")} · ${a.minutes} min</span></div>
+            <select class="mini" data-appt="${esc(a.id)}">
+              ${["scheduled","confirmed","completed","cancelled","no_show"].map((s) =>
+                `<option value="${s}" ${a.status===s?"selected":""}>${s}</option>`).join("")}
+            </select>
+          </div>`).join("")}
+        </div>`).join("") : emptyState("No hay citas programadas.")}
+    </div>`;
+
+  $("#new-appt").onclick = () => apptModal();
+  $$("[data-appt]").forEach((sel) => sel.onchange = async () => {
+    try { await api.updateAppointment(sel.dataset.appt, { status: sel.value });
+          toast("Cita actualizada."); }
+    catch (e) { toast("No se pudo actualizar: " + e.message, "err"); }
+  });
+}
+
+async function apptModal(patientId) {
+  const patients = await api.listPatients();
+  if (!patients.length) { toast("Primero crea un paciente.", "err"); return; }
+  openModal(`
+    <h3>Nueva cita</h3>
+    <div class="field"><label for="a-pt">Paciente</label>
+      <select id="a-pt">${patients.map((p) =>
+        `<option value="${esc(p.id)}" ${p.id===patientId?"selected":""}>${esc(p.full_name)}</option>`
+      ).join("")}</select></div>
+    <div class="field"><label for="a-svc">Servicio</label>
+      <select id="a-svc"><option value="">— Ninguno —</option>${services.map((s) =>
+        `<option value="${esc(s.id)}" data-min="${s.minutes}">${esc(s.name)} · ${money(s.price_cents)}</option>`
+      ).join("")}</select></div>
+    <div class="field"><label for="a-when">Fecha y hora</label>
+      <input id="a-when" type="datetime-local"></div>
+    <div class="field"><label for="a-min">Duración (minutos)</label>
+      <input id="a-min" type="number" min="5" step="5" value="30"></div>
+    <div class="modal-actions">
+      <button class="btn secondary" data-x>Cancelar</button>
+      <button class="btn" id="a-save">Crear cita</button>
+    </div>`);
+  $$("[data-x]").forEach((b) => b.onclick = closeModal);
+
+  $("#a-svc").onchange = (e) => {
+    const m = e.target.selectedOptions[0]?.dataset.min;
+    if (m) $("#a-min").value = m;
+  };
+
+  $("#a-save").onclick = async () => {
+    const when = $("#a-when").value;
+    if (!when) { $("#a-when").focus(); return; }
+    const btn = $("#a-save"); btn.disabled = true; btn.textContent = "Guardando…";
+    try {
+      await api.createAppointment({
+        patient_id: $("#a-pt").value,
+        service_id: $("#a-svc").value || null,
+        starts_at: new Date(when).toISOString(),
+        minutes: Number($("#a-min").value) || 30
+      });
+      closeModal(); toast("Cita creada."); route();
+    } catch (e) {
+      toast("No se pudo crear: " + e.message, "err");
+      btn.disabled = false; btn.textContent = "Crear cita";
+    }
+  };
+}
+
+/* ======================================================== PACIENTES ==== */
 async function viewPatients() {
   const patients = await api.listPatients();
-  main.innerHTML = `${nav()}
+  main.innerHTML = `
+    <h2 style="margin-bottom:4px">Pacientes</h2>
+    <p class="lede">${patients.length} paciente${patients.length===1?"":"s"} activo${patients.length===1?"":"s"}.</p>
     <div class="card">
-      <div class="card-head">
-        <h3>Pacientes</h3>
-        <button class="btn sm" id="add-patient">+ Nuevo paciente</button>
-      </div>
+      <div class="card-head"><h3>Lista</h3>
+        <button class="btn sm" id="add-patient">+ Nuevo paciente</button></div>
       <div class="field" style="margin-bottom:12px">
         <input id="search" type="search" placeholder="Buscar por nombre, teléfono o correo…">
       </div>
       <div id="plist">${patients.length ? rows(patients) : emptyState("Aún no hay pacientes.")}</div>
     </div>`;
 
-  wireNav();
   $("#add-patient").onclick = addPatient;
-
   $("#search").oninput = (e) => {
     const q = e.target.value.toLowerCase().trim();
-    const hit = patients.filter((p) =>
-      [p.full_name, p.phone, p.email].filter(Boolean)
-        .some((f) => f.toLowerCase().includes(q)));
+    const hit = patients.filter((p) => [p.full_name, p.phone, p.email]
+      .filter(Boolean).some((f) => f.toLowerCase().includes(q)));
     $("#plist").innerHTML = hit.length ? rows(hit) : emptyState("Sin resultados.");
     wireRows();
   };
@@ -105,16 +262,14 @@ async function viewPatients() {
     return list.map((p) => `<div class="row click" data-p="${esc(p.id)}">
       <span class="avatar">${esc(initials(p.full_name))}</span>
       <div class="main"><b>${esc(p.full_name)}</b>
-        <span>${esc(p.phone || p.email || "Sin contacto")}${
-          p.plan ? " · " + esc(p.plan) : ""}</span></div>
-      ${p.profile_id
-        ? '<span class="pill done">Cuenta activa</span>'
-        : '<span class="pill warn">Sin cuenta</span>'}
+        <span>${esc(p.phone || p.email || "Sin contacto")}${p.plan ? " · " + esc(p.plan) : ""}</span></div>
+      ${p.profile_id ? '<span class="pill done">Cuenta activa</span>'
+                     : '<span class="pill warn">Sin cuenta</span>'}
     </div>`).join("");
   }
   function wireRows() {
     $$("[data-p]").forEach((r) => r.onclick = () => {
-      view = { name: "patient", patientId: r.dataset.p, tab: "docs" }; route();
+      view = { name: "patient", patientId: r.dataset.p, tab: "docs" }; paintNav(); route();
     });
   }
 }
@@ -156,11 +311,12 @@ async function addPatient() {
   };
 }
 
-/* --------------------------------------------------- patient profile */
+/* ================================================ PERFIL DEL PACIENTE == */
 async function viewPatient() {
   const p = await api.getPatient(view.patientId);
-  const [docs, visits, appts] = await Promise.all([
-    api.listDocuments(p.id), api.listVisits(p.id), api.listAppointments(p.id)
+  const [docs, visits, appts, msgs] = await Promise.all([
+    api.listDocuments(p.id), api.listVisits(p.id),
+    api.listAppointments(p.id), api.listMessages(p.id)
   ]);
   const pending = docs.filter((d) => d.status === "pending" || d.status === "accepted").length;
 
@@ -183,15 +339,15 @@ async function viewPatient() {
         <div class="stat"><span>Visitas</span><b>${visits.length}</b></div>
       </div>
     </div>
-
     <div class="tabs" id="ptabs">
       <button data-t="docs"   class="${view.tab==='docs'?'on':''}">Documentos</button>
       <button data-t="visits" class="${view.tab==='visits'?'on':''}">Visitas</button>
       <button data-t="appts"  class="${view.tab==='appts'?'on':''}">Citas</button>
+      <button data-t="msgs"   class="${view.tab==='msgs'?'on':''}">Mensajes</button>
     </div>
     <div class="card" id="panel"></div>`;
 
-  $("#back").onclick = () => { view = { name: "patients" }; route(); };
+  $("#back").onclick = () => { view = { name: "patients" }; paintNav(); route(); };
   $$("#ptabs button").forEach((b) => b.onclick = () => { view.tab = b.dataset.t; paint(); });
   paint();
 
@@ -199,14 +355,14 @@ async function viewPatient() {
     const panel = $("#panel");
     if (view.tab === "docs") {
       panel.innerHTML = `<div class="card-head"><h3>Documentos</h3>
-          <button class="btn sm" id="assign">+ Añadir documento</button></div>
+        <button class="btn sm" id="assign">+ Añadir documento</button></div>
         ${docs.length ? docs.map(docRow).join("") : emptyState("Sin documentos todavía.")}`;
       $("#assign").onclick = () => assignDoc(p);
       $$("[data-doc]").forEach((b) => b.onclick = () => showDoc(b.dataset.doc));
     }
     if (view.tab === "visits") {
       panel.innerHTML = `<div class="card-head"><h3>Visitas</h3>
-          <button class="btn sm" id="add-visit">+ Añadir visita</button></div>
+        <button class="btn sm" id="add-visit">+ Añadir visita</button></div>
         ${visits.length ? visits.map((v) => `<div class="row">
           <div class="main"><b>${esc(v.title)}</b>
             <span>${esc(fmtDate(v.occurred_at))}${v.notes ? " · " + esc(v.notes) : ""}</span></div>
@@ -215,12 +371,33 @@ async function viewPatient() {
       $("#add-visit").onclick = () => addVisit(p);
     }
     if (view.tab === "appts") {
-      panel.innerHTML = `<div class="card-head"><h3>Citas</h3></div>
+      panel.innerHTML = `<div class="card-head"><h3>Citas</h3>
+        <button class="btn sm" id="pa">+ Nueva cita</button></div>
         ${appts.length ? appts.map((a) => `<div class="row">
-          <div class="main"><b>${esc(a.services?.name || "Cita")}</b>
-            <span>${esc(fmtDateTime(a.starts_at))} · ${a.minutes} min</span></div>
+          <span class="pill">${esc(fmtDateTime(a.starts_at))}</span>
+          <div class="main"><b>${esc(a.services?.name || "Cita")}</b><span>${a.minutes} min</span></div>
           <span class="pill">${esc(a.status)}</span>
         </div>`).join("") : emptyState("Sin citas.")}`;
+      $("#pa").onclick = () => apptModal(p.id);
+    }
+    if (view.tab === "msgs") {
+      panel.innerHTML = `<div class="card-head"><h3>Mensajes</h3></div>
+        <div class="thread">${msgs.length ? msgs.map((m) => `
+          <div class="bubble ${m.from_clinic ? "mine" : "theirs"}">
+            <p>${esc(m.body)}</p><span>${esc(fmtDateTime(m.created_at))}</span>
+          </div>`).join("") : emptyState("Sin mensajes todavía.")}</div>
+        <div class="field" style="margin-top:12px">
+          <textarea id="msg-body" rows="3" placeholder="Escribe un mensaje…"></textarea></div>
+        <button class="btn" id="msg-send">Enviar</button>`;
+      $("#msg-send").onclick = async () => {
+        const body = $("#msg-body").value.trim();
+        if (!body) return;
+        try {
+          const s = await getSession();
+          await api.sendMessage(p.id, body, true, s?.user?.id);
+          toast("Mensaje enviado."); route();
+        } catch (e) { toast("No se pudo enviar: " + e.message, "err"); }
+      };
     }
   }
 
@@ -234,6 +411,56 @@ async function viewPatient() {
       <button class="btn secondary sm" data-doc="${esc(d.id)}">Ver</button>
     </div>`;
   }
+}
+
+/* ======================================================= DOCUMENTOS ==== */
+async function viewDocs() {
+  const docs = await api.listAllDocuments();
+  const counts = {
+    all: docs.length,
+    pending: docs.filter((d) => d.status === "pending" || d.status === "accepted").length,
+    signed: docs.filter((d) => d.status === "signed").length,
+    filed: docs.filter((d) => d.status === "filed").length
+  };
+  let filter = "all";
+
+  main.innerHTML = `
+    <h2 style="margin-bottom:4px">Documentos</h2>
+    <p class="lede">Todos los documentos de la clínica, de todos los pacientes.</p>
+    <div class="grid grid-3" style="margin-bottom:16px">
+      <div class="stat"><span>Total</span><b>${counts.all}</b></div>
+      <div class="stat"><span>Por firmar</span><b>${counts.pending}</b></div>
+      <div class="stat"><span>Firmados</span><b>${counts.signed}</b></div>
+    </div>
+    <div class="card">
+      <div class="tabs" id="dfilter">
+        <button data-f="all" class="on">Todos (${counts.all})</button>
+        <button data-f="pending">Por firmar (${counts.pending})</button>
+        <button data-f="signed">Firmados (${counts.signed})</button>
+        <button data-f="filed">En archivo (${counts.filed})</button>
+      </div>
+      <div id="dlist"></div>
+    </div>`;
+
+  const paint = () => {
+    const list = docs.filter((d) =>
+      filter === "all" ? true
+      : filter === "pending" ? (d.status === "pending" || d.status === "accepted")
+      : d.status === filter);
+    $("#dlist").innerHTML = list.length ? list.map((d) => `<div class="row">
+      <div class="main"><b>${esc(d.patients?.full_name || "Paciente")}</b>
+        <span>${esc(d.title)} · ${esc(fmtDate(d.assigned_at))}</span></div>
+      <span class="pill ${STATUS_CLASS[d.status]}">${esc(STATUS_ES[d.status])}</span>
+      <button class="btn secondary sm" data-doc="${esc(d.id)}">Ver</button>
+    </div>`).join("") : emptyState("Nada en esta categoría.");
+    $$("[data-doc]").forEach((b) => b.onclick = () => showDoc(b.dataset.doc));
+  };
+  paint();
+
+  $$("#dfilter button").forEach((b) => b.onclick = () => {
+    $$("#dfilter button").forEach((x) => x.classList.toggle("on", x === b));
+    filter = b.dataset.f; paint();
+  });
 }
 
 async function assignDoc(p) {
@@ -284,8 +511,8 @@ async function assignDoc(p) {
         });
       } else {
         const t = templates.find((x) => x.slug === sel.value);
-        await api.assignTemplate(p.id,
-          { ...t, requires_signature: needsig.checked }, session?.user?.id);
+        await api.assignTemplate(p.id, { ...t, requires_signature: needsig.checked },
+          session?.user?.id);
       }
       closeModal(); toast("Documento asignado."); route();
     } catch (e) {
@@ -295,8 +522,7 @@ async function assignDoc(p) {
   };
 }
 
-/* Clinic view of a document is deliberately read-only — staff must never be
-   able to sign on a patient's behalf. */
+/* Read-only. Staff must never be able to sign on a patient's behalf. */
 async function showDoc(id) {
   const doc = await api.getDocument(id);
   const sig = doc.signatures?.[0];
@@ -346,14 +572,74 @@ async function addVisit(p) {
   };
 }
 
-/* ------------------------------------------------------------ services */
+/* ========================================================= MENSAJES ==== */
+async function viewInbox() {
+  const [patients, all] = await Promise.all([api.listPatients(), api.listMessages()]);
+  const byPatient = {};
+  for (const m of all) (byPatient[m.patient_id] = byPatient[m.patient_id] || []).push(m);
+
+  const withMsgs = patients.filter((p) => byPatient[p.id]?.length);
+  const selected = view.patientId || withMsgs[0]?.id || patients[0]?.id || null;
+
+  main.innerHTML = `
+    <h2 style="margin-bottom:4px">Mensajes</h2>
+    <p class="lede">Conversaciones con pacientes. Solo tú y ese paciente las ven.</p>
+    ${!patients.length ? emptyState("Aún no hay pacientes.") : `
+    <div class="grid grid-2">
+      <div class="card">
+        <div class="card-head"><h3>Conversaciones</h3></div>
+        ${patients.map((p) => {
+          const msgs = byPatient[p.id] || [];
+          const last = msgs[msgs.length - 1];
+          const unread = msgs.filter((m) => !m.from_clinic && !m.read_at).length;
+          return `<div class="row click ${p.id===selected?"sel":""}" data-t="${esc(p.id)}">
+            <span class="avatar">${esc(initials(p.full_name))}</span>
+            <div class="main"><b>${esc(p.full_name)}</b>
+              <span>${esc(last ? last.body.slice(0,44) : "Sin mensajes")}</span></div>
+            ${unread ? `<span class="pill todo">${unread}</span>` : ""}
+          </div>`;
+        }).join("")}
+      </div>
+      <div class="card" id="thread"></div>
+    </div>`}`;
+
+  $$("[data-t]").forEach((r) => r.onclick = () => { view.patientId = r.dataset.t; route(); });
+  if (selected) paintThread(selected, byPatient[selected] || [], patients);
+
+  async function paintThread(pid, msgs, list) {
+    const p = list.find((x) => x.id === pid);
+    $("#thread").innerHTML = `
+      <div class="card-head"><h3>${esc(p?.full_name || "Paciente")}</h3></div>
+      <div class="thread">${msgs.length ? msgs.map((m) => `
+        <div class="bubble ${m.from_clinic ? "mine" : "theirs"}">
+          <p>${esc(m.body)}</p><span>${esc(fmtDateTime(m.created_at))}</span>
+        </div>`).join("") : emptyState("Sin mensajes todavía.")}</div>
+      <div class="field" style="margin-top:12px">
+        <textarea id="ib-body" rows="3" placeholder="Escribe un mensaje…"></textarea></div>
+      <button class="btn" id="ib-send">Enviar</button>`;
+
+    const unread = msgs.filter((m) => !m.from_clinic && !m.read_at).map((m) => m.id);
+    if (unread.length) { try { await api.markMessagesRead(unread); } catch (e) {} }
+
+    $("#ib-send").onclick = async () => {
+      const body = $("#ib-body").value.trim();
+      if (!body) return;
+      try {
+        const s = await getSession();
+        await api.sendMessage(pid, body, true, s?.user?.id);
+        toast("Mensaje enviado."); route();
+      } catch (e) { toast("No se pudo enviar: " + e.message, "err"); }
+    };
+  }
+}
+
+/* ========================================================= SERVICIOS === */
 async function viewServices() {
-  const services = await api.getServices();
-  main.innerHTML = `${nav()}
+  services = await api.getServices();
+  main.innerHTML = `
+    <h2 style="margin-bottom:4px">Servicios</h2>
+    <p class="lede">Precios y enlaces de pago de Clover. Se reflejan en el portal del paciente.</p>
     <div class="card">
-      <div class="card-head"><h3>Servicios</h3></div>
-      <p class="lede">Los precios y los enlaces de pago de Clover se editan aquí y
-        se reflejan en el portal del paciente.</p>
       ${services.map((s) => `<div class="row">
         <div class="main"><b>${esc(s.name)}</b>
           <span>${esc(s.description || "")} · ${s.minutes} min</span></div>
@@ -363,11 +649,8 @@ async function viewServices() {
         <button class="btn secondary sm" data-svc="${esc(s.id)}">Editar</button>
       </div>`).join("")}
     </div>`;
-  wireNav();
-  $$("[data-svc]").forEach((b) => b.onclick = () => {
-    const s = services.find((x) => x.id === b.dataset.svc);
-    editService(s);
-  });
+  $$("[data-svc]").forEach((b) => b.onclick = () =>
+    editService(services.find((x) => x.id === b.dataset.svc)));
 }
 
 async function editService(s) {
@@ -378,8 +661,7 @@ async function editService(s) {
     <div class="field"><label for="s-mins">Duración (minutos)</label>
       <input id="s-mins" type="number" min="5" step="5" value="${s.minutes}"></div>
     <div class="field"><label for="s-clover">Enlace de pago de Clover</label>
-      <input id="s-clover" type="url" value="${esc(s.clover_link || "")}"
-             placeholder="https://…">
+      <input id="s-clover" type="url" value="${esc(s.clover_link || "")}" placeholder="https://…">
       <span class="hint">Créalo en tu panel de Clover y pégalo aquí. Sin enlace,
         el paciente ve “Pagar en clínica”.</span></div>
     <div class="modal-actions">
@@ -401,6 +683,51 @@ async function editService(s) {
       btn.disabled = false; btn.textContent = "Guardar";
     }
   };
+}
+
+/* ============================================================= PANEL === */
+async function viewPanel() {
+  const s = await api.dashboardStats();
+  const svc = Object.entries(s.byService).sort((a, b) => b[1] - a[1]);
+  const max = svc.length ? svc[0][1] : 1;
+
+  main.innerHTML = `
+    <h2 style="margin-bottom:4px">Panel</h2>
+    <p class="lede">Resumen de los últimos 30 días.</p>
+
+    <div class="grid grid-3" style="margin-bottom:16px">
+      <div class="stat"><span>Pacientes activos</span><b>${s.patients}</b></div>
+      <div class="stat"><span>Nuevos (30 d)</span><b>${s.newPatients}</b></div>
+      <div class="stat"><span>Visitas (30 d)</span><b>${s.visits30}</b></div>
+      <div class="stat"><span>Citas próximas</span><b>${s.upcoming}</b></div>
+      <div class="stat"><span>Ingreso esperado</span><b>${money(s.expectedCents)}</b></div>
+      <div class="stat"><span>Firmas pendientes</span><b>${s.docsPending}</b></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>Documentos</h3></div>
+      <div class="grid grid-3">
+        <div class="stat"><span>Total</span><b>${s.docsTotal}</b></div>
+        <div class="stat"><span>Firmados</span><b>${s.docsSigned}</b></div>
+        <div class="stat"><span>Por firmar</span><b>${s.docsPending}</b></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>Servicios más usados (30 d)</h3></div>
+      ${svc.length ? svc.map(([name, n]) => `
+        <div class="barrow">
+          <span class="barlabel">${esc(name)}</span>
+          <span class="bartrack"><i style="width:${Math.round(n / max * 100)}%"></i></span>
+          <span class="barval">${n}</span>
+        </div>`).join("") : emptyState("Aún no hay visitas registradas.")}
+    </div>
+
+    <div class="banner warn">
+      <b>“Ingreso esperado” es una estimación</b>
+      Suma el precio de lista de las citas próximas. No es dinero cobrado — la
+      app todavía no registra pagos de Clover.
+    </div>`;
 }
 </script>
 </body>

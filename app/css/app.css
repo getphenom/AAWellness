@@ -247,3 +247,66 @@ button,input,select,textarea{font-family:inherit}
   .modal{padding:20px}
   .hero h1{font-size:26px}
 }
+
+/* ---- section nav (clinic) --------------------------------------------- */
+.railnav{
+  display:flex;gap:4px;overflow-x:auto;padding:10px 20px 0;
+  border-bottom:1px solid var(--hair2);background:rgba(255,253,250,.75);
+  position:sticky;top:63px;z-index:30;-webkit-overflow-scrolling:touch;
+}
+.railnav button{
+  border:0;background:none;cursor:pointer;white-space:nowrap;
+  display:flex;align-items:center;gap:7px;
+  padding:11px 15px;font-size:12.5px;font-weight:700;color:var(--muted);
+  border-bottom:2px solid transparent;margin-bottom:-1px;border-radius:10px 10px 0 0;
+}
+.railnav button i{font-style:normal;font-size:13px;opacity:.75}
+.railnav button:hover{color:var(--ink);background:var(--cream)}
+.railnav button.on{color:var(--pink);border-bottom-color:var(--pink);background:transparent}
+.railnav button.on i{opacity:1}
+
+/* ---- schedule day grouping -------------------------------------------- */
+.daygroup{margin-bottom:16px}
+.dayhead{
+  display:block;font-size:10.5px;font-weight:800;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--gold-ink);
+  padding:6px 2px;margin-bottom:6px;border-bottom:1px solid var(--hair2);
+}
+select.mini{
+  flex:0 0 auto;font-family:inherit;font-size:11px;color:var(--muted2);
+  background:#fff;border:1px solid var(--hair3);border-radius:999px;padding:5px 9px;
+}
+select.mini:focus{outline:none;border-color:var(--gold)}
+
+/* ---- message thread ---------------------------------------------------- */
+.thread{
+  display:flex;flex-direction:column;gap:9px;max-height:46vh;overflow-y:auto;
+  padding:4px 2px;-webkit-overflow-scrolling:touch;
+}
+.bubble{max-width:80%;border-radius:15px;padding:10px 13px;font-size:12.8px;line-height:1.5}
+.bubble p{margin:0 0 4px;white-space:pre-wrap;word-break:break-word}
+.bubble span{font-size:10.5px;opacity:.7}
+.bubble.mine{
+  align-self:flex-end;background:linear-gradient(96deg,#E52E7B,#C81A66);color:#fff;
+  border-bottom-right-radius:5px;
+}
+.bubble.theirs{
+  align-self:flex-start;background:var(--cream);border:1px solid var(--hair2);
+  color:var(--ink);border-bottom-left-radius:5px;
+}
+.row.sel{border-color:var(--gold);background:var(--gold-wash)}
+
+/* ---- panel bars -------------------------------------------------------- */
+.barrow{display:flex;align-items:center;gap:11px;padding:7px 2px}
+.barlabel{flex:0 0 40%;font-size:12.5px;color:var(--muted2);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bartrack{flex:1;height:9px;background:var(--cream);border:1px solid var(--hair2);
+  border-radius:999px;overflow:hidden}
+.bartrack i{display:block;height:100%;background:var(--band);border-radius:999px}
+.barval{flex:0 0 auto;font-size:12px;font-weight:700;color:var(--ink);min-width:22px;text-align:right}
+
+@media(max-width:620px){
+  .railnav{top:57px;padding:8px 12px 0}
+  .railnav button{padding:9px 11px;font-size:11.5px}
+  .barlabel{flex:0 0 34%}
+}

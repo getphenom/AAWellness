@@ -27,6 +27,13 @@ export function fmtDateTime(iso) {
     { day: "2-digit", month: "short", hour: "numeric", minute: "2-digit" });
 }
 
+export function fmtTime(iso) {
+  if (!iso) return "";
+  const d = new Date(iso);
+  return isNaN(d) ? "" : d.toLocaleTimeString("es-PR",
+    { hour: "numeric", minute: "2-digit" });
+}
+
 export const initials = (n) =>
   String(n || "").trim().split(/\s+/).slice(0, 2).map((x) => x[0] || "").join("").toUpperCase();
 

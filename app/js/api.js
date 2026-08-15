@@ -143,3 +143,98 @@ export const createAppointment = (row) =>
 
 export const updateAppointment = (id, patch) =>
   supabase.from("appointments").update(patch).eq("id", id).select().single().then(unwrap);
+
+export const deleteAppointment = (id) =>
+  supabase.from("appointments").delete().eq("id", id).then(unwrap);
+
+/* ---- messages ---------------------------------------------------------- */
+
+export const listMessages = (patientId) => {
+  let q = supabase.from("messages")
+    .select("*, patients(full_name)")
+    .order("created_at", { ascending: true });
+  if (patientId) q = q.eq("patient_id", patientId);
+  return q.then(unwrap);
+};
+
+export const sendMessage = (patientId, body, fromClinic, senderId) =>
+  supabase.from("messages").insert({
+    patient_id: patientId, body, from_clinic: fromClinic, sender_id: senderId
+  }).select().single().then(unwrap);
+
+export const markMessagesRead = (ids) =>
+  ids.length
+    ? supabase.from("messages").update({ read_at: new Date().toISOString() })
+        .in("id", ids).then(unwrap)
+    : Promise.resolve(null);
+
+/* ---- aggregate views ---------------------------------------------------
+   Deliberately fetched per-table then combined in JS rather than via a view.
+   RLS applies to each query, so staff get everything and a patient could only
+   ever see their own slice even if these were called from the portal.      */
+
+export async function todaySnapshot() {
+  const start = new Date(); start.setHours(0, 0, 0, 0);
+  const end = new Date();   end.setHours(23, 59, 59, 999);
+
+  const [appts, docs, msgs] = await Promise.all([
+    supabase.from("appointments")
+      .select("*, patients(full_name), services(name, price_cents)")
+      .gte("starts_at", start.toISOString())
+      .lte("starts_at", end.toISOString())
+      .order("starts_at").then(unwrap),
+    supabase.from("documents")
+      .select("id, title, status, patient_id, patients(full_name)")
+      .in("status", ["pending", "accepted"]).then(unwrap),
+    supabase.from("messages")
+      .select("id, body, created_at, patient_id, from_clinic, read_at, patients(full_name)")
+      .eq("from_clinic", false).is("read_at", null)
+      .order("created_at", { ascending: false }).then(unwrap)
+  ]);
+  return { appts, pendingDocs: docs, unread: msgs };
+}
+
+export async function dashboardStats() {
+  const since = new Date(); since.setDate(since.getDate() - 30);
+
+  const [patients, docs, visits, appts, services] = await Promise.all([
+    supabase.from("patients").select("id, active, created_at").then(unwrap),
+    supabase.from("documents").select("id, status, assigned_at").then(unwrap),
+    supabase.from("visits").select("id, occurred_at, service_id").then(unwrap),
+    supabase.from("appointments")
+      .select("id, status, starts_at, minutes, service_id, services(name, price_cents)")
+      .then(unwrap),
+    supabase.from("services").select("id, name, price_cents").then(unwrap)
+  ]);
+
+  const recentVisits = visits.filter((v) => new Date(v.occurred_at) >= since);
+  const byService = {};
+  for (const v of recentVisits) {
+    const s = services.find((x) => x.id === v.service_id);
+    const key = s ? s.name : "Sin servicio";
+    byService[key] = (byService[key] || 0) + 1;
+  }
+
+  const upcoming = appts.filter(
+    (a) => new Date(a.starts_at) >= new Date() && a.status !== "cancelled");
+  const expected = upcoming.reduce(
+    (sum, a) => sum + (a.services?.price_cents || 0), 0);
+
+  return {
+    patients: patients.filter((p) => p.active).length,
+    newPatients: patients.filter((p) => new Date(p.created_at) >= since).length,
+    docsTotal: docs.length,
+    docsPending: docs.filter((d) => d.status === "pending" || d.status === "accepted").length,
+    docsSigned: docs.filter((d) => d.status === "signed").length,
+    visits30: recentVisits.length,
+    upcoming: upcoming.length,
+    expectedCents: expected,
+    byService
+  };
+}
+
+/* Every document across all patients — the clinic-wide Documentos view. */
+export const listAllDocuments = () =>
+  supabase.from("documents")
+    .select("*, patients(full_name), signatures(id, signed_at, signer_name)")
+    .order("assigned_at", { ascending: false }).then(unwrap);
